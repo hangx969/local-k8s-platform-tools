@@ -1,0 +1,7 @@
+madmaps:
+  db:
+    database: tile_delivery
+    url: psqlflexserv-mapapps-stag-westeurope.postgres.database.azure.com
+    user: admin_stag
+    port: 5432
+    password:

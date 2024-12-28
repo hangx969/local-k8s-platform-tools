@@ -1,0 +1,33 @@
+dashboards:
+  - file_path: "dashboards/aks.json"
+    dashboard_name: aks-onepilot-platform
+  - file_path: "dashboards/availability.json"
+    dashboard_name: aks-onepilot-availability
+  - file_path: "dashboards/kafka_overview.json"
+    dashboard_name: kafka-overview-onepilot-platform
+  - file_path: "dashboards/loki_global.json"
+    dashboard_name: loki-global
+  - file_path: "dashboards/tempo_operational.json"
+    dashboard_name: tempo-operational
+  - file_path: "dashboards/nginx.json"
+    dashboard_name: nginx
+  - file_path: "dashboards/trivy_image_vulnerabilities.json"
+    dashboard_name: trivy-image-vulnerabilities
+  - file_path: "dashboards/trivy_operator.json"
+    dashboard_name: trivy-operator
+  - file_path: "dashboards/strimzi_kafka.json"
+    dashboard_name: strimzi-kafka
+  - file_path: "dashboards/strimz_kraft.json"
+    dashboard_name: strimz-kraft
+  - file_path: "dashboards/strimzi_kafka_mirror_maker_2.json"
+    dashboard_name: strimzi-kafka-mirror-maker-2
+  - file_path: "dashboards/modsecurity_dashboard.json"
+    dashboard_name: modsecurity-dashboard
+  - file_path: "dashboards/kyverno.json"
+    dashboard_name: kyverno
+  - file_path: "dashboards/live.json"
+    dashboard_name: live
+  - file_path: "dashboards/capsule.json"
+    dashboard_name: capsule-controller
+  - file_path: "dashboards/madmaps-logs.json"
+    dashboard_name: madmaps-logs

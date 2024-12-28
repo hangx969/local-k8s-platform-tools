@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-event-datasource
+  namespace: monitoring
+  labels:
+    grafana_datasource: "1"
+data:
+  postgres_event_datasource.yaml: |-
+    apiVersion: 1
+    datasources:
+      - name: PostgresDB
+        type: postgres
+        access: proxy
+        url: {{ .Values.quantum.db.url }}:{{ .Values.quantum.db.port }}
+        database: {{ .Values.quantum.db.database }}
+        user: {{ .Values.quantum.db.user }}
+        secureJsonData:
+          password: {{ .Values.quantum.db.password }}
+        sslmode: verify-full
+        jsonData:
+          postgresVersion: 1400 # 903=9.3, 904=9.4, 905=9.5, 906=9.6, 1000=10
+          timescaledb: true

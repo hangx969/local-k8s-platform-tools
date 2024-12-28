@@ -1,0 +1,7 @@
+madmaps:
+  db:
+    database: tile_delivery
+    url: psqlflexserv-mapapps-dev-chinanorth3.postgres.database.chinacloudapi.cn
+    user: admin_dev
+    port: 5432
+    password:

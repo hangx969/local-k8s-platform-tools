@@ -1,0 +1,6 @@
+commoninfra:
+  slack_channel: '#china-onepilot-prod-platform-alerts'
+  keyvaultName: "SHOULD_BE_OVERRIDDEN_IN_DEPLOYMENT"
+  secretProviderIdentityId: "SHOULD_BE_OVERRIDDEN_IN_DEPLOYMENT"
+  tenantId: "5748bdcc-52eb-4a8e-be69-29d0645fadbf"
+  cloudName: azurechinacloud

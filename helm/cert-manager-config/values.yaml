@@ -1,0 +1,12 @@
+# component: "commoninfra"
+# environment: "dev"
+# location: "chinanorth3"
+# location_id: "cn"
+# tenant_id: "5748bdcc-52eb-4a8e-be69-29d0645fadbf"
+# create_application_gateway_certificate: false
+# workload_identity_client_id: ca496e8a-d6d9-432b-8051-d43b0ec9cdba
+# dns:
+#   domain: "onepilot.azurecn.autoheim.net"
+#   subscription_id: "e8aaa21f-52cf-48d2-9293-796ab1dddaeb"
+#   resource_group_name: "rg-es-identity-dns-chinanorth3"
+#   environment: "AzureChinaCloud"

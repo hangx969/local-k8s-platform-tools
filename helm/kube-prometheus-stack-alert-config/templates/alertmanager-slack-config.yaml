@@ -1,0 +1,19 @@
+# Added to main prometheus-slack helm chart to resolve noisy InHibit allerts, this manifest was broking the order in alertmanager config
+# apiVersion: monitoring.coreos.com/v1alpha1
+# kind: AlertmanagerConfig
+# metadata:
+#   name: onepilot-platform-infra
+#   namespace: monitoring
+# spec:
+#   route:
+#     receiver: slack
+#     groupBy: ["alertname"]
+#   receivers:
+#     - name: slack
+#       slackConfigs:
+#         - channel: "{{ .Values.commoninfra.slack_channel }}"
+#           sendResolved: true
+#           title: |-
+#             {{`{{ template "slack.onepilot.title" . }}`}}
+#           text: |-
+#             {{`{{ template "slack.onepilot.text" . }}`}}

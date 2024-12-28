@@ -1,0 +1,6 @@
+apiVersion: v2
+name: commoninfra-kafka-ui-config
+description: A Helm chart for user configuration for kafka-ui
+type: application
+version: 0.0.1
+appVersion: "0.0.1"

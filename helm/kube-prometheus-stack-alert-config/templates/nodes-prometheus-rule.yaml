@@ -1,0 +1,170 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: nodes
+  namespace: monitoring
+spec:
+  groups:
+  - name: node_cpu
+    rules:
+    # alert for node IO wait
+    - alert: HighIOWait
+      expr: >
+        (label_replace(kubelet_node_name{}, "new_instance", "$1", "instance", "(.*):.*")* on(new_instance)
+        group_left() sum by(new_instance)
+        (label_replace(node_cpu_seconds_total{mode="iowait"},"new_instance", "$1", "instance", "(.*):.*")))
+        /
+        (label_replace(kubelet_node_name{}, "new_instance", "$1", "instance", "(.*):.*")* on(new_instance)
+        group_left() sum by(new_instance)
+        (label_replace(node_cpu_seconds_total{},"new_instance", "$1", "instance", "(.*):.*")))*100 > 10
+      for: 15m
+      labels:
+        severity: warning
+      annotations:
+        summary: High IO wait on node {{`{{$labels.node}}`}}
+        description: "IO wait time exceeded 10% of node's CPU time. Could be a disk problem" 
+    - alert: HighIOWait
+      expr: >
+        (label_replace(kubelet_node_name{}, "new_instance", "$1", "instance", "(.*):.*")* on(new_instance)
+        group_left() sum by(new_instance)
+        (label_replace(node_cpu_seconds_total{mode="iowait"},"new_instance", "$1", "instance", "(.*):.*")))
+        /
+        (label_replace(kubelet_node_name{}, "new_instance", "$1", "instance", "(.*):.*")* on(new_instance)
+        group_left() sum by(new_instance)
+        (label_replace(node_cpu_seconds_total{},"new_instance", "$1", "instance", "(.*):.*")))*100 > 20
+      for: 10m
+      labels:
+        severity: critical
+      annotations:
+        summary: Very high IO wait on node {{`{{$labels.node}}`}}
+        description: "IO wait time exceeded 20% of node's CPU time. Could be a disk problem" 
+    # alert for node application process
+    - alert: HighApplicationProcessesTime
+      expr: >
+        (label_replace(kubelet_node_name{}, "new_instance", "$1", "instance", "(.*):.*")* on(new_instance)
+        group_left() sum by(new_instance)
+        (label_replace(node_cpu_seconds_total{mode="user"},"new_instance", "$1", "instance", "(.*):.*")))
+        /
+        (label_replace(kubelet_node_name{}, "new_instance", "$1", "instance", "(.*):.*")* on(new_instance)
+        group_left() sum by(new_instance)
+        (label_replace(node_cpu_seconds_total{},"new_instance", "$1", "instance", "(.*):.*")))*100 > 60
+      for: 15m
+      labels:
+        severity: warning
+      annotations:
+        summary: High application CPU workload on node {{`{{$labels.node}}`}}
+        description: "User-mode CPU time exceeded 60% of node's CPU time. Could be a buggy application" 
+    - alert: HighApplicationProcessesTime
+      expr: >
+        (label_replace(kubelet_node_name{}, "new_instance", "$1", "instance", "(.*):.*")* on(new_instance)
+        group_left() sum by(new_instance)
+        (label_replace(node_cpu_seconds_total{mode="user"},"new_instance", "$1", "instance", "(.*):.*")))
+        /
+        (label_replace(kubelet_node_name{}, "new_instance", "$1", "instance", "(.*):.*")* on(new_instance)
+        group_left() sum by(new_instance)
+        (label_replace(node_cpu_seconds_total{},"new_instance", "$1", "instance", "(.*):.*")))*100 > 80
+      for: 10m
+      labels:
+        severity: critical
+      annotations:
+        summary: Very high application CPU workload on node {{`{{$labels.node}}`}}
+        description: "User-mode CPU time exceeded 80% of node's CPU time. Could be a buggy application" 
+    # alert for node cpu steal time
+    - alert: HighCPUStealTime
+      expr: >
+        (label_replace(kubelet_node_name{}, "new_instance", "$1", "instance", "(.*):.*")* on(new_instance)
+        group_left() sum by(new_instance)
+        (label_replace(node_cpu_seconds_total{mode="steal"},"new_instance", "$1", "instance", "(.*):.*")))
+        /
+        (label_replace(kubelet_node_name{}, "new_instance", "$1", "instance", "(.*):.*")* on(new_instance)
+        group_left() sum by(new_instance)
+        (label_replace(node_cpu_seconds_total{},"new_instance", "$1", "instance", "(.*):.*")))*100 > 7
+      for: 15m
+      labels:
+        severity: warning
+      annotations:
+        summary: High CPU steal has been reported on node {{`{{$labels.node}}`}}
+        description: "CPU steal time exceeded 7%: virtual CPU waits for a real CPU while the hypervisor services another virtual processor"
+    - alert: HighCPUStealTime
+      expr: >
+        (label_replace(kubelet_node_name{}, "new_instance", "$1", "instance", "(.*):.*")* on(new_instance)
+        group_left() sum by(new_instance)
+        (label_replace(node_cpu_seconds_total{mode="steal"},"new_instance", "$1", "instance", "(.*):.*")))
+        /
+        (label_replace(kubelet_node_name{}, "new_instance", "$1", "instance", "(.*):.*")* on(new_instance)
+        group_left() sum by(new_instance)
+        (label_replace(node_cpu_seconds_total{},"new_instance", "$1", "instance", "(.*):.*")))*100 > 15
+      for: 10m
+      labels:
+        severity: critical
+      annotations:
+        summary: Very high CPU steal has been reported on node {{`{{$labels.node}}`}}
+        description: "CPU steal time exceeded 15%: virtual CPU waits for a real CPU while the hypervisor services another virtual processor"
+    # alert for node kernel process
+    - alert: HighKernelProcessesTime
+      expr: >
+        (label_replace(kubelet_node_name{}, "new_instance", "$1", "instance", "(.*):.*")* on(new_instance)
+        group_left() sum by(new_instance)
+        (label_replace(node_cpu_seconds_total{mode="system"},"new_instance", "$1", "instance", "(.*):.*")))
+        /
+        (label_replace(kubelet_node_name{}, "new_instance", "$1", "instance", "(.*):.*")* on(new_instance)
+        group_left() sum by(new_instance)
+        (label_replace(node_cpu_seconds_total{},"new_instance", "$1", "instance", "(.*):.*")))*100 > 7
+      for: 15m
+      labels:
+        severity: warning
+      annotations:
+        summary: High kernel CPU workload on node {{`{{$labels.node}}`}}
+        description: "Kernel-mode CPU time exceeded 7% of node's CPU time: accessing hardware, creating a network socket, accessing files, etc"
+    - alert: HighKernelProcessesTime
+      expr: >
+        (label_replace(kubelet_node_name{}, "new_instance", "$1", "instance", "(.*):.*")* on(new_instance)
+        group_left() sum by(new_instance)
+        (label_replace(node_cpu_seconds_total{mode="system"},"new_instance", "$1", "instance", "(.*):.*")))
+        /
+        (label_replace(kubelet_node_name{}, "new_instance", "$1", "instance", "(.*):.*")* on(new_instance)
+        group_left() sum by(new_instance)
+        (label_replace(node_cpu_seconds_total{},"new_instance", "$1", "instance", "(.*):.*")))*100 > 15
+      for: 10m
+      labels:
+        severity: critical
+      annotations:
+        summary: Very high kernel CPU workload on node {{`{{$labels.node}}`}}
+        description: "Kernel-mode CPU time exceeded 7% of node's CPU time: accessing hardware, creating a network socket, accessing files, etc"
+  - name: node_cpu_quota
+    rules:
+    # alert for CPU request
+    - alert: HighCPURequest
+      expr: >
+        sum by(node)(cluster:namespace:pod_cpu:active:kube_pod_container_resource_requests{})
+        /
+        sum by(node)(kube_node_status_allocatable{resource="cpu"})*100 > 100
+      for: 15m
+      labels:
+        severity: info
+      annotations:
+        summary: High total CPU request on node {{`{{$labels.node}}`}}
+        description: "Total CPU request exceeded 100% on the node. Could be autoscalling problem"
+    - alert: HighCPURequest
+      expr: >
+        sum by(node)(cluster:namespace:pod_cpu:active:kube_pod_container_resource_requests{})
+        /
+        sum by(node)(kube_node_status_allocatable{resource="cpu"})*100 > 120
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        summary: Very high total CPU request on node {{`{{$labels.node}}`}}
+        description: "Total CPU request exceeded 120% on the node. Could be autoscalling problem"
+    # alert for CPU limit
+    - alert: HighCPUOverCommit
+      expr: >
+        sum by(node)(cluster:namespace:pod_cpu:active:kube_pod_container_resource_limits{})
+        /
+        sum by(node)(kube_node_status_allocatable{resource="cpu"})*100 > 350
+      for: 60m
+      labels:
+        severity: warning
+      annotations:
+        summary: High total commited CPU on node {{`{{$labels.node}}`}}
+        description: "CPU limits are 350% of node's capacity. Could result in massive throttling or pod eviction"

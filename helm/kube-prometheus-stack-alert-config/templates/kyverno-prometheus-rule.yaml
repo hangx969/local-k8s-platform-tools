@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: kyverno
+  namespace: monitoring
+spec:
+  groups:
+    - name: kyverno-prometheus
+      rules:
+        - alert: Kyverno High CPU Usage
+          expr: sum(rate(container_cpu_usage_seconds_total{namespace="kyverno", container!="kyverno"}[5m])) > 0.3
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Kyverno High CPU Usage"
+            description: "Kyverno high CPU usage: could mean that it is stuck in an endless loop"

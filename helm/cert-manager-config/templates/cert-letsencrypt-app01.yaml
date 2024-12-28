@@ -1,0 +1,19 @@
+# apiVersion: cert-manager.io/v1
+# kind: Certificate
+# metadata:
+#   name: cert-letsencrypt-test
+#   namespace: default
+# spec:
+#   commonName: app01.default.svc.cluster.io
+#   dnsNames:
+#   - app01.default.svc.cluster.io # 要签发证书的域名
+#   secretName: app01-tls-cert-secret-letsencrypt # 最终签发出来的证书会保存在这个 Secret 里面
+#   usages:
+#     - digital signature
+#     - key encipherment
+#     - server auth
+#   privateKey:
+#     rotationPolicy: Always
+#   issuerRef:
+#     name: letsencrypt
+#     kind: ClusterIssuer

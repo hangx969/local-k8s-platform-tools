@@ -1,0 +1,19 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cert-alertmanager
+  namespace: monitoring
+spec:
+  secretName: alertmanager-tls-cert-secret
+  privateKey:
+    rotationPolicy: Always
+  commonName: alertmanager.hanxux.local
+  dnsNames:
+    - alertmanager.hanxux.local
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+  issuerRef:
+    name: selfsigned
+    kind: ClusterIssuer
