@@ -1,0 +1,227 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: update-crds
+rules:
+- apiGroups:
+  - monitoring.coreos.com
+  resources:
+  - alertmanagerconfigs
+  - alertmanagers
+  - podmonitors
+  - prometheusrules
+  - scrapeconfigs
+  - servicemonitors
+  verbs:
+  - create
+  - get
+  - list
+  - watch
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - cert-manager.io
+  resources:
+  - certificates        # for custom certificates
+  - issuers             # for custom issuers
+  verbs:
+  - create
+  - get
+  - list
+  - watch
+  - update
+  - patch
+  - delete
+# - apiGroups:
+#   - generators.external-secrets.io
+#   resources:
+#   # - ecrauthorizationtokens             # enable if we have migrated from AKS to AWS
+#   # - gcraccesstokens                    # enable if we have migrated from AKS to GCP
+#   - passwords
+#   - vaultdynamicsecrets
+#   verbs:
+#   - create
+#   - get
+#   - list
+#   - watch
+#   - update
+#   - patch
+#   - delete
+# - apiGroups:
+#   - external-secrets.io
+#   resources:
+#   - externalsecrets
+#   - pushsecrets
+#   - secretstores
+#   verbs:
+#   - create
+#   - get
+#   - list
+#   - watch
+#   - update
+#   - patch
+#   - delete
+# - apiGroups:
+#   - secrets-store.csi.x-k8s.io
+#   resources:
+#   - secretproviderclasses
+#   - secretproviderclasspodstatuses
+#   verbs:
+#   - create
+#   - get
+#   - list
+#   - watch
+#   - update
+#   - patch
+#   - delete
+- apiGroups:
+  - snapshot.storage.k8s.io
+  resources:
+  - volumesnapshotclasses
+  - volumesnapshotcontents
+  - volumesnapshots
+  verbs:
+  - create
+  - get
+  - list
+  - watch
+  - update
+  - patch
+  - delete
+
+# ---
+# apiVersion: rbac.authorization.k8s.io/v1
+# kind: Role
+# metadata:
+#   name: kafka-editor
+#   namespace: kafka
+# rules:
+# - apiGroups:
+#   - kafka.strimzi.io
+#   resources:
+#   - kafkaconnectors
+#   - kafkaconnectors/status
+#   - kafkaconnects
+#   - kafkaconnects/status
+#   - kafkatopics
+#   - kafkatopics/status
+#   - kafkausers
+#   - kafkausers/status
+#   verbs:
+#   - create
+#   - get
+#   - list
+#   - watch
+#   - update
+#   - patch
+#   - delete
+# - apiGroups:
+#   - kafka.strimzi.io
+#   resources:
+#   - kafkabridges
+#   - kafkabridges/status
+#   - kafkamirrormaker2s
+#   - kafkamirrormaker2s/status
+#   - kafkamirrormakers
+#   - kafkamirrormakers/status
+#   - kafkanodepools
+#   - kafkanodepools/status
+#   - kafkarebalances
+#   - kafkarebalances/status
+#   verbs:
+#   - get
+#   - list
+#   - watch
+# - apiGroups:
+#   - ""
+#   resources:
+#   - services
+#   - pods
+#   - endpoints
+#   - secrets
+#   verbs:
+#   - get
+#   - list
+#   - watch
+# - apiGroups:
+#   - ""
+#   resources:
+#   - pods/portforward
+#   verbs:
+#   - get
+#   - list
+#   - watch
+#   - create
+
+# ---
+# # for OpenLens: allow viewing Kafka resources across all namespaces,
+# # although they are only in kafka namespace
+# apiVersion: rbac.authorization.k8s.io/v1
+# kind: ClusterRole
+# metadata:
+#   name: kafka-global-viewer
+# rules:
+# - apiGroups:
+#   - kafka.strimzi.io
+#   resources:
+#   - kafkatopics
+#   - kafkatopics/status
+#   - kafkausers
+#   - kafkausers/status
+#   verbs:
+#   - get
+#   - list
+#   - watch
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pv-creator
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - persistentvolumes
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+
+{{- if .Values.extended_port_forward }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: monitoring-port-forward
+  namespace: monitoring
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods/portforward
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+
+# ---
+# apiVersion: rbac.authorization.k8s.io/v1
+# kind: Role
+# metadata:
+#   name: apicurio-port-forward
+#   namespace: apicurio-schema-registry
+# rules:
+# - apiGroups:
+#   - ""
+#   resources:
+#   - pods/portforward
+#   verbs:
+#   - get
+#   - list
+#   - watch
+#   - create
+{{- end }}

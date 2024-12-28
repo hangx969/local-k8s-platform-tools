@@ -12,11 +12,11 @@ data:
       - name: PostgresDB
         type: postgres
         access: proxy
-        url: {{ .Values.quantum.db.url }}:{{ .Values.quantum.db.port }}
-        database: {{ .Values.quantum.db.database }}
-        user: {{ .Values.quantum.db.user }}
+        url: {{ .Values.pg1.db.url }}:{{ .Values.pg1.db.port }}
+        database: {{ .Values.pg1.db.database }}
+        user: {{ .Values.pg1.db.user }}
         secureJsonData:
-          password: {{ .Values.quantum.db.password }}
+          password: {{ .Values.pg1.db.password }}
         sslmode: verify-full
         jsonData:
           postgresVersion: 1400 # 903=9.3, 904=9.4, 905=9.5, 906=9.6, 1000=10

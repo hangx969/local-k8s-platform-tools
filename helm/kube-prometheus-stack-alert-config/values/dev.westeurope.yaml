@@ -1,5 +1,0 @@
-commoninfra:
-  slack_channel: '#onepilot-dev-platform-alerts'
-  keyvaultName: "SHOULD_BE_OVERRIDDEN_IN_DEPLOYMENT"
-  secretProviderIdentityId: "SHOULD_BE_OVERRIDDEN_IN_DEPLOYMENT"
-  tenantId: "2add9d3d-b354-49e2-a68d-ee84001ffd34"

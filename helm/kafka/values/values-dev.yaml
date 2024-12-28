@@ -1,5 +1,5 @@
 environment: "hanxux"
-cloud: azurecloud
+cloud: "azurechinacloud" #azurecloudchina
 product: "local"
 dns:
   domain: ""
@@ -9,6 +9,12 @@ commoninfra:
   kafka:
     name: kafka
     zoneredundant: "false"
+    version: 3.7.1
+    replicas: 3
+    storage:
+      type: persistent-claim
+      size: "1Gi"
+      class: sc-nfs
     kafka_controller_resources:
       requests:
         cpu: 300m
@@ -19,15 +25,9 @@ commoninfra:
     kafka_resources:
       requests:
         ## see https://github.com/strimzi/strimzi-kafka-bridge/issues/731
-        cpu: 600m
+        cpu: 300m
         memory: 200Mi
       limits:
-        cpu: 1200m
-        memory: 4Gi
-    version: 3.7.1
-    replicas: 3
-    storage:
-      type: persistent-claim
-      size: "1Gi"
-      class: sc-nfs
+        cpu: 600m
+        memory: 2Gi
 

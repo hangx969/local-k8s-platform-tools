@@ -1,10 +1,10 @@
 dashboards:
   - file_path: "dashboards/aks.json"
-    dashboard_name: aks-onepilot-platform
+    dashboard_name: aks-local-platform
   - file_path: "dashboards/availability.json"
-    dashboard_name: aks-onepilot-availability
+    dashboard_name: aks-local-availability
   - file_path: "dashboards/kafka_overview.json"
-    dashboard_name: kafka-overview-onepilot-platform
+    dashboard_name: kafka-overview-local-platform
   - file_path: "dashboards/loki_global.json"
     dashboard_name: loki-global
   - file_path: "dashboards/tempo_operational.json"
@@ -29,5 +29,5 @@ dashboards:
     dashboard_name: live
   - file_path: "dashboards/capsule.json"
     dashboard_name: capsule-controller
-  - file_path: "dashboards/madmaps-logs.json"
-    dashboard_name: madmaps-logs
+  - file_path: "dashboards/pg2-logs.json"
+    dashboard_name: pg2-logs

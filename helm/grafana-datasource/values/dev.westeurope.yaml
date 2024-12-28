@@ -1,7 +1,0 @@
-madmaps:
-  db:
-    database: tile_delivery
-    url: psqlflexserv-mapapps-dev-westeurope.postgres.database.azure.com
-    user: admin_dev
-    port: 5432
-    password:

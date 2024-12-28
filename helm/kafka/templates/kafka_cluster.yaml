@@ -1,0 +1,136 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: Kafka
+metadata:
+  name: {{ .Values.commoninfra.kafka.name }}
+  namespace: kafka
+  annotations:
+    strimzi.io/kraft: "enabled"
+    strimzi.io/node-pools: "enabled"
+spec:
+  kafka:
+    version: {{ .Values.commoninfra.kafka.version }}
+    listeners:
+      - name: tls
+        port: 9093
+        type: internal
+        tls: true
+        authentication:
+          type: tls
+      - name: external
+        port: 9094
+        type: loadbalancer
+        tls: true
+        authentication:
+          type: tls
+        configuration:
+          bootstrap:
+            annotations:
+              #service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+              #external-dns.alpha.kubernetes.io/hostname: kafka.{{ .Values.environment }}.{{ .Values.product }}#.{{ .Values.dns.domain }}
+              #external-dns.alpha.kubernetes.io/ttl: "600"
+            alternativeNames:
+              - kafka.{{ .Values.environment }}.{{ .Values.product }}#.{{ .Values.dns.domain }}
+          brokers:
+            {{- $root := . -}}
+            {{- range $i, $e := until (int .Values.commoninfra.kafka.replicas) }}
+            - broker: {{ $i }}
+              annotations:
+                #service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+                #external-dns.alpha.kubernetes.io/hostname: kafka-broker-{{ $i }}.{{ $root.Values.environment }}.{{ $root.Values.product }}.{{ $root.Values.dns.domain }}
+                #external-dns.alpha.kubernetes.io/ttl: "600"
+              advertisedHost: kafka-broker-{{ $i }}.{{ $root.Values.environment }}.{{ $root.Values.product }}#.{{ $root.Values.dns.domain }}
+            {{- end }}
+    authorization:
+      type: simple
+    resources: {{- .Values.commoninfra.kafka.kafka_resources | toYaml | trim | nindent 6 }}
+    jvmOptions:
+      -Xms: 2500m
+      -Xmx: 2500m
+    config:
+      offsets.topic.replication.factor: 3
+      transaction.state.log.replication.factor: 3
+      transaction.state.log.min.isr: 2
+      default.replication.factor: 3
+      min.insync.replicas: 2
+      log.retention.ms: 604800000
+      delete.topic.enable: true
+      num.partitions: 6
+      log.segment.bytes: 104857600
+      log.roll.ms: 86400000
+      auto.create.topics.enable: false
+      socket.send.buffer.bytes: 102400
+      socket.receive.buffer.bytes: 102400
+      socket.request.max.bytes: 104857600
+      replica.fetch.max.bytes: 104857600
+      message.max.bytes: 104857600
+    metricsConfig:
+      type: jmxPrometheusExporter
+      valueFrom:
+        configMapKeyRef:
+          name: kafka-metrics
+          key: kafka-metrics-config.yml
+    template:
+      clusterCaCert:
+        metadata:
+          annotations:
+            kubed.appscode.com/sync: "config-sync-kafka"
+  {{- if and (eq .Values.commoninfra.kafka.zoneredundant "true") (eq .Values.cloud "azurecloud") }}
+      pod:
+        affinity:
+          podAntiAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              - labelSelector:
+                  matchExpressions:
+                    - key: "strimzi.io/name"
+                      operator: In
+                      values:
+                        - {{ .Values.commoninfra.kafka.name }}-kafka
+                topologyKey: "kubernetes.io/hostname"
+  {{- end }}
+  {{- if eq .Values.cloud "azurechinacloud" }}
+      pod:
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 100
+                podAffinityTerm:
+                  labelSelector:
+                    matchExpressions:
+                      - key: "strimzi.io/name"
+                        operator: In
+                        values:
+                          - {{ .Values.commoninfra.kafka.name }}-kafka
+                  topologyKey: "topology.kubernetes.io/zone"
+            requiredDuringSchedulingIgnoredDuringExecution:
+              - labelSelector:
+                  matchExpressions:
+                    - key: "strimzi.io/name"
+                      operator: In
+                      values:
+                        - {{ .Values.commoninfra.kafka.name }}-kafka
+                topologyKey: "kubernetes.io/hostname"
+  {{- end }}
+  entityOperator:
+    topicOperator:
+      resources:
+        requests:
+          memory: 128Mi
+          cpu: "100m"
+        limits:
+          memory: 128Mi
+          cpu: "750m"
+      jvmOptions:
+        -Xms: 256m
+        -Xmx: 256m
+    userOperator:
+      resources:
+        requests:
+          memory: 128Mi
+          cpu: "100m"
+        limits:
+          memory: 128Mi
+          cpu: "750m"
+      jvmOptions:
+        -Xms: 256m
+        -Xmx: 256m
+  kafkaExporter: {}

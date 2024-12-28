@@ -15,7 +15,7 @@ spec:
           annotations:
             summary: "Less than 7 days before certificate expires"
             description: "Less than 7 days before let's encrypt certificate expires"
-            runbook: https://confluence.zenseact.com/display/MIM/Certificates+Runbook
+            runbook: ""
         - alert: CertManagerLateRenewal
           expr: (time() - min(certmanager_certificate_renewal_timestamp_seconds) by (name)) / 60 / 60 / 24 > 7
           labels:
@@ -24,4 +24,4 @@ spec:
           annotations:
             summary: "Certificate should have been renewed 7 days ago"
             description: "Less than 7 days past certificate renewal due date"
-            runbook: https://confluence.zenseact.com/display/MIM/Certificates+Runbook
+            runbook: ""

@@ -1,0 +1,15 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaNodePool
+metadata:
+  name: kafka
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: {{ .Values.commoninfra.kafka.name }}
+spec:
+  replicas: {{ .Values.commoninfra.kafka.replicas }}
+  roles:
+    - broker
+  storage:
+    type: {{ .Values.commoninfra.kafka.storage.type }}
+    size: {{ .Values.commoninfra.kafka.storage.size }}
+    class: {{ .Values.commoninfra.kafka.storage.class }}

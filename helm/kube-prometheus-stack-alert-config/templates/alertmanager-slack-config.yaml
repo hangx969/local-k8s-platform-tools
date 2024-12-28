@@ -2,7 +2,7 @@
 # apiVersion: monitoring.coreos.com/v1alpha1
 # kind: AlertmanagerConfig
 # metadata:
-#   name: onepilot-platform-infra
+#   name: localplatform-platform-infra
 #   namespace: monitoring
 # spec:
 #   route:
@@ -14,6 +14,6 @@
 #         - channel: "{{ .Values.commoninfra.slack_channel }}"
 #           sendResolved: true
 #           title: |-
-#             {{`{{ template "slack.onepilot.title" . }}`}}
+#             {{`{{ template "slack.localplatform.title" . }}`}}
 #           text: |-
-#             {{`{{ template "slack.onepilot.text" . }}`}}
+#             {{`{{ template "slack.localplatform.text" . }}`}}

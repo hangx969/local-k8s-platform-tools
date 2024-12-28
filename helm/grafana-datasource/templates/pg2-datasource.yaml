@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pg2-datasource
+  namespace: monitoring
+  labels:
+    grafana_datasource: "1"
+data:
+  map_datasource.yaml: |-
+    apiVersion: 1
+    datasources:
+      - name: pg2DeliveryDatabase
+        type: postgres
+        access: proxy
+        url: {{ .Values.pg2.db.url }}:{{ .Values.pg2.db.port }}
+        database: {{ .Values.pg2.db.database }}
+        user: {{ .Values.pg2.db.user }}
+        secureJsonData:
+          password: {{ .Values.pg2.db.password }}
+        sslmode: verify-full

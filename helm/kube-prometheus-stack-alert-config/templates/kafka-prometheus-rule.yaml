@@ -15,7 +15,7 @@ spec:
           annotations:
             summary: "One or more Kafka brokers offline"
             description: "Performance of Kafka cluster may be degraded"
-            runbook: https://confluence.zenseact.com/display/MIM/Kafka+runbook
+            runbook: ""
         - alert: KafkaBrokersOfflineCritical
           expr: count(kafka_server_replicamanager_leadercount{namespace="kafka",strimzi_io_cluster="kafka"}) < 2
           labels:
@@ -24,7 +24,7 @@ spec:
           annotations:
             summary: "Two or more Kafka brokers offline"
             description: "Performance of Kafka cluster may be heavily degraded"
-            runbook: https://confluence.zenseact.com/display/MIM/Kafka+runbook
+            runbook: ""
         - alert: KafkaStorage
           expr: kubelet_volume_stats_available_bytes{namespace="kafka"} / 1024 / 1024 / 1024 < 10
           labels:
@@ -33,7 +33,7 @@ spec:
           annotations:
             summary: "Storage for Kafka running out"
             description: "Less than 10 GB remaining"
-            runbook: https://confluence.zenseact.com/display/MIM/Kafka+runbook
+            runbook: ""
         - alert: KafkaStorageCritical
           expr: kubelet_volume_stats_available_bytes{namespace="kafka"} / 1024 / 1024 / 1024 < 5
           labels:
@@ -42,4 +42,4 @@ spec:
           annotations:
             summary: "Storage for Kafka critically low"
             description: "Less than 5 GB remaining"
-            runbook: https://confluence.zenseact.com/display/MIM/Kafka+runbook
+            runbook: ""
