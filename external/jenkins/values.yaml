@@ -21,7 +21,7 @@ namespaceOverride:
 clusterZone: "cluster.local"
 
 # -- The URL of the Kubernetes API server
-kubernetesURL: "https://172.16.183.100:6443"
+kubernetesURL: "https://kubernetes.default"
 
 # -- The Jenkins credentials to access the Kubernetes API server. For the default cluster it is not needed.
 credentialsId:
