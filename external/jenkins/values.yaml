@@ -21,7 +21,7 @@ namespaceOverride:
 clusterZone: "cluster.local"
 
 # -- The URL of the Kubernetes API server
-kubernetesURL: "https://kubernetes.default"
+kubernetesURL: "https://172.16.183.100:6443"
 
 # -- The Jenkins credentials to access the Kubernetes API server. For the default cluster it is not needed.
 credentialsId:
@@ -490,7 +490,7 @@ controller:
   #   renew: 60               # optional
 
   # -- Name of default cloud configuration.
-  cloudName: "kubernetes"
+  cloudName: "local-platform-dev"
 
   # Below is the implementation of Jenkins Configuration as Code. Add a key under configScripts for each configuration area,
   # where each corresponds to a plugin or section of the UI. Each key (prior to | character) is just a label, and can be any value.
@@ -1100,11 +1100,11 @@ agent:
 
   # Doesn't allocate pseudo TTY by default
   # -- Allocate pseudo tty to the side container
-  TTYEnabled: false
+  TTYEnabled: true
   # -- Max number of agents to launch
   containerCap: 10
   # -- Agent Pod base name
-  podName: "default"
+  podName: "jenkins-agent"
 
   # Enables garbage collection of orphan pods for this Kubernetes cloud. (beta)
   garbageCollection:
