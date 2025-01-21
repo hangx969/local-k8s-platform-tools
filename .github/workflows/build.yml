@@ -34,7 +34,7 @@ jobs:
 
       - name: Helm Lint Base
         run: |
-          helm lint ./helm/base --values ./helm/base/values.yaml --kubeconfig '$KUBECONFIG'
+          helm lint ./helm/base --values ./helm/base/values.yaml --kubeconfig $KUBECONFIG
 
       - name: Helm list harbor
         run: |
