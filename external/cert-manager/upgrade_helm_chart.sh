@@ -1,12 +1,12 @@
 #！/bin/bash
 
 # define chart env
-export helm_chart_version_new='4.10.1' # need to check the actual chart version format
-export helm_repo_name='ingress-nginx'
-export helm_repo_url='https://kubernetes.github.io/ingress-nginx'
-export helm_chart_file_name='ingress-nginx' # need to check the actual file name prefix
-export helm_release_name='ingress-nginx'
-export helm_ns='ingress-nginx'
+export helm_chart_version_new='v1.16.1' # need to check the actual chart version format
+export helm_repo_name='jetstack'
+export helm_repo_url='https://charts.jetstack.io '
+export helm_chart_file_name='cert-manager' # need to check the actual file name prefix
+export helm_release_name='cert-manager'
+export helm_ns='cert-manager'
 
 # define harbor env
 export harbor_host='harbor.hanxux.local'
@@ -16,7 +16,7 @@ export harbor_passwd='Harbor12345'
 
 # define working directory
 export helm_chart_dir='/home/s0001969/Cloud/helm-charts'
-export value_dir='/home/s0001969/Cloud/AzureDevOps-repo/local-k8s-platform-tools/external/ingress-nginx'
+export value_dir='/home/s0001969/Cloud/AzureDevOps-repo/local-k8s-platform-tools/external/cert-manager'
 export kubeconfig='/home/s0001969/Cloud/kubeconfig-local'
 
 #print command before executing
