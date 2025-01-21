@@ -14,6 +14,7 @@ export harbor_passwd='Harbor12345'
 
 # define working directory
 export work_dir='/home/s0001969/Cloud/helm-charts'
+export kubeconfig='/home/s0001969/Cloud/kubeconfig-local'
 
 #print command before executing
 set -x
@@ -29,6 +30,6 @@ echo
 
 # push to harbor
 helm registry login $harbor_host --insecure --username $harbor_username --password $harbor_passwd
-helm push $helm_chart_file_name-$helm_chart_version_new.tgz oci://$harbor_host/$harbor_project/ --insecure-skip-tls-verify
+helm push $helm_chart_file_name-$helm_chart_version_new.tgz oci://$harbor_host/$harbor_project/ --insecure-skip-tls-verify --kubeconfig $kubeconfig
 echo
 
