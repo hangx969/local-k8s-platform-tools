@@ -38,8 +38,10 @@ jobs:
 
       - name: Helm list harbor
         run: |
-          helm list -n harbor --kubeconfig '$KUBECONFIG'
+          helm list -n harbor --kubeconfig $KUBECONFIG
 
       - name: check nodes
         run: |
-          kubectl get nodes --kubeconfig '$KUBECONFIG'
+          kubectl get nodes --kubeconfig $KUBECONFIG
+
+# TODO: check github env and what is github.workspace
