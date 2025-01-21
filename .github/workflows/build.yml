@@ -14,7 +14,7 @@ env:
 defaults:
   run:
     shell: bash
-    working-directory: /home/s0001969/Cloud/local-k8s-platform-tools
+    #working-directory: /home/s0001969/Cloud/local-k8s-platform-tools
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -34,4 +34,4 @@ jobs:
       # TBD:fix secrets cannot be used
         run: |
           pwd
-          helm lint /helm/base --values /helm/base/values.yaml --kubeconfig '${{ secrets.LOCAL_KUBECONFIG }}'
+          helm lint ./helm/base --values ./helm/base/values.yaml --kubeconfig '${{ secrets.LOCAL_KUBECONFIG }}'
