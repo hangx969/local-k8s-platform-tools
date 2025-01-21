@@ -21,7 +21,7 @@ jobs:
     # The type of runner that the job will run on
     runs-on: self-hosted
     env:
-      KUBECONFIG: '${{ github.workspace }}/.kube/kubeconfig'
+      KUBECONFIG: './.kube/kubeconfig'
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -30,7 +30,7 @@ jobs:
 
       - name: Generate kubeconfig
         run: |
-          mkdir -p '${{ github.workspace }}/.kube' \
+          mkdir -p './.kube' \
           && echo '${{ secrets.HP_LOCAL_KUBECONFIG}}' | base64 -d > $KUBECONFIG
 
       - name: Helm Lint Base
@@ -39,4 +39,4 @@ jobs:
 
       - name: Helm list harbor
         run: |
-          helm list -n harbor --kubeconfig
+          helm list -n harbor --kubeconfig '$KUBECONFIG'
