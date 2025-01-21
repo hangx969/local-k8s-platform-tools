@@ -1,7 +1,7 @@
 #！/bin/bash
 
 # define chart env
-export helm_chart_version_new='0.7.1' # need to check the actual chart version format
+export helm_chart_version_new='0.7.2' # need to check the actual chart version format
 export helm_repo_name='projectcapsule'
 export helm_repo_url='https://projectcapsule.github.io/charts'
 export helm_chart_file_name='capsule' # need to check the actual file name prefix
