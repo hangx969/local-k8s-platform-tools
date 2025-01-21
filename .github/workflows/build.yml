@@ -11,6 +11,11 @@ on:
 env:
   HELM_VERSION: v3.6.3
 
+defaults:
+  run:
+    shell: bash
+    working-directory: /
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -26,4 +31,7 @@ jobs:
       - name: Helm Lint Base
       # Create inline script to use helm lint
         run: |
+        # fix values.yaml path for helm lint
+        # fix secrets cannot be used
+          pwd
           helm lint /helm/base --values /helm/base/values.yaml --kubeconfig '${{ secrets.LOCAL_KUBECONFIG }}'
