@@ -20,20 +20,23 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: self-hosted
-
+    env:
+      KUBECONFIG: '${{ github.workspace }}/.kube/kubeconfig'
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Generate kubeconfig
+        run: |
+          mkdir -p '${{ github.workspace }}/.kube' \
+          && echo '${{ secrets.HP_LOCAL_KUBECONFIG}}' | base64 -d > $KUBECONFIG
+
       - name: Helm Lint Base
-      # Create inline script to use helm lint
-      # TBD:fix secrets cannot be used
-        env:
-          KUBECONFIG: ${{ secrets.HP_LOCAL_KUBECONFIG }}
         run: |
           helm lint ./helm/base --values ./helm/base/values.yaml --kubeconfig '$KUBECONFIG'
+
       - name: Helm list harbor
         run: |
-          helm list -n harbor --kubeconfig '${{ secrets.HP_LOCAL_KUBECONFIG }}'
+          helm list -n harbor --kubeconfig
