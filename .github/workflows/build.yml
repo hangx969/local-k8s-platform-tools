@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 env:
-  HELM_VERSION: v3.6.3
+  LOCAL_KUBECONFIG: ${{ secrets.LOCAL_KUBECONFIG }}
 
 defaults:
   run:
@@ -26,12 +26,11 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Helm Lint Base
       # Create inline script to use helm lint
-      # TBD:fix values.yaml path for helm lint
       # TBD:fix secrets cannot be used
         run: |
-          pwd
-          helm lint ./helm/base --values ./helm/base/values.yaml --kubeconfig '${{ secrets.LOCAL_KUBECONFIG }}'
+          helm lint ./helm/base --values ./helm/base/values.yaml --kubeconfig $LOCAL_KUBECONFIG
