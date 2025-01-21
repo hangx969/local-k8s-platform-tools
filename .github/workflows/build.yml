@@ -26,4 +26,4 @@ jobs:
       - name: Helm Lint Base
       # Create inline script to use helm lint
         run: |
-          helm lint /helm/base --vaules /helm/base/values.yaml
+          helm lint /helm/base --values /helm/base/values.yaml --kubeconfig '${{ secrets.LOCAL_KUBECONFIG }}'
