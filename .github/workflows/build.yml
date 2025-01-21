@@ -35,7 +35,5 @@ jobs:
         run: |
           helm lint ./helm/base --values ./helm/base/values.yaml --kubeconfig '$KUBECONFIG'
       - name: Helm list harbor
-        env:
-          KUBECONFIG: ${{ secrets.HP_LOCAL_KUBECONFIG }}
         run: |
-          helm list -n harbor --kubeconfig '$KUBECONFIG'
+          helm list -n harbor --kubeconfig '${{ secrets.HP_LOCAL_KUBECONFIG }}'
