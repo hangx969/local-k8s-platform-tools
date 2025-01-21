@@ -30,8 +30,8 @@ jobs:
 
       - name: Helm Lint Base
       # Create inline script to use helm lint
+      # TBD:fix values.yaml path for helm lint
+      # TBD:fix secrets cannot be used
         run: |
-        # fix values.yaml path for helm lint
-        # fix secrets cannot be used
           pwd
           helm lint /helm/base --values /helm/base/values.yaml --kubeconfig '${{ secrets.LOCAL_KUBECONFIG }}'
