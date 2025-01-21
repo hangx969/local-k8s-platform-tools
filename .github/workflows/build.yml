@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 env:
-  LOCAL_KUBECONFIG: ${{ secrets.LOCAL_KUBECONFIG }}
+  KUBECONFIG: ${{ secrets.HP_LOCAL_KUBECONFIG }}
 
 defaults:
   run:
@@ -33,4 +33,4 @@ jobs:
       # Create inline script to use helm lint
       # TBD:fix secrets cannot be used
         run: |
-          helm lint ./helm/base --values ./helm/base/values.yaml --kubeconfig $LOCAL_KUBECONFIG
+          helm lint ./helm/base --values ./helm/base/values.yaml --kubeconfig $KUBECONFIG
