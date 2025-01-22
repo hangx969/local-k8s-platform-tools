@@ -55,16 +55,16 @@ jobs:
         run: |
           helm lint ./helm/capsule-tenants --values ./helm/capsule-tenants/values.yaml --kubeconfig $KUBECONFIG
 
-        - name: Diff Cert-manager
-          run: |
-            export CHART_VERSION=${{env.certManagerVersion}}
-            export VERSION=${CHART_VERSION#v}
+      - name: Diff Cert-manager
+        run: |
+          export CHART_VERSION=${{env.certManagerVersion}}
+          export VERSION=${CHART_VERSION#v}
 
-            helm repo add jetstack https://charts.jetstack.io
-            helm repo update jetstack
+          helm repo add jetstack https://charts.jetstack.io
+          helm repo update jetstack
 
-            helm diff upgrade cert-manager -n cert-manager \
-              jetstack/cert-manager \
-              -f ./external/cert-manager/values.yaml \
-              --version $CHART_VERSION \
-              --kubeconfig $KUBECONFIG
+          helm diff upgrade cert-manager -n cert-manager \
+            jetstack/cert-manager \
+            -f ./external/cert-manager/values.yaml \
+            --version $CHART_VERSION \
+            --kubeconfig $KUBECONFIG
