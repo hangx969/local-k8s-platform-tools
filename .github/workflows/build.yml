@@ -41,7 +41,8 @@ jobs:
       - name: Generate kubeconfig from repository secret
         run: |
           mkdir -p '${{ github.workspace }}/.kube' \
-          && echo '${{ secrets.HP_LOCAL_KUBECONFIG}}' | base64 -d > $KUBECONFIG
+          && echo '${{ secrets.HP_LOCAL_KUBECONFIG}}' | base64 -d > $KUBECONFIG \
+          && chmod 600 $KUBECONFIG
 
       - name: Helm Lint Base
         run: |
