@@ -1,0 +1,88 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-resources
+spec:
+  containers:
+    - name: web
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 500m
+          memory: 128Mi
+        limits:
+          cpu: 500m
+          memory: 128Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-no-resources
+spec:
+  containers:
+    - name: web
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-no-memory-limits
+spec:
+  containers:
+    - name: web
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+        limits:
+          cpu: 500m
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-no-cpu-limits
+spec:
+  containers:
+    - name: web
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+        limits:
+          memory: 128Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-no-requests
+spec:
+  containers:
+    - name: web
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        limits:
+          cpu: 500m
+          memory: 128Mi

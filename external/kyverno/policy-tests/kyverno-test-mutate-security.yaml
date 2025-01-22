@@ -1,0 +1,15 @@
+
+name: test_mutate_security_policies
+policies:
+  - ../policies/common/security/disable-default-servicetoken-automount.yaml
+resources:
+  - test-resources/security/test_serviceaccounts.yaml
+#variables: <variable_file> (OPTIONAL)
+results:
+  - policy: disable-automountserviceaccounttoken
+    rule: disable-automountserviceaccounttoken
+    resource: default
+    #namespace: <name> (OPTIONAL)
+    kind: ServiceAccount
+    patchedResource: test-resources/security/patched_serviceaccounts.yaml
+    result: pass # <pass|fail|skip>

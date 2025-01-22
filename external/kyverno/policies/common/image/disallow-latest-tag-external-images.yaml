@@ -49,9 +49,4 @@ spec:
           template:
             spec:
               containers:
-              - image: "crcommoninfra?*.azurecr.io/*:latest"
-      - spec:
-          template:
-            spec:
-              containers:
               - image: "!*:latest"

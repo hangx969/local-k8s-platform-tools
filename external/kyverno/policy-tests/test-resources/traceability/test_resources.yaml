@@ -1,0 +1,77 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kyverno-test-no-labels
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kyverno-test-labels
+  labels:
+    capsule.clastix.io/tenant: mytenant
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kafka
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kube-system
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaUser
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: Helm
+    strimzi.io/cluster: kafka
+    team: myteam
+  name: kafkauser-label
+  #namespace: kafka
+spec:
+  authentication:
+    type: tls
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaUser
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: Helm
+    strimzi.io/cluster: kafka
+  name: kafkauser-no-label
+  #namespace: kafka
+spec:
+  authentication:
+    type: tls
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: Helm
+    strimzi.io/cluster: kafka
+    team: myteam
+  name: kafkatopic-label
+  #namespace: kafka
+spec:
+  config:
+    retention.ms: 604800000
+    segment.bytes: 104857600
+  partitions: 6
+  replicas: 3
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: Helm
+    strimzi.io/cluster: kafka
+  name: kafkatopic-no-label
+  #namespace: kafka
+spec:
+  config:
+    retention.ms: 604800000
+    segment.bytes: 104857600
+  partitions: 6
+  replicas: 3

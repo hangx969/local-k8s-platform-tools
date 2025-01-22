@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-no-secrets
+spec:
+  containers:
+    - name: web
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-no-sensitive-data
+spec:
+  containers:
+    - name: web
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+      env:
+        - name: CONFIG_FILE
+          value: /app/config.yml
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-secrets
+spec:
+  containers:
+    - name: web
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+      env:
+        - name: TOKEN
+          value: abcdef
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-secrets-partial
+spec:
+  containers:
+    - name: web
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+      env:
+        - name: AccessKey
+          value: qwerty
+        - name: Config
+          value: /app/config.yml

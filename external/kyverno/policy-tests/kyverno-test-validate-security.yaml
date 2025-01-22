@@ -1,0 +1,106 @@
+
+name: test_validate_security_policies
+policies:
+  - ../policies/common/security/require-secret-for-sensitive-data-pod.yaml
+  - ../policies/common/security/require-secret-for-sensitive-data.yaml
+resources:
+  - test-resources/security/test_pods.yaml
+  - test-resources/security/test_composites.yaml
+#variables: <variable_file> (OPTIONAL)
+results:
+# sensitive data
+## Pods
+### Should pass
+  - policy: require-secret-for-sensitive-data-pod
+    rule: secret-for-sensitive-data
+    resource: kyverno-test-no-secrets
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: pass #<pass|fail|skip>
+### Should pass
+  - policy: require-secret-for-sensitive-data-pod
+    rule: secret-for-sensitive-data
+    resource: kyverno-test-no-sensitive-data
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: pass #<pass|fail|skip>
+### Should fail
+  - policy: require-secret-for-sensitive-data-pod
+    rule: secret-for-sensitive-data
+    resource: kyverno-test-secrets
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+### Should fail
+  - policy: require-secret-for-sensitive-data-pod
+    rule: secret-for-sensitive-data
+    resource: kyverno-test-secrets-partial
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+
+## Deployments
+### Should pass
+  - policy: require-secret-for-sensitive-data
+    rule: secret-for-sensitive-data
+    resource: kyverno-test-deploy-no-secrets
+    #namespace: <name> (OPTIONAL)
+    kind: Deployment
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: pass #<pass|fail|skip>
+### Should fail
+  - policy: require-secret-for-sensitive-data
+    rule: secret-for-sensitive-data
+    resource: kyverno-test-deploy-secrets
+    #namespace: <name> (OPTIONAL)
+    kind: Deployment
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+### Should pass
+  - policy: require-secret-for-sensitive-data
+    rule: secret-for-sensitive-data
+    resource: kyverno-test-deploy-no-sensitive-data
+    #namespace: <name> (OPTIONAL)
+    kind: Deployment
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: pass #<pass|fail|skip>
+
+## StatefulSet
+### Should Pass
+  - policy: require-secret-for-sensitive-data
+    rule: secret-for-sensitive-data
+    resource: kyverno-test-ss-no-secrets
+    #namespace: <name> (OPTIONAL)
+    kind: StatefulSet
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: pass #<pass|fail|skip>
+### Should fail
+  - policy: require-secret-for-sensitive-data
+    rule: secret-for-sensitive-data
+    resource: kyverno-test-ss-secrets
+    #namespace: <name> (OPTIONAL)
+    kind: StatefulSet
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+## DaemonSet
+
+### Should Pass
+  - policy: require-secret-for-sensitive-data
+    rule: secret-for-sensitive-data
+    resource: kyverno-test-ds-no-secrets
+    #namespace: <name> (OPTIONAL)
+    kind: DaemonSet
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: pass #<pass|fail|skip>
+### Should fail
+  - policy: require-secret-for-sensitive-data
+    rule: secret-for-sensitive-data
+    resource: kyverno-test-ds-secrets
+    #namespace: <name> (OPTIONAL)
+    kind: DaemonSet
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>

@@ -1,0 +1,73 @@
+
+name: test_traceability_policies
+policies:
+  - ../policies/common/traceability/require-capsule-config.yaml
+resources:
+  - test-resources/traceability/test_resources.yaml
+#variables: <variable_file> (OPTIONAL)
+results:
+# Pods
+## Should pass
+  - policy: require-capsule-labels
+    rule: namespace-capsule-label
+    resource: kyverno-test-labels
+    #namespace: <name> (OPTIONAL)
+    kind: Namespace
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: pass #<pass|fail|skip>
+  - policy: require-capsule-labels
+    rule: namespace-capsule-label
+    resource: kafka
+    #namespace: <name> (OPTIONAL)
+    kind: Namespace
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: skip #<pass|fail|skip>
+  - policy: require-capsule-labels
+    rule: namespace-capsule-label
+    resource: kube-system
+    #namespace: <name> (OPTIONAL)
+    kind: Namespace
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: skip #<pass|fail|skip>
+## Should fail
+  - policy: require-capsule-labels
+    rule: namespace-capsule-label
+    resource: kyverno-test-no-labels
+    #namespace: <name> (OPTIONAL)
+    kind: Namespace
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+# KafkaUsers
+## Should pass
+  - policy: require-team-labels
+    rule: kafka-team-label
+    resource: kafkauser-label
+    #namespace: kafka
+    kind: KafkaUser
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: pass #<pass|fail|skip>
+## Should fail
+  - policy: require-team-labels
+    rule: kafka-team-label
+    resource: kafkauser-no-label
+    #namespace: kafka
+    kind: KafkaUser
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+# KafkaTopics
+## Should pass
+  - policy: require-team-labels
+    rule: kafka-team-label
+    resource: kafkatopic-label
+    #namespace: kafka
+    kind: KafkaTopic
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: pass #<pass|fail|skip>
+## Should fail
+  - policy: require-team-labels
+    rule: kafka-team-label
+    resource: kafkatopic-no-label
+    #namespace: kafka
+    kind: KafkaTopic
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>

@@ -1,0 +1,280 @@
+# As this is a very complex policy, it gets its own files
+name: test_validate_security_baseline_policies
+policies:
+  - ../policies/common/security/psa.yaml
+resources:
+  - test-resources/security/test_baseline.yaml
+#variables: <variable_file> (OPTIONAL)
+results:
+# sensitive data
+## Pods
+### Should pass
+  - policy: psa
+    rule: baseline
+    resource: kyverno-should-succeed
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: pass #<pass|fail|skip>
+### Should fail
+  - policy: psa
+    rule: baseline
+    resource: kyverno-test-host-network
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+  - policy: psa
+    rule: baseline
+    resource: kyverno-test-host-pid
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+  - policy: psa
+    rule: baseline
+    resource: kyverno-test-host-ipc
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+  - policy: psa
+    rule: baseline
+    resource: kyverno-test-container-privilege
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+  - policy: psa
+    rule: baseline
+    resource: kyverno-test-init-container-privilege
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+  - policy: psa
+    rule: baseline
+    resource: kyverno-test-ephemeral-container-privilege
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+  - policy: psa
+    rule: baseline
+    resource: kyverno-test-container-cap-ptrace
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+  - policy: psa
+    rule: baseline
+    resource: kyverno-test-init-container-cap-ptrace
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+  - policy: psa
+    rule: baseline
+    resource: kyverno-test-ephemeral-container-cap-ptrace
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+  - policy: psa
+    rule: baseline
+    resource: kyverno-test-hostpath
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+  - policy: psa
+    rule: baseline
+    resource: kyverno-test-container-hostport
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+  - policy: psa
+    rule: baseline
+    resource: kyverno-test-init-container-hostport
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+  - policy: psa
+    rule: baseline
+    resource: kyverno-test-ephemeral-container-hostport
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+  - policy: psa
+    rule: baseline
+    resource: kyverno-test-apparmor
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+  - policy: psa
+    rule: baseline
+    resource: kyverno-test-selinux-base-type-change
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+  - policy: psa
+    rule: baseline
+    resource: kyverno-test-selinux-base-user-change
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+  - policy: psa
+    rule: baseline
+    resource: kyverno-test-selinux-base-role-change
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+  - policy: psa
+    rule: baseline
+    resource: kyverno-test-selinux-container-type-change
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+  - policy: psa
+    rule: baseline
+    resource: kyverno-test-selinux-container-user-change
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+  - policy: psa
+    rule: baseline
+    resource: kyverno-test-selinux-container-role-change
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+  - policy: psa
+    rule: baseline
+    resource: kyverno-test-selinux-init-container-type-change
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+  - policy: psa
+    rule: baseline
+    resource: kyverno-test-selinux-init-container-user-change
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+  - policy: psa
+    rule: baseline
+    resource: kyverno-test-selinux-init-container-role-change
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resourc
+    result: fail #<pass|fail|skip>
+  - policy: psa
+    rule: baseline
+    resource: kyverno-test-selinux-ephemeral-container-type-change
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+  - policy: psa
+    rule: baseline
+    resource: kyverno-test-selinux-ephemeral-container-user-change
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+  - policy: psa
+    rule: baseline
+    resource: kyverno-test-selinux-ephemeral-container-role-change
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resourc
+    result: fail #<pass|fail|skip>
+  - policy: psa
+    rule: baseline
+    resource: kyverno-test-proc-container
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+  - policy: psa
+    rule: baseline
+    resource: kyverno-test-proc-init-container
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+  - policy: psa
+    rule: baseline
+    resource: kyverno-test-proc-ephemeral-container
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resourc
+    result: fail #<pass|fail|skip>
+  - policy: psa
+    rule: baseline
+    resource: kyverno-test-seccomp-base
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+  - policy: psa
+    rule: baseline
+    resource: kyverno-test-seccomp-container
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+  - policy: psa
+    rule: baseline
+    resource: kyverno-test-seccomp-init-container
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+  - policy: psa
+    rule: baseline
+    resource: kyverno-test-seccomp-ephemeral-container
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resourc
+    result: fail #<pass|fail|skip>
+  - policy: psa
+    rule: baseline
+    resource: kyverno-test-sysctls
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+# Test namespace excludes
+  - policy: psa
+    rule: baseline
+    resource: promtail-abc
+    #namespace: monitoring
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: skip #<pass|fail|skip>
+  - policy: psa
+    rule: baseline
+    resource: trivy-pod
+    #namespace: monitoring
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: skip #<pass|fail|skip>
+# do not skip other pods in monitoring namespace
+  - policy: psa
+    rule: baseline
+    resource: custom-pod
+    #namespace: monitoring
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: pass #<pass|fail|skip>

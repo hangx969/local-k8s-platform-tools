@@ -1,0 +1,47 @@
+
+name: test_resource_policies
+policies:
+  - ../policies/common/resource/container-request-limit.yaml
+resources:
+  - test-resources/resource/test_pods.yaml
+#variables: <variable_file> (OPTIONAL)
+results:
+# Pods
+## Resources
+### Should pass
+  - policy: container-request-limit
+    rule: check-container-resources
+    resource: kyverno-test-resources
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: pass #<pass|fail|skip>
+  - policy: container-request-limit
+    rule: check-container-resources
+    resource: kyverno-test-no-cpu-limits
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: pass #<pass|fail|skip>
+### Should fail
+  - policy: container-request-limit
+    rule: check-container-resources
+    resource: kyverno-test-no-resources
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+  - policy: container-request-limit
+    rule: check-container-resources
+    resource: kyverno-test-no-requests
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+  - policy: container-request-limit
+    rule: check-container-resources
+    resource: kyverno-test-no-memory-limits
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
