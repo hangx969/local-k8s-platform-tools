@@ -31,7 +31,7 @@ results:
     #namespace: <name> (OPTIONAL)
     kind: Deployment
     #patchedResource: <path/to/patched/resource.yaml>
-    result: fail #<pass|fail|skip>
+    result: pass #<pass|fail|skip>
   - policy: disallow-latest-tag-external-images
     rule: require-image-tag-d
     resource: kyverno-test-multi-2
@@ -76,7 +76,7 @@ results:
     #namespace: <name> (OPTIONAL)
     kind: Deployment
     #patchedResource: <path/to/patched/resource.yaml>
-    result: pass #<pass|fail|skip>
+    result: fail #<pass|fail|skip>
 ### Should fail
   - policy: disallow-latest-tag-external-images
     rule: validate-image-tag-d
