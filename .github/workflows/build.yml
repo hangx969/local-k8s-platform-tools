@@ -189,9 +189,8 @@ jobs:
 
       - name: Test Kyverno Policies
         run: |
-          # Fail on error
-          set -e
           export PATH=$PATH:$KREW_ROOT/bin
+          # To set pipeline to exit on any policy assessment failed, add `set -e`
 
           # Validate policies
           kubectl kyverno test . -f kyverno-test-image.yaml
@@ -200,3 +199,11 @@ jobs:
           kubectl kyverno test . -f kyverno-test-validate-security.yaml
           kubectl kyverno test . -f kyverno-test-validate-security-baseline.yaml
           kubectl kyverno test . -f kyverno-test-traceability.yaml
+
+#TBD - Check 2 policy failed
+# │────│─────────────────────────────────────│──────────────────────│────────────────────────────────│────────│─────────────────────│
+# │ ID │ POLICY                              │ RULE                 │ RESOURCE                       │ RESULT │ REASON              │
+# │────│─────────────────────────────────────│──────────────────────│────────────────────────────────│────────│─────────────────────│
+# │ 1  │ disallow-latest-tag-external-images │ validate-image-tag-d │ Deployment/kyverno-test-latest │ Fail   │ Want pass, got fail │
+# │ 2  │ disallow-latest-tag-pod             │ validate-image-tag   │ Pod/kyverno-test-latest        │ Fail   │ Want pass, got fail │
+# │────│─────────────────────────────────────│──────────────────────│────────────────────────────────│────────│─────────────────────│
