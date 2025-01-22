@@ -38,7 +38,7 @@ spec:
         app: kyverno-test-latest
     spec:
       containers:
-      - image: abc/def:latest
+      - image: someimageregistry.domain.cn/abc/def:latest
         name: kyverno
         resources: {}
 ---

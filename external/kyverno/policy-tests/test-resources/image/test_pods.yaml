@@ -18,7 +18,7 @@ metadata:
 spec:
   containers:
     - name: web
-      image: abc/def:latest
+      image: someimageregistry.domain.cn/abc/def:latest
       ports:
         - name: web
           containerPort: 80
