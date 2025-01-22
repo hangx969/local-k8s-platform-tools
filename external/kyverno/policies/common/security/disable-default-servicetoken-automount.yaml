@@ -24,6 +24,9 @@ spec:
           - ServiceAccount
           names:
           - default
+          namespaces:
+          # Only affect this namespace for test
+          - test-kyverno-policy
     mutate:
       patchStrategicMerge:
         automountServiceAccountToken: false
