@@ -165,7 +165,7 @@ jobs:
           export VERSION=${CHART_VERSION#kyverno-chart-}
 
           helm repo add kyverno https://kyverno.github.io/kyverno/
-          helm repo update
+          helm repo update kyverno
 
           helm diff upgrade kyverno -n kyverno \
             kyverno/kyverno \
@@ -179,12 +179,12 @@ jobs:
           export VERSION=${CHART_VERSION#policy-reporter-}
 
           helm repo add policy-reporter https://kyverno.github.io/policy-reporter
-          helm repo update
+          helm repo update policy-reporter
 
           helm diff upgrade policy-reporter -n policy-reporter \
             policy-reporter/policy-reporter \
             --version $VERSION \
-            -f $DIRECTORY/external/policy-reporter/values.yaml \
+            -f ./external/policy-reporter/values.yaml \
             --kubeconfig $KUBECONFIG
 
       - name: Test Kyverno Policies
