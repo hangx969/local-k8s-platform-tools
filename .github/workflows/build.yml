@@ -8,12 +8,32 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+defaults:
+  run:
+    shell: bash
+
+env:
+  # Define kubeconfig file path and name
+  KUBECONFIG: '${{ github.workspace }}/.kube/kubeconfig'
+  # Define helm chart versions
+  nginxVersion: 'helm-chart-4.10.1'
+  configSyncerVersion: 'v0.13.2'
+  externalDNSVersion: 'external-dns-helm-chart-1.14.4'
+  certManagerVersion: 'v1.16.1'
+  oauth2proxyVersion: 'oauth2-proxy-7.7.22'
+  trivyOperatorVersion: 'trivy-operator-0.24.1'
+  externalSecretsVersion: 'helm-chart-0.10.5'
+  kyvernoVersion: 'kyverno-chart-3.2.7'
+  policyReportVersion: 'policy-reporter-2.24.2'
+  sonarqubeVersion: '10.3.0+2009'
+  capsuleVersion: 'helm-v0.6.2'
+  reloaderVersion: 'v1.0.115'
+
+
 jobs:
   build:
     runs-on: self-hosted
-    env:
-      # Define kubeconfig file path and name
-      KUBECONFIG: '${{ github.workspace }}/.kube/kubeconfig'
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -34,3 +54,29 @@ jobs:
       - name: Helm Lint Capsule Tenants
         run: |
           helm lint ./helm/capsule-tenants --values ./helm/capsule-tenants/values.yaml --kubeconfig $KUBECONFIG
+
+        - name: Diff Cert-manager
+          run: |
+            export CHART_VERSION=${{env.certManagerVersion}}
+            export VERSION=${CHART_VERSION#v}
+
+            helm repo add jetstack https://charts.jetstack.io
+            helm repo update jetstack
+
+            helm diff upgrade cert-manager -n cert-manager \
+              jetstack/cert-manager \
+              -f ./external/cert-manager/values.yaml \
+              --version $CHART_VERSION \
+              --kubeconfig $KUBECONFIG
+
+  # deploy:
+  #   runs-on: self-hosted
+  #   needs: build
+
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
+
+  #     - name: Generate kubeconfig from repository secret
+  #       run: |
+  #         mkdir -p '${{ github.workspace }}/.kube' \
