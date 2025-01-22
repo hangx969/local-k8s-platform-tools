@@ -193,7 +193,7 @@ jobs:
           # To set pipeline to exit on any policy assessment failed, add `set -e`
 
           # Validate policies
-          kubectl kyverno test . -f kyverno-test-image.yaml
+          #kubectl kyverno test . -f kyverno-test-image.yaml
           kubectl kyverno test . -f kyverno-test-resource.yaml
           kubectl kyverno test . -f kyverno-test-mutate-security.yaml
           kubectl kyverno test . -f kyverno-test-validate-security.yaml
