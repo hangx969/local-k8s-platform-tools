@@ -130,6 +130,7 @@ jobs:
         run: |
           export CHART_VERSION=${{env.oauth2proxyVersion}}
           export VERSION=${CHART_VERSION#oauth2-proxy-}
+          export REDIS_PASSWORD=$(kubectl get secret --namespace "oauth2-proxy" oauth2-proxy-redis --kubeconfig $KUBECONFIG -o jsonpath="{.data.redis-password}" | base64 -d)
 
           helm repo add oauth2-proxy https://oauth2-proxy.github.io/manifests
           helm repo update oauth2-proxy
@@ -141,6 +142,7 @@ jobs:
             --set config.clientID='${{ secrets.OAUTH2PROXY_CLIENT_ID}}' \
             --set config.clientSecret='${{ secrets.OAUTH2PROXY_CLIENT_SECRET}}' \
             --set config.cookieSecret='${{ secrets.OAUTH2PROXY_COOKIE_SECRET}}' \
+            --set global.redis.password=$REDIS_PASSWORD \
             --kubeconfig $KUBECONFIG
 
       - name: Diff Trivy Operator
