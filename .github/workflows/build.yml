@@ -1,4 +1,4 @@
-name: helm lint and diff
+name: Helm Lint and Diff
 
 on:
   push:
@@ -68,15 +68,3 @@ jobs:
               -f ./external/cert-manager/values.yaml \
               --version $CHART_VERSION \
               --kubeconfig $KUBECONFIG
-
-  # deploy:
-  #   runs-on: self-hosted
-  #   needs: build
-
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v4
-
-  #     - name: Generate kubeconfig from repository secret
-  #       run: |
-  #         mkdir -p '${{ github.workspace }}/.kube' \
