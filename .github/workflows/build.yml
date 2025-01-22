@@ -28,7 +28,7 @@ env:
   kyvernoVersion: 'kyverno-chart-3.2.7'
   policyReportVersion: 'policy-reporter-2.24.2'
   sonarqubeVersion: '10.3.0+2009'
-  capsuleVersion: 'helm-v0.6.2'
+  capsuleVersion: 'helm-v0.7.2'
   reloaderVersion: 'v1.0.115'
   nfsSubdirExternalProvisionerVersion: 'nfs-subdir-external-provisioner-4.0.18'
   harborVersion: 'v1.16.0'
@@ -227,7 +227,7 @@ jobs:
 
           helm diff upgrade capsule -n capsule-system \
             projectcapsule/capsule \
-            -f $DIRECTORY/external/capsule/values.yaml \
+            -f ./external/capsule/values.yaml \
             --version $CHART_VERSION
             --kubeconfig $KUBECONFIG
 
