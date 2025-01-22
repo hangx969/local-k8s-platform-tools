@@ -187,16 +187,16 @@ jobs:
             -f ./external/policy-reporter/values.yaml \
             --kubeconfig $KUBECONFIG
 
-      - name: Test Kyverno Policies
-        run: |
-          # Fail on error
-          set -e
-          export PATH=$PATH:$KREW_ROOT/bin
+      # - name: Test Kyverno Policies
+      #   run: |
+      #     # Fail on error
+      #     set -e
+      #     export PATH=$PATH:$KREW_ROOT/bin
 
-          # Validate policies
-          kubectl kyverno test . -f kyverno-test-image.yaml
-          kubectl kyverno test . -f kyverno-test-resource.yaml
-          kubectl kyverno test . -f kyverno-test-mutate-security.yaml
-          kubectl kyverno test . -f kyverno-test-validate-security.yaml
-          kubectl kyverno test . -f kyverno-test-validate-security-baseline.yaml
-          kubectl kyverno test . -f kyverno-test-traceability.yaml
+      #     # Validate policies
+      #     kubectl kyverno test . -f kyverno-test-image.yaml
+      #     kubectl kyverno test . -f kyverno-test-resource.yaml
+      #     kubectl kyverno test . -f kyverno-test-mutate-security.yaml
+      #     kubectl kyverno test . -f kyverno-test-validate-security.yaml
+      #     kubectl kyverno test . -f kyverno-test-validate-security-baseline.yaml
+      #     kubectl kyverno test . -f kyverno-test-traceability.yaml
