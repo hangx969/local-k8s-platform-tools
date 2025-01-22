@@ -15,7 +15,9 @@ defaults:
 env:
   # Define kubeconfig file path and name
   KUBECONFIG: '${{ github.workspace }}/.kube/kubeconfig'
+
   # Define helm chart versions
+  # The syntax of the version is keeping the same as the github release file name
   nginxVersion: 'helm-chart-4.10.1'
   configSyncerVersion: 'v0.13.2'
   externalDNSVersion: 'external-dns-helm-chart-1.14.4'
@@ -28,7 +30,8 @@ env:
   sonarqubeVersion: '10.3.0+2009'
   capsuleVersion: 'helm-v0.6.2'
   reloaderVersion: 'v1.0.115'
-
+  nfsSubdirExternalProvisionerVersion: 'nfs-subdir-external-provisioner-4.0.18'
+  harborVersion: 'v1.16.0'
 
 jobs:
   build:
@@ -199,3 +202,74 @@ jobs:
           kubectl kyverno test . -f kyverno-test-validate-security.yaml
           kubectl kyverno test . -f kyverno-test-validate-security-baseline.yaml
           kubectl kyverno test . -f kyverno-test-traceability.yaml
+
+      - name: Diff Kyverno Policy Reporter
+        run: |
+          export CHART_VERSION=${{env.sonarqubeVersion}}
+          export VERSION=${CHART_VERSION}
+
+          helm repo add sonarqube https://SonarSource.github.io/helm-chart-sonarqube
+          helm repo update sonarqube
+
+          helm diff upgrade sonarqube -n sonarqube \
+            sonarqube/sonarqube \
+            --version $VERSION \
+            -f ./external/sonarqube/values.yaml \
+            --kubeconfig $KUBECONFIG
+
+      - name: Diff Capsule
+        run: |
+          export CHART_VERSION=${{env.capsuleVersion}}
+          export VERSION=${CHART_VERSION#helm-v}
+
+          helm repo add projectcapsule https://projectcapsule.github.io/charts
+          helm repo update projectcapsule
+
+          helm diff upgrade capsule -n capsule-system \
+            projectcapsule/capsule \
+            -f $DIRECTORY/external/capsule/values.yaml \
+            --version $CHART_VERSION
+            --kubeconfig $KUBECONFIG
+
+      - name: Diff Reloader
+        run: |
+          export CHART_VERSION=${{env.reloaderVersion}}
+          export VERSION=${CHART_VERSION#v}
+
+          helm repo add stakater https://stakater.github.io/stakater-charts
+          helm repo update stakater
+
+          helm diff upgrade reloader -n reloader \
+            stakater/reloader \
+            -f ./external/reloader/values.yaml \
+            --version $VERSION /
+            --allow-unreleased /
+            --kubeconfig $KUBECONFIG
+
+      - name: Diff nfs-subdir-external-provisioner
+        run: |
+          export CHART_VERSION= ${{env.nfsSubdirExternalProvisionerVersion}}
+          export VERSION=${CHART_VERSION#nfs-subdir-external-provisioner-}
+
+          helm repo add nfs-subdir-external-provisioner https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner
+          helm update repo nfso-subdir-external-provisioner
+
+          helm diff upgrade nfs-subdir-external-provisioner -n default \
+          nfs-subdir-external-provisioner/nfs-subdir-external-provisioner \
+          --version $VERSION \
+          -f ./external/nfs-subdir-external-provisioner/values.yaml \
+          --kubeconfig $KUBECONFIG
+
+      - name: Diff Harbor
+        run: |
+          export CHART_VERSION=${{env.harborVersion}}
+          export VERSION=${CHART_VERSION#v}
+
+          helm repo add harbor https://helm.goharbor.io
+          helm repo update harbor
+
+          helm diff upgrade harbor -n harbor \
+            harbor/harbor \
+            --version $VERSION \
+            -f ./external/harbor/values.yaml \
+            --kubeconfig $KUBECONFIG
