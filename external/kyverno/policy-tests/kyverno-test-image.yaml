@@ -153,7 +153,7 @@ results:
     #namespace: <name> (OPTIONAL)
     kind: Pod
     #patchedResource: <path/to/patched/resource.yaml>
-    result: pass #<pass|fail|skip>
+    result: fail #<pass|fail|skip>
 ### Should fail
   - policy: disallow-latest-tag-pod
     rule: validate-image-tag
