@@ -8,26 +8,17 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-defaults:
-  run:
-    shell: bash
-    #working-directory: /home/s0001969/Cloud/local-k8s-platform-tools
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: self-hosted
     env:
+      # Define kubeconfig file path and name
       KUBECONFIG: '${{ github.workspace }}/.kube/kubeconfig'
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Generate kubeconfig from secret
+      - name: Generate kubeconfig from repository secret
         run: |
           mkdir -p '${{ github.workspace }}/.kube' \
           && echo '${{ secrets.HP_LOCAL_KUBECONFIG}}' | base64 -d > $KUBECONFIG
@@ -36,12 +27,10 @@ jobs:
         run: |
           helm lint ./helm/base --values ./helm/base/values.yaml --kubeconfig $KUBECONFIG
 
-      - name: Helm list harbor
+      - name: Helm Lint Cert-manager Config
         run: |
-          helm list -n harbor --kubeconfig $KUBECONFIG
+          helm lint ./helm/cert-manager-config --values ./helm/cert-manager-config/values.yaml --kubeconfig $KUBECONFIG
 
-      - name: check nodes
+      - name: Helm Lint Capsule Tenants
         run: |
-          kubectl get nodes --kubeconfig $KUBECONFIG
-
-# TODO: check github env and what is github.workspace
+          helm lint ./helm/capsule-tenants --values ./helm/capsule-tenants/values.yaml --kubeconfig $KUBECONFIG

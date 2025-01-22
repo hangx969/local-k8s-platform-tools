@@ -1,2 +1,4 @@
-teams: []
-extended_port_forward: false
+teams:
+- name: hangx
+- name: hangx-2
+extended_port_forward: true
