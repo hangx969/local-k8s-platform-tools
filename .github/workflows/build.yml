@@ -208,7 +208,7 @@ jobs:
           export CHART_VERSION=${{env.sonarqubeVersion}}
           export VERSION=${CHART_VERSION}
 
-          helm repo add sonarqube https://SonarSource.github.io/helm-chart-sonarqube
+          helm repo add sonarqube --force-update https://SonarSource.github.io/helm-chart-sonarqube
           helm repo update sonarqube
 
           helm diff upgrade sonarqube -n sonarqube \
@@ -246,7 +246,7 @@ jobs:
             --allow-unreleased /
             --kubeconfig $KUBECONFIG
 
-      - name: Diff nfs-subdir-external-provisioner
+      - name: Diff Nfs-subdir-external-provisioner
         run: |
           export CHART_VERSION= ${{env.nfsSubdirExternalProvisionerVersion}}
           export VERSION=${CHART_VERSION#nfs-subdir-external-provisioner-}
