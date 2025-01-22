@@ -137,7 +137,7 @@ jobs:
           helm diff upgrade oauth2-proxy -n oauth2-proxy \
             oauth2-proxy/oauth2-proxy \
             --version $VERSION \
-            -f $DIRECTORY/external/oauth2proxy/values.yaml \
+            -f ./external/oauth2-proxy/values.yaml \
             --set config.clientID='${{ secrets.OAUTH2PROXY_CLIENT_ID}}' \
             --set config.clientSecret='${{ secrets.OAUTH2PROXY_CLIENT_SECRET}}' \
             --set config.cookieSecret='${{ secrets.OAUTH2PROXY_COOKIE_SECRET}}' \
