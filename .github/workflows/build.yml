@@ -228,7 +228,7 @@ jobs:
           helm diff upgrade capsule -n capsule-system \
             projectcapsule/capsule \
             -f ./external/capsule/values.yaml \
-            --version $VERSION
+            --version $VERSION \
             --kubeconfig $KUBECONFIG
 
       - name: Diff Reloader
