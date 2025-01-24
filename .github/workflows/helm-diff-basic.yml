@@ -24,6 +24,7 @@ on:
     paths:
     - external/capsule/**
     - external/cert-manager/**
+    - external/config-syncer/**
     - external/external-dns/**
     - external/external-secrets/**
     - external/grafana-agent/**
