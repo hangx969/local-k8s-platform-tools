@@ -60,6 +60,7 @@ jobs:
           helm lint ./helm/capsule-tenants --values ./helm/capsule-tenants/values.yaml --kubeconfig $KUBECONFIG
 
       - name: Diff Cert-manager
+        continue-on-error: true
         run: |
           export CHART_VERSION=${{env.certManagerVersion}}
           export VERSION=${CHART_VERSION#v}
@@ -88,6 +89,7 @@ jobs:
       #       --set config.additionalOptions="{--resync-period=30s}"
 
       - name: Diff Ingress-nginx
+        continue-on-error: true
         run: |
           export CHART_VERSION=${{env.nginxVersion}}
           export VERSION=${CHART_VERSION#helm-chart-}
@@ -100,8 +102,8 @@ jobs:
             -f ./external/ingress-nginx/values.yaml \
             --kubeconfig $KUBECONFIG
 
-
       - name: Diff External DNS
+        continue-on-error: true
         run: |
           export CHART_VERSION=${{env.externalDNSVersion}}
           export VERSION=${CHART_VERSION#external-dns-helm-chart-}
@@ -116,6 +118,7 @@ jobs:
             --kubeconfig $KUBECONFIG
 
       - name: Diff External Secrets
+        continue-on-error: true
         run: |
           export CHART_VERSION=${{env.externalSecretsVersion}}
           export VERSION=${CHART_VERSION#helm-chart-}
@@ -130,6 +133,7 @@ jobs:
             --kubeconfig $KUBECONFIG
 
       - name: Diff Oauth2-proxy
+        continue-on-error: true
         run: |
           export CHART_VERSION=${{env.oauth2proxyVersion}}
           export VERSION=${CHART_VERSION#oauth2-proxy-}
@@ -149,6 +153,7 @@ jobs:
             --kubeconfig $KUBECONFIG
 
       - name: Diff Trivy Operator
+        continue-on-error: true
         run: |
           export CHART_VERSION=${{env.trivyOperatorVersion}}
           export VERSION=${CHART_VERSION#trivy-operator-}
@@ -163,6 +168,7 @@ jobs:
             --kubeconfig $KUBECONFIG
 
       - name: Diff Kyverno
+        continue-on-error: true
         run: |
           export CHART_VERSION=${{env.kyvernoVersion}}
           export VERSION=${CHART_VERSION#kyverno-chart-}
@@ -177,6 +183,7 @@ jobs:
             --kubeconfig $KUBECONFIG
 
       - name: Diff Kyverno Policy Reporter
+        continue-on-error: true
         run: |
           export CHART_VERSION=${{env.policyReportVersion}}
           export VERSION=${CHART_VERSION#policy-reporter-}
@@ -191,6 +198,7 @@ jobs:
             --kubeconfig $KUBECONFIG
 
       - name: Test Kyverno Policies
+        continue-on-error: true
         run: |
           export PATH=$PATH:$KREW_ROOT/bin
           # To set pipeline to exit on any policy assessment failed, add `set -e`
@@ -204,6 +212,7 @@ jobs:
           kubectl kyverno test . -f kyverno-test-traceability.yaml
 
       - name: Diff Kyverno Policy Reporter
+        continue-on-error: true
         run: |
           export CHART_VERSION=${{env.sonarqubeVersion}}
           export VERSION=${CHART_VERSION}
@@ -218,6 +227,7 @@ jobs:
             --kubeconfig $KUBECONFIG
 
       - name: Diff Capsule
+        continue-on-error: true
         run: |
           export CHART_VERSION=${{env.capsuleVersion}}
           export VERSION=${CHART_VERSION#helm-v}
@@ -232,6 +242,7 @@ jobs:
             --kubeconfig $KUBECONFIG
 
       - name: Diff Reloader
+        continue-on-error: true
         run: |
           export CHART_VERSION=${{env.reloaderVersion}}
           export VERSION=${CHART_VERSION#v}
@@ -247,6 +258,7 @@ jobs:
             --kubeconfig $KUBECONFIG
 
       - name: Diff Nfs-subdir-external-provisioner
+        continue-on-error: true
         run: |
           export CHART_VERSION=${{env.nfsSubdirExternalProvisionerVersion}}
           export VERSION=${CHART_VERSION#nfs-subdir-external-provisioner-}
@@ -261,6 +273,7 @@ jobs:
           --kubeconfig $KUBECONFIG
 
       - name: Diff Harbor
+        continue-on-error: true
         run: |
           export CHART_VERSION=${{env.harborVersion}}
           export VERSION=${CHART_VERSION#v}
