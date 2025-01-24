@@ -249,14 +249,14 @@ jobs:
       - name: Diff Nfs-subdir-external-provisioner
         run: |
           export CHART_VERSION= ${{env.nfsSubdirExternalProvisionerVersion}}
-          export VERSION=${CHART_VERSION#nfsSubdirExternalProvisioner-}
+          export VERSION=${CHART_VERSION#nfs-subdir-external-provisioner-}
 
           helm repo add nfs-subdir-external-provisioner https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner
           helm update repo nfso-subdir-external-provisioner
 
           helm diff upgrade nfs-subdir-external-provisioner -n default \
           nfs-subdir-external-provisioner/nfs-subdir-external-provisioner \
-          --version $VERSION \
+          --version 4.0.18 \
           -f ./external/nfs-subdir-external-provisioner/values.yaml \
           --kubeconfig $KUBECONFIG
 
