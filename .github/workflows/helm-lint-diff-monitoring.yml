@@ -1,0 +1,60 @@
+name: Helm Lint and Diff Monitoring
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  # Define kubeconfig file path and name
+  KUBECONFIG: '${{ github.workspace }}/.kube/kubeconfig'
+
+  # Define helm chart versions
+  # The syntax of the version is keeping the same as the github release file name
+  nginxVersion: 'helm-chart-4.10.1'
+  configSyncerVersion: 'v0.13.2'
+  externalDNSVersion: 'external-dns-helm-chart-1.14.4'
+  certManagerVersion: 'v1.16.1'
+  oauth2proxyVersion: 'oauth2-proxy-7.7.22'
+  trivyOperatorVersion: 'trivy-operator-0.24.1'
+  externalSecretsVersion: 'helm-chart-0.10.5'
+  kyvernoVersion: 'kyverno-chart-3.2.7'
+  policyReportVersion: 'policy-reporter-2.24.2'
+  sonarqubeVersion: '10.3.0+2009'
+  capsuleVersion: 'helm-v0.7.2'
+  reloaderVersion: 'v1.0.115'
+  nfsSubdirExternalProvisionerVersion: 'nfs-subdir-external-provisioner-4.0.18'
+  harborVersion: 'v1.16.0'
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate kubeconfig from repository secret
+        run: |
+          mkdir -p '${{ github.workspace }}/.kube' \
+          && echo '${{ secrets.HP_LOCAL_KUBECONFIG}}' | base64 -d > $KUBECONFIG \
+          && chmod 600 $KUBECONFIG
+
+      - name: Helm Lint Base
+        run: |
+          helm lint ./helm/base --values ./helm/base/values.yaml --kubeconfig $KUBECONFIG
+
+      - name: Helm Lint Cert-manager Config
+        run: |
+          helm lint ./helm/cert-manager-config --values ./helm/cert-manager-config/values.yaml --kubeconfig $KUBECONFIG
+
+      - name: Helm Lint Capsule Tenants
+        run: |
+          helm lint ./helm/capsule-tenants --values ./helm/capsule-tenants/values.yaml --kubeconfig $KUBECONFIG
