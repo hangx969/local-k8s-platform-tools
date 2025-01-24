@@ -1,10 +1,25 @@
-name: Helm Lint and Diff Monitoring
+name: Helm Diff on monitoring tools
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+    - main
+    paths:
+    - external/grafana-agent/**
+    - external/kube-prometheus-stack/**
+    - external/loki/**
+    - external/promtail/**
+    - external/tempo/**
   pull_request:
-    branches: [ "main" ]
+    branches:
+    - main
+    paths:
+    - external/grafana-agent/**
+    - external/kube-prometheus-stack/**
+    - external/loki/**
+    - external/promtail/**
+    - external/tempo/**
+
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 

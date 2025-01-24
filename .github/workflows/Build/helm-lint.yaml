@@ -1,0 +1,59 @@
+name: Helm Lint on local helm charts
+
+on:
+  push:
+    branches:
+    - main
+    paths:
+    - helm/**
+  pull_request:
+    branches:
+    - main
+    paths:
+    - helm/**
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  helm-lint:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Helm Lint Base
+        run: |
+          helm lint ./helm/base --values ./helm/base/values.yaml
+
+      - name: Helm Lint Cert-manager Config
+        run: |
+          helm lint ./helm/cert-manager-config --values ./helm/cert-manager-config/values.yaml
+
+      - name: Helm Lint Capsule Tenants
+        run: |
+          helm lint ./helm/capsule-tenants --values ./helm/capsule-tenants/values.yaml
+
+    - name: Helm Lint grafana-dashboards
+      run: |
+        helm lint ./helm/grafana-dashboards --values ./helm/grafana-dashboards/values.yaml
+
+    - name: Helm Lint grafana-datasources
+      run: |
+        helm lint ./helm/grafana-datasources --values ./helm/grafana-datasources/values.yaml
+
+    - name: Helm Lint kafka
+      run: |
+        helm lint ./helm/kafka --values ./helm/kafka/values.yaml
+
+    - name: Helm Lint kafka-ui-config
+      run: |
+        helm lint ./helm/kafka-ui-config --values ./helm/kafka-ui-config/values.yaml
+
+    - name: Helm Lint kube-prometheus-stack-alert-config
+      run: |
+        helm lint ./helm/kube-prometheus-stack-alert-config --values ./helm/kube-prometheus-stack-alert-config/values.yaml
