@@ -38,22 +38,22 @@ jobs:
         run: |
           helm lint ./helm/capsule-tenants --values ./helm/capsule-tenants/values.yaml
 
-    - name: Helm Lint grafana-dashboards
-      run: |
-        helm lint ./helm/grafana-dashboards --values ./helm/grafana-dashboards/values.yaml
+      - name: Helm Lint grafana-dashboards
+        run: |
+          helm lint ./helm/grafana-dashboards --values ./helm/grafana-dashboards/values.yaml
 
-    - name: Helm Lint grafana-datasources
-      run: |
-        helm lint ./helm/grafana-datasources --values ./helm/grafana-datasources/values.yaml
+      - name: Helm Lint grafana-datasources
+        run: |
+          helm lint ./helm/grafana-datasources --values ./helm/grafana-datasources/values.yaml
 
-    - name: Helm Lint kafka
-      run: |
-        helm lint ./helm/kafka --values ./helm/kafka/values.yaml
+      - name: Helm Lint kafka
+        run: |
+          helm lint ./helm/kafka --values ./helm/kafka/values.yaml
 
-    - name: Helm Lint kafka-ui-config
-      run: |
-        helm lint ./helm/kafka-ui-config --values ./helm/kafka-ui-config/values.yaml
+      - name: Helm Lint kafka-ui-config
+        run: |
+          helm lint ./helm/kafka-ui-config --values ./helm/kafka-ui-config/values.yaml
 
-    - name: Helm Lint kube-prometheus-stack-alert-config
-      run: |
-        helm lint ./helm/kube-prometheus-stack-alert-config --values ./helm/kube-prometheus-stack-alert-config/values.yaml
+      - name: Helm Lint kube-prometheus-stack-alert-config
+        run: |
+          helm lint ./helm/kube-prometheus-stack-alert-config --values ./helm/kube-prometheus-stack-alert-config/values.yaml
