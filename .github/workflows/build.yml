@@ -254,7 +254,7 @@ jobs:
           helm repo add nfs-subdir-external-provisioner https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner
           helm repo update nfs-subdir-external-provisioner
 
-          helm diff upgrade nfs-subdir-external-provisioner -n default \
+          helm diff upgrade nfs-provisioner -n default \
           nfs-subdir-external-provisioner/nfs-subdir-external-provisioner \
           --version $VERSION \
           -f ./external/nfs-subdir-external-provisioner/values.yaml \
