@@ -5,8 +5,10 @@ on:
     branches:
     - main
     paths:
+    - .github/workflows/helm-diff-basic.yml
     - external/capsule/**
     - external/cert-manager/**
+    - external/config-syncer/**
     - external/external-dns/**
     - external/external-secrets/**
     - external/grafana-agent/**
@@ -22,6 +24,7 @@ on:
     branches:
     - main
     paths:
+    - .github/workflows/helm-diff-basic.yml
     - external/capsule/**
     - external/cert-manager/**
     - external/config-syncer/**

@@ -5,6 +5,7 @@ on:
     branches:
     - main
     paths:
+    - .github/workflows/helm-diff-monitoring.yml
     - external/grafana-agent/**
     - external/kube-prometheus-stack/**
     - external/loki/**
@@ -14,6 +15,7 @@ on:
     branches:
     - main
     paths:
+    - .github/workflows/helm-diff-monitoring.yml
     - external/grafana-agent/**
     - external/kube-prometheus-stack/**
     - external/loki/**
