@@ -60,7 +60,7 @@ env:
   policyReportVersion: 'policy-reporter-2.24.2'
   reloaderVersion: 'v1.0.115'
   trivyOperatorVersion: 'trivy-operator-0.24.1'
-  # configSyncerVersion: 'v0.13.2'
+  configSyncerVersion: 'v0.13.2'
 
 jobs:
   build:
