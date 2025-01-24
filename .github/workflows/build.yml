@@ -242,8 +242,8 @@ jobs:
           helm diff upgrade reloader -n reloader \
             stakater/reloader \
             -f ./external/reloader/values.yaml \
-            --version $VERSION /
-            --allow-unreleased /
+            --version $VERSION \
+            --allow-unreleased \
             --kubeconfig $KUBECONFIG
 
       - name: Diff Nfs-subdir-external-provisioner
