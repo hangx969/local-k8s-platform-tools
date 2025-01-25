@@ -67,7 +67,7 @@ env:
   configSyncerVersion: 'v0.13.2'
 
 jobs:
-  build:
+  helm-diff-basic:
     runs-on: self-hosted
 
     steps:

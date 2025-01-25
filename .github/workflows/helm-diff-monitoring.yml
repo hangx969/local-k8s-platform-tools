@@ -51,7 +51,7 @@ env:
   harborVersion: 'v1.16.0'
 
 jobs:
-  build:
+  helm-diff-monitoring:
     runs-on: self-hosted
 
     steps:
