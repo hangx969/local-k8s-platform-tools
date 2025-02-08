@@ -6,21 +6,21 @@ on:
     - main
     paths:
     - 'monitoring/**'
-    - '.github/workflows/build-monitoring.yml'
+    - '.github/workflows/build-monitoring-helm-charts.yml'
     - '.github/workflows/workflow-monitoring.yml'
   pull_request:
     branches:
     - main
     paths:
     - 'monitoring/**'
-    - '.github/workflows/build-monitoring.yml'
+    - '.github/workflows/build-monitoring-helm-charts.yml'
     - '.github/workflows/workflow-monitoring.yml'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
-  build-monitoring:
-    uses: ./.github/workflows/build-monitoring.yml
+  build-monitoring-helm-charts:
+    uses: ./.github/workflows/build-monitoring-helm-charts.yml
     secrets: inherit
 
   # deploy-monitoring:

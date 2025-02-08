@@ -6,19 +6,19 @@ on:
     - main
     paths:
     - 'kafka/**'
-    - '.github/workflows/build-kafka.yml'
+    - '.github/workflows/build-kafka-helm-charts.yml'
     - '.github/workflows/workflow-kafka.yml'
   pull_request:
     branches:
     - main
     paths:
     - 'kafka/**'
-    - '.github/workflows/build-kafka.yml'
+    - '.github/workflows/build-kafka-helm-charts.yml'
     - '.github/workflows/workflow-kafka.yml'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
-  build-kafka:
-    uses: ./.github/workflows/build-kafka.yml
+  build-kafka-helm-charts:
+    uses: ./.github/workflows/build-kafka-helm-charts.yml
     secrets: inherit
