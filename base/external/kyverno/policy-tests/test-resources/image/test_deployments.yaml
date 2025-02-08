@@ -1,0 +1,162 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: kyverno-test-latest-external
+  name: kyverno-test-latest-external
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kyverno-test-latest-external
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: kyverno-test-latest-external
+    spec:
+      containers:
+      - image: kyverno/kyverno:latest
+        name: kyverno
+        resources: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: kyverno-test-latest
+  name: kyverno-test-latest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kyverno-test-latest
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: kyverno-test-latest
+    spec:
+      containers:
+      - image: some-image-registry.io/abc/def:latest
+        name: kyverno
+        resources: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: kyverno-test-versioned
+  name: kyverno-test-versioned
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kyverno-test-versioned
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: kyverno-test-versioned
+    spec:
+      containers:
+      - image: totoro/calcifer-kafka-consumer:20230908.2
+        name: kyverno
+        resources: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: kyverno-test-versioned-external
+  name: kyverno-test-versioned-external
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kyverno-test-versioned-external
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: kyverno-test-versioned-external
+    spec:
+      containers:
+      - image: kyverno/kyverno:0.3
+        name: kyverno
+        resources: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: kyverno-test-no-tag
+  name: kyverno-test-no-tag
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kyverno-test-no-tag
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: kyverno-test-no-tag
+    spec:
+      containers:
+      - image: kyverno/kyverno
+        name: kyverno
+        resources: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: kyverno-test-multi-1
+  name: kyverno-test-multi-1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kyverno-test-multi-1
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: kyverno-test-multi-1
+    spec:
+      containers:
+      - image: kyverno/kyverno:1.0
+        name: kyverno
+        resources: {}
+      - image: kyverno/kyverno
+        name: kyverno
+        resources: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: kyverno-test-multi-2
+  name: kyverno-test-multi-2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kyverno-test-multi-2
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: kyverno-test-multi-2
+    spec:
+      containers:
+      - image: kyverno/kyverno:1.0
+        name: kyverno
+        resources: {}
+      - image: kyverno/kyverno:latest
+        name: kyverno
+        resources: {}
+      - image: totoro/calcifer-kafka-consumer:20230908.2
+        name: kyverno
+        resources: {}

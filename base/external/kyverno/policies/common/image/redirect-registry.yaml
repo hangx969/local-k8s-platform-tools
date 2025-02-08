@@ -1,0 +1,115 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: replace-image-registry
+  annotations:
+    policies.kyverno.io/title: Replace Image Registry
+    policies.kyverno.io/category: Image
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/subject: Pod
+    pod-policies.kyverno.io/autogen-controllers: none
+    policies.kyverno.io/description: >-
+      Using the Azure China mirror for container registries can improve the overall performance of container image pulls.
+spec:
+  rules:
+    - name: mutate-registry
+      match:
+        any:
+          - resources:
+              namespaces:
+                # Only affect this namespace for test
+                - test-kyverno-policy
+              kinds:
+                - Pod
+              operations:
+                - CREATE
+                - UPDATE
+      context:
+        # https://github.com/Azure/container-service-for-azure-china/blob/master/aks/README.md#22-container-registry-proxy
+        - name: mirror
+          variable:
+            value:
+              docker.io: dockerhub.azk8s.cn
+              mcr.microsoft.com: mcr.azk8s.cn
+              gcr.io: gcr.azk8s.cn
+              us.gcr.io: usgcr.azk8s.cn
+              k8s.gcr.io: k8sgcr.azk8s.cn
+              registry.k8s.io: registryk8s.azk8s.cn
+              quay.io: cronepilot.azurecr.cn/quay.io
+              ghcr.io: cronepilot.azurecr.cn/ghcr.io
+              public.ecr.aws: cronepilot.azurecr.cn/public.ecr.aws
+        - name: default_prefix
+          variable:
+            value:
+              docker.io: library/
+      mutate:
+        foreach:
+          - list: "request.object.spec.initContainers[]"
+            context:
+              - name: image
+                variable:
+                  value: "{{ lookup(images.initContainers, element.name) }}"
+            preconditions:
+              all:
+                - key: "{{ image.registry }}"
+                  operator: AllIn
+                  value: "{{ keys(mirror) }}"
+                - key: "{{ image.path }}"
+                  operator: NotEquals
+                  value: "*/*"
+            patchesJson6902: |-
+              - op: replace
+                path: /spec/initContainers/{{elementIndex}}/image
+                value: "{{ lookup(mirror, image.registry) }}/{{ lookup(default_prefix, image.registry) }}{{ image.path }}:{{ image.tag || 'latest' }}"
+          - list: "request.object.spec.containers[]"
+            context:
+              - name: image
+                variable:
+                  value: "{{ lookup(images.containers, element.name) }}"
+            preconditions:
+              all:
+                - key: "{{ image.registry }}"
+                  operator: AllIn
+                  value: "{{ keys(mirror) }}"
+                - key: "{{ image.path }}"
+                  operator: NotEquals
+                  value: "*/*"
+            patchesJson6902: |-
+              - op: replace
+                path: /spec/containers/{{elementIndex}}/image
+                value: "{{ lookup(mirror, image.registry) }}/{{ lookup(default_prefix, image.registry) }}{{ image.path }}:{{ image.tag || 'latest' }}"
+          # docker.io full images
+          - list: "request.object.spec.initContainers[]"
+            context:
+              - name: image
+                variable:
+                  value: "{{ lookup(images.initContainers, element.name) }}"
+            preconditions:
+              all:
+                - key: "{{ image.registry }}"
+                  operator: AllIn
+                  value: "{{ keys(mirror) }}"
+                - key: "{{ image.path }}"
+                  operator: Equals
+                  value: "*/*"
+            patchesJson6902: |-
+              - op: replace
+                path: /spec/initContainers/{{elementIndex}}/image
+                value: "{{ lookup(mirror, image.registry) }}/{{ image.path }}:{{ image.tag || 'latest' }}"
+          - list: "request.object.spec.containers[]"
+            context:
+              - name: image
+                variable:
+                  value: "{{ lookup(images.containers, element.name) }}"
+            preconditions:
+              all:
+                - key: "{{ image.registry }}"
+                  operator: AllIn
+                  value: "{{ keys(mirror) }}"
+                - key: "{{ image.path }}"
+                  operator: Equals
+                  value: "*/*"
+            patchesJson6902: |-
+              - op: replace
+                path: /spec/containers/{{elementIndex}}/image
+                value: "{{ lookup(mirror, image.registry) }}/{{ image.path }}:{{ image.tag || 'latest' }}"

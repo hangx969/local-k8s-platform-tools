@@ -1,0 +1,6 @@
+apiVersion: v2
+name: grafana-external-datasources
+description: Custom Helm chart for external grafana datasources
+type: application
+version: 1.0.0
+appVersion: "1.0.0"

@@ -1,0 +1,28 @@
+name: Workflow Base
+
+on:
+  push:
+    branches:
+    - main
+    paths:
+    - 'base/**'
+    - '.github/workflows/build-base.yml'
+    - '.github/workflows/workflow-base.yml'
+  pull_request:
+    branches:
+    - main
+    paths:
+    - 'base/**'
+    - '.github/workflows/build-base.yml'
+    - '.github/workflows/workflow-base.yml'
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build-base:
+    uses: ./.github/workflows/build-base.yml
+    secrets: inherit
+
+  # deploy-base:
+  #   needs: build-base
+  #   uses: ./.github/workflows/deploy-base.yml

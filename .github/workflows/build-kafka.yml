@@ -1,0 +1,95 @@
+name: Build Kafka
+
+on:
+  workflow_call:
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  # Define kubeconfig file path and name
+  KUBECONFIG: '${{ github.workspace }}/.kube/kubeconfig'
+
+  # Define helm chart versions
+  # The syntax of the version is keeping the same as the github release file name
+  strimziVersion: '0.42.0'
+  kafkaUiVersion: 'charts/kafka-ui-0.7.6'
+  apicurioVersion: '2.6.6.Final'
+
+jobs:
+  helm-lint-and-diff:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate kubeconfig from repository secret
+        run: |
+          mkdir -p '${{ github.workspace }}/.kube' \
+          && echo '${{ secrets.HP_LOCAL_KUBECONFIG}}' | base64 -d > $KUBECONFIG \
+          && chmod 600 $KUBECONFIG
+
+      ###===========helm lint============###
+      - name: Helm Lint and template Kafka Config
+        run: |
+          helm lint ./kafka/helm-charts/kafka-config \
+          --values ./kafka/helm-charts/kafka-config/values.yaml
+
+          # helm template ./kafka/helm-charts/kafka-config \
+          # --values ./kafka/helm-charts/kafka-config/values.yaml \
+          # --dry-run \
+          # --debug
+
+      - name: Helm Lint and template kafka-ui-config
+        run: |
+          helm lint ./kafka/helm-charts/kafka-ui-config \
+          --values ./kafka/helm-charts/kafka-ui-config/values.yaml
+
+          # helm template ./kafka/helm-charts/kafka-ui-config \
+          # --values ./kafka/helm-charts/kafka-ui-config/values.yaml \
+          # --dry-run \
+          # --debug
+
+      - name: Helm Lint and template apicurio
+        run: |
+          helm lint ./kafka/helm-charts/apicurio \
+          --values ./kafka/helm-charts/apicurio/values.yaml
+
+          # helm template ./kafka/helm-charts/apicurio \
+          # --values ./kafka/helm-charts/apicurio/values.yaml \
+          # --dry-run \
+          # --debug
+
+      ###===========helm diff===============###
+      - name: Diff strimzi-kafka-operator
+        run: |
+          export CHART_VERSION=${{env.strimziVersion}}
+          export VERSION=${CHART_VERSION}
+
+          helm repo add strimzi https://strimzi.io/charts/
+          helm repo update strimzi
+
+          helm diff upgrade strimzi-kafka-operator -n kafka \
+            strimzi/strimzi-kafka-operator \
+            -f ./kafka/external/strimzi-kafka-operator/values.yaml \
+            --version $VERSION \
+            --kubeconfig $KUBECONFIG
+
+      - name: Diff kafka-ui
+        run: |
+          export CHART_VERSION=${{env.kafkaUiVersion}}
+          export VERSION=${CHART_VERSION#charts/kafka-ui-}
+
+          helm repo add kafka-ui https://provectus.github.io/kafka-ui-charts
+          helm repo update kafka-ui
+
+          helm diff upgrade kafka-ui -n kafka \
+            kafka-ui/kafka-ui \
+            -f ./kafka/external/kafka-ui/values.yaml \
+            --version $VERSION \
+            --kubeconfig $KUBECONFIG

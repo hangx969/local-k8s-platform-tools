@@ -1,0 +1,163 @@
+name: Build Monitoring
+
+on:
+  workflow_call:
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  # Define kubeconfig file path and name
+  KUBECONFIG: '${{ github.workspace }}/.kube/kubeconfig'
+
+  # Define helm chart versions
+  # The syntax of the version is keeping the same as the github release file name
+  lokiVersion: 'helm-loki-5.48.0'
+  promtailVersion: 'promtail-6.15.5'
+  kubePrometheusStackVersion: 'kube-prometheus-stack-59.1.0'
+  tempoVersion: 'tempo-1.8.0'
+  grafanaAgentVersion: 'grafana-agent-0.42.0'
+
+jobs:
+  helm-lint-and-diff:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate kubeconfig from repository secret
+        run: |
+          mkdir -p '${{ github.workspace }}/.kube' \
+          && echo '${{ secrets.HP_LOCAL_KUBECONFIG}}' | base64 -d > $KUBECONFIG \
+          && chmod 600 $KUBECONFIG
+
+      ###===========helm lint============###
+      - name: Helm Lint and template Grafana Dashboards
+        run: |
+          helm lint ./monitoring/helm-charts/grafana-dashboards \
+          --values ./monitoring/helm-charts/grafana-dashboards/values.yaml
+
+          # helm template ./monitoring/helm-charts/grafana-dashboards \
+          # --values ./monitoring/helm-charts/grafana-dashboards/values.yaml \
+          # --dry-run \
+          # --debug
+
+      - name: Helm Lint prometheus-rules
+        run: |
+          helm lint ./monitoring/helm-charts/prometheus-rules \
+          --values ./monitoring/helm-charts/prometheus-rules/values.yaml
+
+          # helm template ./monitoring/helm-charts/prometheus-rules \
+          # --values ./monitoring/helm-charts/prometheus-rules/values.yaml \
+          # --dry-run \
+          # --debug
+
+    ## Not installed yet. Uncomment it after install it.
+    # - name: Helm Lint and template Grafana Datasources
+    #   run: |
+    #     helm lint ./monitoring/helm-charts/grafana-datasources \
+    #     --values ./monitoring/helm-charts/grafana-datasources/values.yaml
+
+    #     helm template ./monitoring/helm-charts/grafana-datasources \
+    #     --values ./monitoring/helm-charts/grafana-datasources/values.yaml \
+    #     --dry-run \
+    #     --debug
+
+
+      ###===========helm diff===============###
+      - name: Diff grafana-agent
+        run: |
+          export CHART_VERSION=${{env.grafanaAgentVersion}}
+          export VERSION=${CHART_VERSION#grafana-agent-}
+
+          helm repo add grafana https://grafana.github.io/helm-charts
+          helm repo update grafana
+
+          helm diff upgrade grafana-agent -n monitoring \
+            grafana/grafana-agent \
+            -f ./monitoring/external/grafana-agent/values.yaml \
+            --version $VERSION \
+            --kubeconfig $KUBECONFIG
+
+      - name: Diff kube-prometheus-stack
+        run: |
+          export CHART_VERSION=${{env.kubePrometheusStackVersion}}
+          export VERSION=${CHART_VERSION#kube-prometheus-stack-}
+
+          helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+          helm repo update prometheus-community
+
+          helm diff upgrade kube-prometheus-stack -n monitoring \
+            prometheus-community/kube-prometheus-stack \
+            -f ./monitoring/external/kube-prometheus-stack/values.yaml \
+            --version $VERSION \
+            --set grafana.adminPassword='${{ secrets.GRAFANA_ADMIN_PASSWORD}}' \
+            --kubeconfig $KUBECONFIG
+
+      - name: Diff prometheus-rules helm chart
+        run: |
+          helm diff upgrade commoninfra-kube-prometheus-config -n monitoring \
+            ./monitoring/helm-charts/prometheus-rules \
+            -f ./monitoring/helm-charts/prometheus-rules/values.yaml \
+            --kubeconfig $KUBECONFIG
+
+      - name: Diff grafana-dashboards helm chart
+        run: |
+          helm diff upgrade grafana-dashboards-config -n monitoring \
+            ./monitoring/helm-charts/grafana-dashboards \
+            -f ./monitoring/helm-charts/grafana-dashboards/values.yaml \
+            --kubeconfig $KUBECONFIG
+
+      # - name: Diff grafana-datasources helm chart
+      #   run: |
+      #     helm diff upgrade commoninfra-grafana-external-datasource -n monitoring \
+      #       ./monitoring/helm-charts/grafana-datasources \
+      #       -f ./monitoring/external/grafana-datasources/values.yaml \
+      #       --kubeconfig $KUBECONFIG
+
+      - name: Diff loki
+        run: |
+          export CHART_VERSION=${{env.lokiVersion}}
+          export VERSION=${CHART_VERSION#helm-loki-}
+
+          helm repo add grafana https://grafana.github.io/helm-charts
+          helm repo update grafana
+
+          helm diff upgrade loki -n monitoring \
+            grafana/loki \
+            -f ./monitoring/external/loki/values.yaml \
+            --version $VERSION \
+            --kubeconfig $KUBECONFIG
+
+      - name: Diff promtail
+        run: |
+          export CHART_VERSION=${{env.promtailVersion}}
+          export VERSION=${CHART_VERSION#promtail-}
+
+          helm repo add grafana https://grafana.github.io/helm-charts
+          helm repo update grafana
+
+          helm diff upgrade promtail -n monitoring \
+            grafana/promtail \
+            -f ./monitoring/external/promtail/values.yaml \
+            --version $VERSION \
+            --kubeconfig $KUBECONFIG
+
+      - name: Diff tempo
+        run: |
+          export CHART_VERSION=${{env.tempoVersion}}
+          export VERSION=${CHART_VERSION#tempo-}
+
+          helm repo add grafana https://grafana.github.io/helm-charts
+          helm repo update grafana
+
+          helm diff upgrade tempo -n monitoring \
+            grafana/tempo \
+            -f ./monitoring/external/tempo/values.yaml \
+            --version $VERSION \
+            --kubeconfig $KUBECONFIG

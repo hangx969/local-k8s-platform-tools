@@ -1,0 +1,28 @@
+name: Workflow Monitoring
+
+on:
+  push:
+    branches:
+    - main
+    paths:
+    - 'monitoring/**'
+    - '.github/workflows/build-monitoring.yml'
+    - '.github/workflows/workflow-monitoring.yml'
+  pull_request:
+    branches:
+    - main
+    paths:
+    - 'monitoring/**'
+    - '.github/workflows/build-monitoring.yml'
+    - '.github/workflows/workflow-monitoring.yml'
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build-monitoring:
+    uses: ./.github/workflows/build-monitoring.yml
+    secrets: inherit
+
+  # deploy-monitoring:
+  #   needs: build-monitoring
+  #   uses: ./.github/workflows/deploy-monitoring.yml
