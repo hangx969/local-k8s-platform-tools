@@ -1,4 +1,4 @@
-name: Workflow Monitoring
+name: Workflow Monitoring Helm Charts
 
 on:
   push:

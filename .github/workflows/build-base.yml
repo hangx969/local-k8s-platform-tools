@@ -1,4 +1,4 @@
-name: Build Base
+name: Build Base Helm Charts
 
 on:
   workflow_call:

@@ -1,4 +1,4 @@
-name: Build Kafka
+name: Build Kafka Helm Charts
 
 on:
   workflow_call:

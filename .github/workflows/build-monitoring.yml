@@ -1,4 +1,4 @@
-name: Build Monitoring
+name: Build Monitoring Helm Charts
 
 on:
   workflow_call:

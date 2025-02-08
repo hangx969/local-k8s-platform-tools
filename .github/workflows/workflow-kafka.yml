@@ -1,4 +1,4 @@
-name: Workflow Kafka
+name: Workflow Kafka Helm Charts
 
 on:
   push:

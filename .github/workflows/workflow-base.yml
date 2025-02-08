@@ -1,4 +1,4 @@
-name: Workflow Base
+name: Workflow Base Helm Charts
 
 on:
   push:
