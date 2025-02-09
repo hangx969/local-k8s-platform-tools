@@ -48,8 +48,11 @@ jobs:
       # Rename the helm chart file name to a fixed pattern
       - name: Rename Helm Chart
         run: |
-          ls ${{ env.download_dir }}
-          mv ${{ env.download_dir }}/*.tgz '${{ env.download_dir }}/${{ env.chart_file_name }}'
+          if test -e '${{ env.download_dir }}/${{ env.chart_file_name }}'; then
+            echo "Helm chart file name is already the wanted name, skip renaming"
+          else
+            mv ${{ env.download_dir }}/*.tgz '${{ env.download_dir }}/${{ env.chart_file_name }}'
+          fi
 
       - name: Push Helm Chart to Harbor
         run: |
