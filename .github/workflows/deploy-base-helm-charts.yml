@@ -224,7 +224,6 @@ jobs:
             -f ./base/external/reloader/values.yaml \
             --version $helmChartVersion \
             --history-max 5 \
-            --allow-unreleased \
             --insecure-skip-tls-verify \
             --kubeconfig $KUBECONFIG
 
