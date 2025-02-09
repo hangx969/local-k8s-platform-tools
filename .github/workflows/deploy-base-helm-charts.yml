@@ -64,182 +64,197 @@ jobs:
           helm upgrade -i capsule -n capsule-system \
             oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
             --history-max 5 \
+            # --atomic \
+            # --cleanup-on-fail \
+            #--dependency-update \
             -f ./base/external/capsule/values.yaml \
             --version $helmChartVersion \
             --insecure-skip-tls-verify \
             --kubeconfig $KUBECONFIG
 
-      # - name: Upgrade Cert-manager
-      #   run: |
-      #     export helmChartVersion=${{env.certManagerVersion}}
-      #     export helmRepoName='jetstack'
-      #     export helmChartName='cert-manager'
+      - name: Upgrade Cert-manager
+        run: |
+          export helmChartVersion=${{env.certManagerVersion}}
+          export helmRepoName='jetstack'
+          export helmChartName='cert-manager'
 
-      #     helm diff upgrade cert-manager -n cert-manager \
-      #       oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
-      #       -f ./base/external/cert-manager/values.yaml \
-      #       --version $helmChartVersion \
-      #       --insecure-skip-tls-verify \
-      #       --kubeconfig $KUBECONFIG
+          helm upgrade -i cert-manager -n cert-manager \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
+            --history-max 5 \
+            -f ./base/external/cert-manager/values.yaml \
+            --version $helmChartVersion \
+            --insecure-skip-tls-verify \
+            --kubeconfig $KUBECONFIG
 
-      # - name: Diff Config-syncer
-      #   run: |
-      #     export helmChartVersion=${{env.configSyncerVersion}}
-      #     export helmRepoName='appscode'
-      #     export helmChartName='kubed'
+      - name: Upgrade Config-syncer
+        run: |
+          export helmChartVersion=${{env.configSyncerVersion}}
+          export helmRepoName='appscode'
+          export helmChartName='kubed'
 
-      #     helm diff upgrade config-syncer -n config-syncer \
-      #       oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
-      #       --version $helmChartVersion \
-      #       -f ./base/external/config-syncer/values.yaml \
-      #       --insecure-skip-tls-verify \
-      #       --kubeconfig $KUBECONFIG
+          helm upgrade -i config-syncer -n config-syncer \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
+            --version $helmChartVersion \
+            --history-max 5 \
+            -f ./base/external/config-syncer/values.yaml \
+            --insecure-skip-tls-verify \
+            --kubeconfig $KUBECONFIG
 
-      # - name: Diff Ingress-nginx
-      #   run: |
-      #     export helmChartVersion=${{env.nginxVersion}}
-      #     export helmRepoName='ingress-nginx'
-      #     export helmChartName='ingress-nginx'
+      - name: Upgrade Ingress-nginx
+        run: |
+          export helmChartVersion=${{env.nginxVersion}}
+          export helmRepoName='ingress-nginx'
+          export helmChartName='ingress-nginx'
 
-      #     helm diff upgrade ingress-nginx -n ingress-nginx \
-      #       oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
-      #       --version $helmChartVersion \
-      #       -f ./base/external/ingress-nginx/values.yaml \
-      #       --insecure-skip-tls-verify \
-      #       --kubeconfig $KUBECONFIG
+          helm upgrade -i ingress-nginx -n ingress-nginx \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
+            --version $helmChartVersion \
+            --history-max 5 \
+            -f ./base/external/ingress-nginx/values.yaml \
+            --insecure-skip-tls-verify \
+            --kubeconfig $KUBECONFIG
 
-      # - name: Diff External DNS
-      #   run: |
-      #     export helmChartVersion=${{env.externalDNSVersion}}
-      #     export helmRepoName='external-dns'
-      #     export helmChartName='external-dns'
+      - name: Upgrade External DNS
+        run: |
+          export helmChartVersion=${{env.externalDNSVersion}}
+          export helmRepoName='external-dns'
+          export helmChartName='external-dns'
 
-      #     helm diff upgrade external-dns -n external-dns \
-      #       oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
-      #       --version $helmChartVersion \
-      #       -f ./base/external/external-dns/values.yaml \
-      #       --insecure-skip-tls-verify \
-      #       --kubeconfig $KUBECONFIG
+          helm upgrade -i external-dns -n external-dns \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
+            --version $helmChartVersion \
+            --history-max 5 \
+            -f ./base/external/external-dns/values.yaml \
+            --insecure-skip-tls-verify \
+            --kubeconfig $KUBECONFIG
 
-      # - name: Diff External Secrets
-      #   run: |
-      #     export helmChartVersion=${{env.externalSecretsVersion}}
-      #     export helmRepoName='external-secrets'
-      #     export helmChartName='external-secrets'
+      - name: Upgrade External Secrets
+        run: |
+          export helmChartVersion=${{env.externalSecretsVersion}}
+          export helmRepoName='external-secrets'
+          export helmChartName='external-secrets'
 
-      #     helm diff upgrade external-secrets -n external-secrets \
-      #       oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
-      #       --version $helmChartVersion \
-      #       -f ./base/external/external-secrets/values.yaml \
-      #       --insecure-skip-tls-verify \
-      #       --kubeconfig $KUBECONFIG
+          helm upgrade -i external-secrets -n external-secrets \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
+            --version $helmChartVersion \
+            --history-max 5 \
+            -f ./base/external/external-secrets/values.yaml \
+            --insecure-skip-tls-verify \
+            --kubeconfig $KUBECONFIG
 
-      # - name: Diff Oauth2-proxy
-      #   run: |
-      #     export helmChartVersion=${{env.oauth2proxyVersion}}
-      #     export helmRepoName='oauth2-proxy'
-      #     export helmChartName='oauth2-proxy'
-      #     export REDIS_PASSWORD=$(kubectl get secret --namespace "oauth2-proxy" oauth2-proxy-redis --kubeconfig $KUBECONFIG -o jsonpath="{.data.redis-password}" | base64 -d)
+      - name: Upgrade Oauth2-proxy
+        run: |
+          export helmChartVersion=${{env.oauth2proxyVersion}}
+          export helmRepoName='oauth2-proxy'
+          export helmChartName='oauth2-proxy'
+          export REDIS_PASSWORD=$(kubectl get secret --namespace "oauth2-proxy" oauth2-proxy-redis --kubeconfig $KUBECONFIG -o jsonpath="{.data.redis-password}" | base64 -d)
 
-      #     helm diff upgrade oauth2-proxy -n oauth2-proxy \
-      #       oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
-      #       --version $helmChartVersion \
-      #       -f ./base/external/oauth2-proxy/values.yaml \
-      #       --set config.clientID='${{ secrets.OAUTH2PROXY_CLIENT_ID}}' \
-      #       --set config.clientSecret='${{ secrets.OAUTH2PROXY_CLIENT_SECRET}}' \
-      #       --set config.cookieSecret='${{ secrets.OAUTH2PROXY_COOKIE_SECRET}}' \
-      #       --set global.redis.password=$REDIS_PASSWORD \
-      #       --insecure-skip-tls-verify \
-      #       --kubeconfig $KUBECONFIG
+          helm upgrade -i oauth2-proxy -n oauth2-proxy \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
+            --version $helmChartVersion \
+            --history-max 5 \
+            -f ./base/external/oauth2-proxy/values.yaml \
+            --set config.clientID='${{ secrets.OAUTH2PROXY_CLIENT_ID}}' \
+            --set config.clientSecret='${{ secrets.OAUTH2PROXY_CLIENT_SECRET}}' \
+            --set config.cookieSecret='${{ secrets.OAUTH2PROXY_COOKIE_SECRET}}' \
+            --set global.redis.password=$REDIS_PASSWORD \
+            --insecure-skip-tls-verify \
+            --kubeconfig $KUBECONFIG
 
-      # - name: Diff Trivy Operator
-      #   run: |
-      #     export helmChartVersion=${{env.trivyOperatorVersion}}
-      #     export helmRepoName='aqua'
-      #     export helmChartName='trivy-operator'
+      - name: Upgrade Trivy Operator
+        run: |
+          export helmChartVersion=${{env.trivyOperatorVersion}}
+          export helmRepoName='aqua'
+          export helmChartName='trivy-operator'
 
-      #     helm diff upgrade trivy-operator -n trivy-system \
-      #       oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
-      #       --version $helmChartVersion \
-      #       -f ./base/external/trivy-operator/values.yaml \
-      #       --insecure-skip-tls-verify \
-      #       --kubeconfig $KUBECONFIG
+          helm upgrade -i trivy-operator -n trivy-system \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
+            --version $helmChartVersion \
+            --history-max 5 \
+            -f ./base/external/trivy-operator/values.yaml \
+            --insecure-skip-tls-verify \
+            --kubeconfig $KUBECONFIG
 
-      # - name: Diff Kyverno
-      #   run: |
-      #     export helmChartVersion=${{env.kyvernoVersion}}
-      #     export helmRepoName='kyverno'
-      #     export helmChartName='kyverno'
+      - name: Upgrade Kyverno
+        run: |
+          export helmChartVersion=${{env.kyvernoVersion}}
+          export helmRepoName='kyverno'
+          export helmChartName='kyverno'
 
-      #     helm diff upgrade kyverno -n kyverno \
-      #       oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
-      #       --version $helmChartVersion \
-      #       -f ./base/external/kyverno/values.yaml \
-      #       --insecure-skip-tls-verify \
-      #       --kubeconfig $KUBECONFIG
+          helm upgrade -i kyverno -n kyverno \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
+            --version $helmChartVersion \
+            --history-max 5 \
+            -f ./base/external/kyverno/values.yaml \
+            --insecure-skip-tls-verify \
+            --kubeconfig $KUBECONFIG
 
-      # - name: Diff Kyverno Policy Reporter
-      #   run: |
-      #     export helmChartVersion=${{env.policyReportVersion}}
-      #     export helmRepoName='policy-reporter'
-      #     export helmChartName='policy-reporter'
+      - name: Upgrade Kyverno Policy Reporter
+        run: |
+          export helmChartVersion=${{env.policyReportVersion}}
+          export helmRepoName='policy-reporter'
+          export helmChartName='policy-reporter'
 
-      #     helm diff upgrade policy-reporter -n policy-reporter \
-      #       oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
-      #       --version $helmChartVersion \
-      #       -f ./base/external/policy-reporter/values.yaml \
-      #       --insecure-skip-tls-verify \
-      #       --kubeconfig $KUBECONFIG
+          helm upgrade -i policy-reporter -n policy-reporter \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
+            --version $helmChartVersion \
+            --history-max 5 \
+            -f ./base/external/policy-reporter/values.yaml \
+            --insecure-skip-tls-verify \
+            --kubeconfig $KUBECONFIG
 
-      # - name: Test Kyverno Policies
-      #   run: |
-      #     export PATH=$PATH:$KREW_ROOT/bin
+      - name: Test Kyverno Policies
+        run: |
+          export PATH=$PATH:$KREW_ROOT/bin
 
-      #     # To set pipeline to exit on any policy assessment failed, add `set -e`
-      #     # Validate policies, noat that "test ." has configured the path of test files
-      #     kubectl kyverno test . -f kyverno-test-image.yaml
-      #     kubectl kyverno test . -f kyverno-test-resource.yaml
-      #     kubectl kyverno test . -f kyverno-test-mutate-security.yaml
-      #     kubectl kyverno test . -f kyverno-test-validate-security.yaml
-      #     kubectl kyverno test . -f kyverno-test-validate-security-baseline.yaml
-      #     kubectl kyverno test . -f kyverno-test-traceability.yaml
+          # To set pipeline to exit on any policy assessment failed, add `set -e`
+          # Validate policies, noat that "test ." has configured the path of test files
+          kubectl kyverno test . -f kyverno-test-image.yaml
+          kubectl kyverno test . -f kyverno-test-resource.yaml
+          kubectl kyverno test . -f kyverno-test-mutate-security.yaml
+          kubectl kyverno test . -f kyverno-test-validate-security.yaml
+          kubectl kyverno test . -f kyverno-test-validate-security-baseline.yaml
+          kubectl kyverno test . -f kyverno-test-traceability.yaml
 
-      # - name: Diff Reloader
-      #   run: |
-      #     export helmChartVersion=${{env.reloaderVersion}}
-      #     export helmRepoName='stakater'
-      #     export helmChartName='reloader'
+      - name: Upgrade Reloader
+        run: |
+          export helmChartVersion=${{env.reloaderVersion}}
+          export helmRepoName='stakater'
+          export helmChartName='reloader'
 
-      #     helm diff upgrade reloader -n reloader \
-      #       oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
-      #       -f ./base/external/reloader/values.yaml \
-      #       --version $helmChartVersion \
-      #       --allow-unreleased \
-      #       --insecure-skip-tls-verify \
-      #       --kubeconfig $KUBECONFIG
+          helm upgrade -i reloader -n reloader \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
+            -f ./base/external/reloader/values.yaml \
+            --version $helmChartVersion \
+            --history-max 5 \
+            --allow-unreleased \
+            --insecure-skip-tls-verify \
+            --kubeconfig $KUBECONFIG
 
-      # - name: Diff Nfs-subdir-external-provisioner
-      #   run: |
-      #     export helmChartVersion=${{env.nfsSubdirExternalProvisionerVersion}}
-      #     export helmRepoName='nfs-subdir-external-provisioner'
-      #     export helmChartName='nfs-subdir-external-provisioner'
+      - name: Upgrade Nfs-subdir-external-provisioner
+        run: |
+          export helmChartVersion=${{env.nfsSubdirExternalProvisionerVersion}}
+          export helmRepoName='nfs-subdir-external-provisioner'
+          export helmChartName='nfs-subdir-external-provisioner'
 
-      #     helm diff upgrade nfs-provisioner -n default \
-      #       oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
-      #       --version $helmChartVersion \
-      #       -f ./base/external/nfs-subdir-external-provisioner/values.yaml \
-      #       --insecure-skip-tls-verify \
-      #       --kubeconfig $KUBECONFIG
+          helm upgrade -i nfs-provisioner -n default \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
+            --version $helmChartVersion \
+            --history-max 5 \
+            -f ./base/external/nfs-subdir-external-provisioner/values.yaml \
+            --insecure-skip-tls-verify \
+            --kubeconfig $KUBECONFIG
 
-      # - name: Diff Harbor
-      #   run: |
-      #     export helmChartVersion=${{env.harborVersion}}
-      #     export helmRepoName='harbor'
-      #     export helmChartName='harbor'
+      - name: Upgrade Harbor
+        run: |
+          export helmChartVersion=${{env.harborVersion}}
+          export helmRepoName='harbor'
+          export helmChartName='harbor'
 
-      #     helm diff upgrade harbor -n harbor \
-      #       oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
-      #       --version $helmChartVersion \
-      #       -f ./base/external/harbor/values.yaml \
-      #       --insecure-skip-tls-verify \
-      #       --kubeconfig $KUBECONFIG
+          helm upgrade -i harbor -n harbor \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
+            --version $helmChartVersion \
+            --history-max 5 \
+            -f ./base/external/harbor/values.yaml \
+            --insecure-skip-tls-verify \
+            --kubeconfig $KUBECONFIG
