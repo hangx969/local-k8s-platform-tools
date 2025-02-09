@@ -40,6 +40,7 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Pull Helm Chart
+        # Download the helm chart to the specified download_dir
         run: |
           helm repo add ${{ github.event.inputs.helm-repo-name }} ${{ github.event.inputs.helm-repo-url }}
           helm repo update ${{ github.event.inputs.helm-repo-name }}
@@ -59,6 +60,7 @@ jobs:
           fi
 
       - name: Push Helm Chart to Harbor
+        # Push the helm chart to the specified harbor project
         run: |
           helm registry login ${{ github.event.inputs.harbor-url }} \
           --insecure \
