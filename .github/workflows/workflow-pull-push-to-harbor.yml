@@ -1,0 +1,65 @@
+name: Workflow Pull and Push to Harbor
+
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    inputs:
+      helm-repo-name:
+        description: 'Repo name for the helm chart'
+        required: true
+      helm-repo-url:
+        description: 'URL of the helm repo'
+        required: true
+      helm-chart-name:
+        description: 'Name of the helm chart'
+        required: true
+      helm-chart-version:
+        description: 'Version of the helm chart'
+        required: true
+      harbor-url:
+        description: 'URL of the harbor'
+        required: false
+        default: 'harbor.hanxux.local'
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  # Define the dir where helm will pull this chart into: 'reponame-chartname'
+  download_dir: '${{ github.workspace }}/${{ github.event.inputs.helm-repo-name }}-${{ github.event.inputs.helm-chart-name }}'
+  # Define the fixed pattern for the downloaded helm chart file: 'chartname-chartversion.tgz'
+  chart_file_name: '${{ github.event.inputs.helm-chart-name }}-${{ github.event.inputs.helm-chart-version }}.tgz'
+
+jobs:
+  pull-and-push-helm-charts:
+    runs-on: self-hosted
+    steps:
+      - name: Pull Helm Chart
+        run: |
+          helm repo add ${{ github.event.inputs.helm-repo-name }} ${{ github.event.inputs.helm-repo-url }}
+          helm repo update ${{ github.event.inputs.helm-repo-name }}
+
+          mkdir -p '${{ env.download_dir }}' && cd '${{ env.download_dir }}'
+
+          helm pull \
+          ${{ github.event.inputs.helm-repo-name }}/${{ github.event.inputs.helm-chart-name }} \
+          --version=${{ github.event.inputs.helm-chart-version }}
+
+      # Rename the helm chart file name to a fixed pattern
+      - name: Rename Helm Chart
+        run: |
+          cd ${{ env.download_dir }}
+          mv './*.tgz' '${{ env.chart_file_name }}'
+
+      - name: Push Helm Chart to Harbor
+        run: |
+          helm registry login ${{ github.event.inputs.harbor-url }} \
+          --insecure \
+          --username ${{ secrets.HARBOR_USERNAME }} \
+          --password ${{ secrets.HARBOR_PASSWORD }}
+
+          helm push \
+          '${{ env.chart_file_name }}' \
+          oci://${{ github.event.inputs.harbor-url }}/${{ github.event.inputs.helm-repo-name }} \
+          --insecure-skip-tls-verify
