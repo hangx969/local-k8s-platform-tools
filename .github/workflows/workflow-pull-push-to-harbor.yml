@@ -40,17 +40,16 @@ jobs:
           helm repo add ${{ github.event.inputs.helm-repo-name }} ${{ github.event.inputs.helm-repo-url }}
           helm repo update ${{ github.event.inputs.helm-repo-name }}
 
-          mkdir -p '${{ env.download_dir }}' && cd '${{ env.download_dir }}'
-
+          mkdir -p '${{ env.download_dir }}'
           helm pull \
           ${{ github.event.inputs.helm-repo-name }}/${{ github.event.inputs.helm-chart-name }} \
-          --version=${{ github.event.inputs.helm-chart-version }}
+          --version=${{ github.event.inputs.helm-chart-version }} --destination '${{ env.download_dir }}'
 
       # Rename the helm chart file name to a fixed pattern
       - name: Rename Helm Chart
         run: |
-          cd ${{ env.download_dir }}
-          mv ./*.tgz '${{ env.chart_file_name }}'
+          ls ${{ env.download_dir }}
+          mv ${{ env.download_dir }}/*.tgz '${{ env.chart_file_name }}'
 
       - name: Push Helm Chart to Harbor
         run: |
