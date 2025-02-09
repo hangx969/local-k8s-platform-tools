@@ -20,6 +20,10 @@ on:
         description: 'URL of the harbor'
         required: false
         default: 'harbor.hanxux.local'
+      harbor-project-name:
+        description: 'Project name of the harbor'
+        required: false
+        default: 'platform-tools-local'
 
 defaults:
   run:
@@ -63,5 +67,5 @@ jobs:
 
           helm push \
           '${{ env.download_dir }}/${{ env.chart_file_name }}' \
-          oci://${{ github.event.inputs.harbor-url }}/${{ github.event.inputs.helm-repo-name }} \
+          oci://${{ github.event.inputs.harbor-url }}/${{ github.event.inputs.harbor-project-name }}/${{ github.event.inputs.helm-repo-name }} \
           --insecure-skip-tls-verify
