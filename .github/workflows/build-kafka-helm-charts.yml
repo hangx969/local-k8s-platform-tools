@@ -78,26 +78,26 @@ jobs:
       ###===========helm diff===============###
       - name: Diff strimzi-kafka-operator
         run: |
-          export CHART_VERSION=${{env.strimziVersion}}
+          export helmChartVersion=${{env.strimziVersion}}
           export helmRepoName='strimzi'
           export helmChartName='strimzi-kafka-operator'
 
           helm diff upgrade strimzi-kafka-operator -n kafka \
             oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
             -f ./kafka/external/strimzi-kafka-operator/values.yaml \
-            --version $VERSION \
+            --version helmChartVersion \
             --insecure-skip-tls-verify \
             --kubeconfig $KUBECONFIG
 
       - name: Diff kafka-ui
         run: |
-          export CHART_VERSION=${{env.kafkaUiVersion}}
+          export helmChartVersion=${{env.kafkaUiVersion}}
           export helmRepoName='kafka-ui'
           export helmChartName='kafka-ui'
 
           helm diff upgrade kafka-ui -n kafka \
             oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
             -f ./kafka/external/kafka-ui/values.yaml \
-            --version $VERSION \
+            --version helmChartVersion \
             --insecure-skip-tls-verify \
             --kubeconfig $KUBECONFIG
