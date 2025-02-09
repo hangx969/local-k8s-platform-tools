@@ -19,6 +19,7 @@ env:
   harborProjectName: 'platform-tools-local'
 
   # Define helm chart versions
+  # Note that the helm chart version of cert-manager and kubed are with 'v' prefix by default
   capsuleVersion: '0.7.2'
   certManagerVersion: 'v1.16.1'
   externalDNSVersion: '1.14.4'
