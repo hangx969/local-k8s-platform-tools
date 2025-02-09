@@ -14,13 +14,17 @@ env:
   # Define kubeconfig file path and name
   KUBECONFIG: '${{ github.workspace }}/.kube/kubeconfig'
 
+  # Define harbor URL
+  harborURL: 'harbor.hanxux.local'
+  harborProjectName: 'platform-tools-local'
+
   # Define helm chart versions
   # The syntax of the version is keeping the same as the github release file name
-  lokiVersion: 'helm-loki-5.48.0'
-  promtailVersion: 'promtail-6.15.5'
-  kubePrometheusStackVersion: 'kube-prometheus-stack-59.1.0'
-  tempoVersion: 'tempo-1.8.0'
-  grafanaAgentVersion: 'grafana-agent-0.42.0'
+  lokiVersion: '5.48.0'
+  promtailVersion: '6.15.5'
+  kubePrometheusStackVersion: '59.1.0'
+  tempoVersion: '1.8.0'
+  grafanaAgentVersion: '0.42.0'
 
 jobs:
   helm-lint-and-diff:
@@ -35,6 +39,13 @@ jobs:
           mkdir -p '${{ github.workspace }}/.kube' \
           && echo '${{ secrets.HP_LOCAL_KUBECONFIG}}' | base64 -d > $KUBECONFIG \
           && chmod 600 $KUBECONFIG
+
+      - name: Login Harbor
+        run: |
+          helm registry login '${{ env.harborURL }}' \
+          --username ${{ secrets.HARBOR_USERNAME }} \
+          --password ${{ secrets.HARBOR_PASSWORD }} \
+          --insecure
 
       ###===========helm lint============###
       - name: Helm Lint and template Grafana Dashboards
@@ -72,46 +83,44 @@ jobs:
       ###===========helm diff===============###
       - name: Diff grafana-agent
         run: |
-          export CHART_VERSION=${{env.grafanaAgentVersion}}
-          export VERSION=${CHART_VERSION#grafana-agent-}
-
-          helm repo add grafana https://grafana.github.io/helm-charts
-          helm repo update grafana
+          export helmChartVersion=${{env.grafanaAgentVersion}}
+          export helmRepoName='grafana'
+          export helmChartName='grafana-agent'
 
           helm diff upgrade grafana-agent -n monitoring \
-            grafana/grafana-agent \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
             -f ./monitoring/external/grafana-agent/values.yaml \
-            --version $VERSION \
+            --version $helmChartVersion \
+            --insecure-skip-tls-verify \
             --kubeconfig $KUBECONFIG
 
       - name: Diff kube-prometheus-stack
         run: |
-          export CHART_VERSION=${{env.kubePrometheusStackVersion}}
-          export VERSION=${CHART_VERSION#kube-prometheus-stack-}
-
-          helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-          helm repo update prometheus-community
+          export helmChartVersion=${{env.kubePrometheusStackVersion}}
+          export helmRepoName='prometheus-community'
+          export helmChartName='kube-prometheus-stack'
 
           helm diff upgrade kube-prometheus-stack -n monitoring \
-            prometheus-community/kube-prometheus-stack \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
             -f ./monitoring/external/kube-prometheus-stack/values.yaml \
-            --version $VERSION \
+            --version $helmChartVersion \
             --set grafana.adminPassword='${{ secrets.GRAFANA_ADMIN_PASSWORD}}' \
+            --insecure-skip-tls-verify \
             --kubeconfig $KUBECONFIG
 
-      - name: Diff prometheus-rules helm chart
-        run: |
-          helm diff upgrade commoninfra-kube-prometheus-config -n monitoring \
-            ./monitoring/helm-charts/prometheus-rules \
-            -f ./monitoring/helm-charts/prometheus-rules/values.yaml \
-            --kubeconfig $KUBECONFIG
+      # - name: Diff prometheus-rules helm chart
+      #   run: |
+      #     helm diff upgrade prometheus-rules -n monitoring \
+      #       ./monitoring/helm-charts/prometheus-rules \
+      #       -f ./monitoring/helm-charts/prometheus-rules/values.yaml \
+      #       --kubeconfig $KUBECONFIG
 
-      - name: Diff grafana-dashboards helm chart
-        run: |
-          helm diff upgrade grafana-dashboards-config -n monitoring \
-            ./monitoring/helm-charts/grafana-dashboards \
-            -f ./monitoring/helm-charts/grafana-dashboards/values.yaml \
-            --kubeconfig $KUBECONFIG
+      # - name: Diff grafana-dashboards helm chart
+      #   run: |
+      #     helm diff upgrade grafana-dashboards -n monitoring \
+      #       ./monitoring/helm-charts/grafana-dashboards \
+      #       -f ./monitoring/helm-charts/grafana-dashboards/values.yaml \
+      #       --kubeconfig $KUBECONFIG
 
       # - name: Diff grafana-datasources helm chart
       #   run: |
@@ -122,42 +131,42 @@ jobs:
 
       - name: Diff loki
         run: |
-          export CHART_VERSION=${{env.lokiVersion}}
-          export VERSION=${CHART_VERSION#helm-loki-}
+          export helmChartVersion=${{env.lokiVersion}}
+          export helmRepoName='grafana'
+          export helmChartName='loki'
 
           helm repo add grafana https://grafana.github.io/helm-charts
           helm repo update grafana
 
           helm diff upgrade loki -n monitoring \
-            grafana/loki \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
             -f ./monitoring/external/loki/values.yaml \
-            --version $VERSION \
+            --version $helmChartVersion \
+            --insecure-skip-tls-verify \
             --kubeconfig $KUBECONFIG
 
       - name: Diff promtail
         run: |
-          export CHART_VERSION=${{env.promtailVersion}}
-          export VERSION=${CHART_VERSION#promtail-}
-
-          helm repo add grafana https://grafana.github.io/helm-charts
-          helm repo update grafana
+          export helmChartVersion=${{env.promtailVersion}}
+          export helmRepoName='grafana'
+          export helmChartName='promtail'
 
           helm diff upgrade promtail -n monitoring \
-            grafana/promtail \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
             -f ./monitoring/external/promtail/values.yaml \
-            --version $VERSION \
+            --version $helmChartVersion \
+            --insecure-skip-tls-verify \
             --kubeconfig $KUBECONFIG
 
       - name: Diff tempo
         run: |
-          export CHART_VERSION=${{env.tempoVersion}}
-          export VERSION=${CHART_VERSION#tempo-}
-
-          helm repo add grafana https://grafana.github.io/helm-charts
-          helm repo update grafana
+          export helmChartVersion=${{env.tempoVersion}}
+          export helmRepoName='grafana'
+          export helmChartName='tempo'
 
           helm diff upgrade tempo -n monitoring \
-            grafana/tempo \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
             -f ./monitoring/external/tempo/values.yaml \
-            --version $VERSION \
+            --version $helmChartVersion \
+            --insecure-skip-tls-verify \
             --kubeconfig $KUBECONFIG
