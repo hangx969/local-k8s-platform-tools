@@ -15,7 +15,7 @@ env:
   KUBECONFIG: '${{ github.workspace }}/.kube/kubeconfig'
 
   # Define harbor URL
-  harborUrl: 'harbor.hanxux.local'
+  harborURL: 'harbor.hanxux.local'
   harborProjectName: 'platform-tools-local'
 
   # Define helm chart versions
@@ -49,10 +49,10 @@ jobs:
 
       - name: Login Harbor
         run: |
-          helm registry login ${{ env.harborURL }} \
-          --insecure \
+          helm registry login '${{ env.harborURL }}' \
           --username ${{ secrets.HARBOR_USERNAME }} \
-          --password ${{ secrets.HARBOR_PASSWORD }}
+          --password ${{ secrets.HARBOR_PASSWORD }} \
+          --insecure
 
       ###===========helm lint============###
       - name: Helm Lint Base ns
