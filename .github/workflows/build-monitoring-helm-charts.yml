@@ -135,9 +135,6 @@ jobs:
           export helmRepoName='grafana'
           export helmChartName='loki'
 
-          helm repo add grafana https://grafana.github.io/helm-charts
-          helm repo update grafana
-
           helm diff upgrade loki -n monitoring \
             oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
             -f ./monitoring/external/loki/values.yaml \
