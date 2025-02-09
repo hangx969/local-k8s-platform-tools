@@ -14,21 +14,24 @@ env:
   # Define kubeconfig file path and name
   KUBECONFIG: '${{ github.workspace }}/.kube/kubeconfig'
 
+  # Define harbor URL
+  harborUrl: 'harbor.hanxux.local'
+  harborProjectName: 'platform-tools-local'
+
   # Define helm chart versions
-  # The syntax of the version is keeping the same as the github release file name
-  capsuleVersion: 'helm-v0.7.2'
-  certManagerVersion: 'v1.16.1'
-  externalDNSVersion: 'external-dns-helm-chart-1.14.4'
-  externalSecretsVersion: 'helm-chart-0.10.5'
-  harborVersion: 'v1.16.0'
-  nginxVersion: 'helm-chart-4.10.1'
-  kyvernoVersion: 'kyverno-chart-3.2.7'
-  nfsSubdirExternalProvisionerVersion: 'nfs-subdir-external-provisioner-4.0.18'
-  oauth2proxyVersion: 'oauth2-proxy-7.7.22'
-  policyReportVersion: 'policy-reporter-2.24.2'
-  reloaderVersion: 'v1.0.115'
-  trivyOperatorVersion: 'trivy-operator-0.24.1'
-  configSyncerVersion: 'v0.13.2'
+  capsuleVersion: '0.7.2'
+  certManagerVersion: '1.16.1'
+  externalDNSVersion: '1.14.4'
+  externalSecretsVersion: '0.10.5'
+  harborVersion: '1.16.0'
+  nginxVersion: '4.10.1'
+  kyvernoVersion: '3.2.7'
+  nfsSubdirExternalProvisionerVersion: '4.0.18'
+  oauth2proxyVersion: '7.7.22'
+  policyReportVersion: '2.24.2'
+  reloaderVersion: '1.0.115'
+  trivyOperatorVersion: '0.24.1'
+  configSyncerVersion: '0.13.2'
 
 jobs:
   helm-lint-and-diff:
@@ -43,6 +46,13 @@ jobs:
           mkdir -p '${{ github.workspace }}/.kube' \
           && echo '${{ secrets.HP_LOCAL_KUBECONFIG}}' | base64 -d > $KUBECONFIG \
           && chmod 600 $KUBECONFIG
+
+      - name: Login Harbor
+        run: |
+          helm registry login ${{ env.harborURL }} \
+          --insecure \
+          --username ${{ secrets.HARBOR_USERNAME }} \
+          --password ${{ secrets.HARBOR_PASSWORD }}
 
       ###===========helm lint============###
       - name: Helm Lint Base ns
@@ -61,202 +71,196 @@ jobs:
           --values ./base/helm-charts/capsule-tenants/values.yaml
 
       ###===========helm diff===============###
-      - name: Diff Cert-manager
-        run: |
-          export CHART_VERSION=${{env.certManagerVersion}}
-          export VERSION=${CHART_VERSION#v}
-
-          helm repo add jetstack https://charts.jetstack.io
-          helm repo update jetstack
-
-          helm diff upgrade cert-manager -n cert-manager \
-            jetstack/cert-manager \
-            -f ./base/external/cert-manager/values.yaml \
-            --version $VERSION \
-            --kubeconfig $KUBECONFIG
-
-      - name: Diff Config-syncer
-        run: |
-          export CHART_VERSION=${{env.configSyncerVersion}}
-          export VERSION=${CHART_VERSION#v}
-
-          helm repo add appscode https://charts.appscode.com/stable/
-          helm repo update appscode
-
-          helm diff upgrade config-syncer -n config-syncer \
-            appscode/kubed \
-            --version $VERSION \
-            -f ./base/external/config-syncer/values.yaml \
-            --kubeconfig $KUBECONFIG
-
-      - name: Diff Ingress-nginx
-        run: |
-          export CHART_VERSION=${{env.nginxVersion}}
-          export VERSION=${CHART_VERSION#helm-chart-}
-
-          curl -LOf https://github.com/kubernetes/ingress-nginx/releases/download/helm-chart-$VERSION/ingress-nginx-$VERSION.tgz
-
-          helm diff upgrade ingress-nginx -n ingress-nginx \
-            ingress-nginx-$VERSION.tgz \
-            --version $VERSION \
-            -f ./base/external/ingress-nginx/values.yaml \
-            --kubeconfig $KUBECONFIG
-
-      - name: Diff External DNS
-        run: |
-          export CHART_VERSION=${{env.externalDNSVersion}}
-          export VERSION=${CHART_VERSION#external-dns-helm-chart-}
-
-          helm repo add external-dns https://kubernetes-sigs.github.io/external-dns/
-          helm repo update external-dns
-
-          helm diff upgrade external-dns -n external-dns \
-            external-dns/external-dns \
-            --version $VERSION \
-            -f ./base/external/external-dns/values.yaml \
-            --kubeconfig $KUBECONFIG
-
-      - name: Diff External Secrets
-        run: |
-          export CHART_VERSION=${{env.externalSecretsVersion}}
-          export VERSION=${CHART_VERSION#helm-chart-}
-
-          helm repo add external-secrets https://charts.external-secrets.io
-          helm repo update external-secrets
-
-          helm diff upgrade external-secrets -n external-secrets \
-            external-secrets/external-secrets \
-            --version $VERSION \
-            -f ./base/external/external-secrets/values.yaml \
-            --kubeconfig $KUBECONFIG
-
-      - name: Diff Oauth2-proxy
-        run: |
-          export CHART_VERSION=${{env.oauth2proxyVersion}}
-          export VERSION=${CHART_VERSION#oauth2-proxy-}
-          export REDIS_PASSWORD=$(kubectl get secret --namespace "oauth2-proxy" oauth2-proxy-redis --kubeconfig $KUBECONFIG -o jsonpath="{.data.redis-password}" | base64 -d)
-
-          helm repo add oauth2-proxy https://oauth2-proxy.github.io/manifests
-          helm repo update oauth2-proxy
-
-          helm diff upgrade oauth2-proxy -n oauth2-proxy \
-            oauth2-proxy/oauth2-proxy \
-            --version $VERSION \
-            -f ./base/external/oauth2-proxy/values.yaml \
-            --set config.clientID='${{ secrets.OAUTH2PROXY_CLIENT_ID}}' \
-            --set config.clientSecret='${{ secrets.OAUTH2PROXY_CLIENT_SECRET}}' \
-            --set config.cookieSecret='${{ secrets.OAUTH2PROXY_COOKIE_SECRET}}' \
-            --set global.redis.password=$REDIS_PASSWORD \
-            --kubeconfig $KUBECONFIG
-
-      - name: Diff Trivy Operator
-        run: |
-          export CHART_VERSION=${{env.trivyOperatorVersion}}
-          export VERSION=${CHART_VERSION#trivy-operator-}
-
-          helm repo add aqua https://aquasecurity.github.io/helm-charts/
-          helm repo update aqua
-
-          helm diff upgrade trivy-operator -n trivy-system \
-            aqua/trivy-operator \
-            --version $VERSION \
-            -f ./base/external/trivy-operator/values.yaml \
-            --kubeconfig $KUBECONFIG
-
-      - name: Diff Kyverno
-        run: |
-          export CHART_VERSION=${{env.kyvernoVersion}}
-          export VERSION=${CHART_VERSION#kyverno-chart-}
-
-          helm repo add kyverno https://kyverno.github.io/kyverno/
-          helm repo update kyverno
-
-          helm diff upgrade kyverno -n kyverno \
-            kyverno/kyverno \
-            --version $VERSION \
-            -f ./base/external/kyverno/values.yaml \
-            --kubeconfig $KUBECONFIG
-
-      - name: Diff Kyverno Policy Reporter
-        run: |
-          export CHART_VERSION=${{env.policyReportVersion}}
-          export VERSION=${CHART_VERSION#policy-reporter-}
-
-          helm repo add policy-reporter https://kyverno.github.io/policy-reporter
-          helm repo update policy-reporter
-
-          helm diff upgrade policy-reporter -n policy-reporter \
-            policy-reporter/policy-reporter \
-            --version $VERSION \
-            -f ./base/external/policy-reporter/values.yaml \
-            --kubeconfig $KUBECONFIG
-
-      - name: Test Kyverno Policies
-        run: |
-          export PATH=$PATH:$KREW_ROOT/bin
-
-          # To set pipeline to exit on any policy assessment failed, add `set -e`
-          # Validate policies, noat that "test ." has configured the path of test files
-          kubectl kyverno test . -f kyverno-test-image.yaml
-          kubectl kyverno test . -f kyverno-test-resource.yaml
-          kubectl kyverno test . -f kyverno-test-mutate-security.yaml
-          kubectl kyverno test . -f kyverno-test-validate-security.yaml
-          kubectl kyverno test . -f kyverno-test-validate-security-baseline.yaml
-          kubectl kyverno test . -f kyverno-test-traceability.yaml
-
       - name: Diff Capsule
         run: |
-          export CHART_VERSION=${{env.capsuleVersion}}
-          export VERSION=${CHART_VERSION#helm-v}
-
-          helm repo add projectcapsule https://projectcapsule.github.io/charts
-          helm repo update projectcapsule
+          export chartVersion=${{env.capsuleVersion}}
+          export helmRepoName='projectcapsule'
 
           helm diff upgrade capsule -n capsule-system \
-            projectcapsule/capsule \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName \
             -f ./base/external/capsule/values.yaml \
-            --version $VERSION \
+            --version $chartVersion \
             --kubeconfig $KUBECONFIG
 
-      - name: Diff Reloader
-        run: |
-          export CHART_VERSION=${{env.reloaderVersion}}
-          export VERSION=${CHART_VERSION#v}
+      # - name: Diff Cert-manager
+      #   run: |
+      #     export chartVersion=${{env.certManagerVersion}}
+      #     export helmRepoName='jetstack'
 
-          helm repo add stakater https://stakater.github.io/stakater-charts
-          helm repo update stakater
+      #     helm diff upgrade cert-manager -n cert-manager \
+      #       oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName \
+      #       -f ./base/external/cert-manager/values.yaml \
+      #       --version $chartVersion \
+      #       --kubeconfig $KUBECONFIG
 
-          helm diff upgrade reloader -n reloader \
-            stakater/reloader \
-            -f ./base/external/reloader/values.yaml \
-            --version $VERSION \
-            --allow-unreleased \
-            --kubeconfig $KUBECONFIG
+      # - name: Diff Config-syncer
+      #   run: |
+      #     export chartVersion=${{env.configSyncerVersion}}
+      #     export VERSION=${chartVersion#v}
 
-      - name: Diff Nfs-subdir-external-provisioner
-        run: |
-          export CHART_VERSION=${{env.nfsSubdirExternalProvisionerVersion}}
-          export VERSION=${CHART_VERSION#nfs-subdir-external-provisioner-}
+      #     helm repo add appscode https://charts.appscode.com/stable/
+      #     helm repo update appscode
 
-          helm repo add nfs-subdir-external-provisioner https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner
-          helm repo update nfs-subdir-external-provisioner
+      #     helm diff upgrade config-syncer -n config-syncer \
+      #       appscode/kubed \
+      #       --version $VERSION \
+      #       -f ./base/external/config-syncer/values.yaml \
+      #       --kubeconfig $KUBECONFIG
 
-          helm diff upgrade nfs-provisioner -n default \
-          nfs-subdir-external-provisioner/nfs-subdir-external-provisioner \
-          --version $VERSION \
-          -f ./base/external/nfs-subdir-external-provisioner/values.yaml \
-          --kubeconfig $KUBECONFIG
+      # - name: Diff Ingress-nginx
+      #   run: |
+      #     export chartVersion=${{env.nginxVersion}}
+      #     export VERSION=${chartVersion#helm-chart-}
 
-      - name: Diff Harbor
-        run: |
-          export CHART_VERSION=${{env.harborVersion}}
-          export VERSION=${CHART_VERSION#v}
+      #     curl -LOf https://github.com/kubernetes/ingress-nginx/releases/download/helm-chart-$VERSION/ingress-nginx-$VERSION.tgz
 
-          helm repo add harbor https://helm.goharbor.io
-          helm repo update harbor
+      #     helm diff upgrade ingress-nginx -n ingress-nginx \
+      #       ingress-nginx-$VERSION.tgz \
+      #       --version $VERSION \
+      #       -f ./base/external/ingress-nginx/values.yaml \
+      #       --kubeconfig $KUBECONFIG
 
-          helm diff upgrade harbor -n harbor \
-            harbor/harbor \
-            --version $VERSION \
-            -f ./base/external/harbor/values.yaml \
-            --kubeconfig $KUBECONFIG
+      # - name: Diff External DNS
+      #   run: |
+      #     export chartVersion=${{env.externalDNSVersion}}
+      #     export VERSION=${chartVersion#external-dns-helm-chart-}
+
+      #     helm repo add external-dns https://kubernetes-sigs.github.io/external-dns/
+      #     helm repo update external-dns
+
+      #     helm diff upgrade external-dns -n external-dns \
+      #       external-dns/external-dns \
+      #       --version $VERSION \
+      #       -f ./base/external/external-dns/values.yaml \
+      #       --kubeconfig $KUBECONFIG
+
+      # - name: Diff External Secrets
+      #   run: |
+      #     export chartVersion=${{env.externalSecretsVersion}}
+      #     export VERSION=${chartVersion#helm-chart-}
+
+      #     helm repo add external-secrets https://charts.external-secrets.io
+      #     helm repo update external-secrets
+
+      #     helm diff upgrade external-secrets -n external-secrets \
+      #       external-secrets/external-secrets \
+      #       --version $VERSION \
+      #       -f ./base/external/external-secrets/values.yaml \
+      #       --kubeconfig $KUBECONFIG
+
+      # - name: Diff Oauth2-proxy
+      #   run: |
+      #     export chartVersion=${{env.oauth2proxyVersion}}
+      #     export VERSION=${chartVersion#oauth2-proxy-}
+      #     export REDIS_PASSWORD=$(kubectl get secret --namespace "oauth2-proxy" oauth2-proxy-redis --kubeconfig $KUBECONFIG -o jsonpath="{.data.redis-password}" | base64 -d)
+
+      #     helm repo add oauth2-proxy https://oauth2-proxy.github.io/manifests
+      #     helm repo update oauth2-proxy
+
+      #     helm diff upgrade oauth2-proxy -n oauth2-proxy \
+      #       oauth2-proxy/oauth2-proxy \
+      #       --version $VERSION \
+      #       -f ./base/external/oauth2-proxy/values.yaml \
+      #       --set config.clientID='${{ secrets.OAUTH2PROXY_CLIENT_ID}}' \
+      #       --set config.clientSecret='${{ secrets.OAUTH2PROXY_CLIENT_SECRET}}' \
+      #       --set config.cookieSecret='${{ secrets.OAUTH2PROXY_COOKIE_SECRET}}' \
+      #       --set global.redis.password=$REDIS_PASSWORD \
+      #       --kubeconfig $KUBECONFIG
+
+      # - name: Diff Trivy Operator
+      #   run: |
+      #     export chartVersion=${{env.trivyOperatorVersion}}
+      #     export VERSION=${chartVersion#trivy-operator-}
+
+      #     helm repo add aqua https://aquasecurity.github.io/helm-charts/
+      #     helm repo update aqua
+
+      #     helm diff upgrade trivy-operator -n trivy-system \
+      #       aqua/trivy-operator \
+      #       --version $VERSION \
+      #       -f ./base/external/trivy-operator/values.yaml \
+      #       --kubeconfig $KUBECONFIG
+
+      # - name: Diff Kyverno
+      #   run: |
+      #     export chartVersion=${{env.kyvernoVersion}}
+      #     export VERSION=${chartVersion#kyverno-chart-}
+
+      #     helm repo add kyverno https://kyverno.github.io/kyverno/
+      #     helm repo update kyverno
+
+      #     helm diff upgrade kyverno -n kyverno \
+      #       kyverno/kyverno \
+      #       --version $VERSION \
+      #       -f ./base/external/kyverno/values.yaml \
+      #       --kubeconfig $KUBECONFIG
+
+      # - name: Diff Kyverno Policy Reporter
+      #   run: |
+      #     export chartVersion=${{env.policyReportVersion}}
+      #     export VERSION=${chartVersion#policy-reporter-}
+
+      #     helm repo add policy-reporter https://kyverno.github.io/policy-reporter
+      #     helm repo update policy-reporter
+
+      #     helm diff upgrade policy-reporter -n policy-reporter \
+      #       policy-reporter/policy-reporter \
+      #       --version $VERSION \
+      #       -f ./base/external/policy-reporter/values.yaml \
+      #       --kubeconfig $KUBECONFIG
+
+      # - name: Test Kyverno Policies
+      #   run: |
+      #     export PATH=$PATH:$KREW_ROOT/bin
+
+      #     # To set pipeline to exit on any policy assessment failed, add `set -e`
+      #     # Validate policies, noat that "test ." has configured the path of test files
+      #     kubectl kyverno test . -f kyverno-test-image.yaml
+      #     kubectl kyverno test . -f kyverno-test-resource.yaml
+      #     kubectl kyverno test . -f kyverno-test-mutate-security.yaml
+      #     kubectl kyverno test . -f kyverno-test-validate-security.yaml
+      #     kubectl kyverno test . -f kyverno-test-validate-security-baseline.yaml
+      #     kubectl kyverno test . -f kyverno-test-traceability.yaml
+
+      # - name: Diff Reloader
+      #   run: |
+      #     export chartVersion=${{env.reloaderVersion}}
+      #     export VERSION=${chartVersion#v}
+
+      #     helm repo add stakater https://stakater.github.io/stakater-charts
+      #     helm repo update stakater
+
+      #     helm diff upgrade reloader -n reloader \
+      #       stakater/reloader \
+      #       -f ./base/external/reloader/values.yaml \
+      #       --version $VERSION \
+      #       --allow-unreleased \
+      #       --kubeconfig $KUBECONFIG
+
+      # - name: Diff Nfs-subdir-external-provisioner
+      #   run: |
+      #     export chartVersion=${{env.nfsSubdirExternalProvisionerVersion}}
+      #     export VERSION=${chartVersion#nfs-subdir-external-provisioner-}
+
+      #     helm repo add nfs-subdir-external-provisioner https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner
+      #     helm repo update nfs-subdir-external-provisioner
+
+      #     helm diff upgrade nfs-provisioner -n default \
+      #     nfs-subdir-external-provisioner/nfs-subdir-external-provisioner \
+      #     --version $VERSION \
+      #     -f ./base/external/nfs-subdir-external-provisioner/values.yaml \
+      #     --kubeconfig $KUBECONFIG
+
+      # - name: Diff Harbor
+      #   run: |
+      #     export chartVersion=${{env.harborVersion}}
+      #     export VERSION=${chartVersion#v}
+
+      #     helm repo add harbor https://helm.goharbor.io
+      #     helm repo update harbor
+
+      #     helm diff upgrade harbor -n harbor \
+      #       harbor/harbor \
+      #       --version $VERSION \
+      #       -f ./base/external/harbor/values.yaml \
+      #       --kubeconfig $KUBECONFIG
