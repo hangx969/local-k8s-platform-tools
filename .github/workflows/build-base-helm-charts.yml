@@ -75,9 +75,10 @@ jobs:
         run: |
           export chartVersion=${{env.capsuleVersion}}
           export helmRepoName='projectcapsule'
+          export chartName='capsule'
 
           helm diff upgrade capsule -n capsule-system \
-            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$chartName \
             -f ./base/external/capsule/values.yaml \
             --version $chartVersion \
             --insecure-skip-tls-verify \
