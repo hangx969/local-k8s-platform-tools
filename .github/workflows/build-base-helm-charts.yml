@@ -80,6 +80,7 @@ jobs:
             oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName \
             -f ./base/external/capsule/values.yaml \
             --version $chartVersion \
+            --insecure-skip-tls-verify \
             --kubeconfig $KUBECONFIG
 
       # - name: Diff Cert-manager
