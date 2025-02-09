@@ -64,9 +64,6 @@ jobs:
           helm upgrade -i capsule -n capsule-system \
             oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
             --history-max 5 \
-            # --atomic \
-            # --cleanup-on-fail \
-            # --dependency-update \
             -f ./base/external/capsule/values.yaml \
             --version $helmChartVersion \
             --insecure-skip-tls-verify \
