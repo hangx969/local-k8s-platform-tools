@@ -26,6 +26,6 @@ jobs:
     secrets: inherit
 
   deploy-base-helm-charts:
-    needs: build-base-helm-charts
+    #needs: build-base-helm-charts
     uses: ./.github/workflows/deploy-base-helm-charts.yml
     secrets: inherit
