@@ -50,7 +50,7 @@ jobs:
       - name: Rename Helm Chart
         run: |
           cd ${{ env.download_dir }}
-          mv './*.tgz' '${{ env.chart_file_name }}'
+          mv ./*.tgz '${{ env.chart_file_name }}'
 
       - name: Push Helm Chart to Harbor
         run: |
