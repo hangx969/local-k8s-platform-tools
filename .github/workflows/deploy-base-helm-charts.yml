@@ -83,19 +83,19 @@ jobs:
             --insecure-skip-tls-verify \
             --kubeconfig $KUBECONFIG
 
-      - name: Upgrade Config-syncer
-        run: |
-          export helmChartVersion=${{env.configSyncerVersion}}
-          export helmRepoName='appscode'
-          export helmChartName='kubed'
+      # - name: Upgrade Config-syncer
+      #   run: |
+      #     export helmChartVersion=${{env.configSyncerVersion}}
+      #     export helmRepoName='appscode'
+      #     export helmChartName='kubed'
 
-          helm upgrade -i config-syncer -n config-syncer \
-            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
-            --version $helmChartVersion \
-            --history-max 5 \
-            -f ./base/external/config-syncer/values.yaml \
-            --insecure-skip-tls-verify \
-            --kubeconfig $KUBECONFIG
+      #     helm upgrade -i config-syncer -n config-syncer \
+      #       oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
+      #       --version $helmChartVersion \
+      #       --history-max 5 \
+      #       -f ./base/external/config-syncer/values.yaml \
+      #       --insecure-skip-tls-verify \
+      #       --kubeconfig $KUBECONFIG
 
       - name: Upgrade Ingress-nginx
         run: |
@@ -241,16 +241,16 @@ jobs:
             --insecure-skip-tls-verify \
             --kubeconfig $KUBECONFIG
 
-      - name: Upgrade Harbor
-        run: |
-          export helmChartVersion=${{env.harborVersion}}
-          export helmRepoName='harbor'
-          export helmChartName='harbor'
+      # - name: Upgrade Harbor
+      #   run: |
+      #     export helmChartVersion=${{env.harborVersion}}
+      #     export helmRepoName='harbor'
+      #     export helmChartName='harbor'
 
-          helm upgrade -i harbor -n harbor \
-            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
-            --version $helmChartVersion \
-            --history-max 5 \
-            -f ./base/external/harbor/values.yaml \
-            --insecure-skip-tls-verify \
-            --kubeconfig $KUBECONFIG
+      #     helm upgrade -i harbor -n harbor \
+      #       oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
+      #       --version $helmChartVersion \
+      #       --history-max 5 \
+      #       -f ./base/external/harbor/values.yaml \
+      #       --insecure-skip-tls-verify \
+      #       --kubeconfig $KUBECONFIG
