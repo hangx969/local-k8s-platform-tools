@@ -259,22 +259,28 @@ jobs:
     ###=======Upgrade Base Helm Charts=======###
       - name: Upgrade Base ns
         run: |
-          helm upgrade -i commoninfra -n kube-system \
+          export chartDir='./base/helm-charts/base-ns'
+
+          helm upgrade -i commoninfra -n kube-system $chartDir \
             --history-max 5 \
-            --values ./base/helm-charts/base-ns/values.yaml \
+            --values $chartDir/values.yaml \
             --kubeconfig $KUBECONFIG
 
       - name: Upgrade cert-manager Certificates
         run: |
-          helm upgrade -i cert-manager-certificates -n cert-manager \
+          export chartDir='./base/helm-charts/cert-manager-certificates'
+
+          helm upgrade -i cert-manager-certificates -n cert-manager $chartDir \
             --history-max 5 \
-            --values ./base/helm-charts/cert-manager-certificates/values.yaml \
+            --values $chartDir/values.yaml \
             --kubeconfig $KUBECONFIG
 
       - name: Upgrade Capsule Tenants
         run: |
-          helm upgrade -i capsule-tenants -n capsule-system \
+          export chartDir='./base/helm-charts/capsule-tenants'
+
+          helm upgrade -i capsule-tenants -n capsule-system $chartDir \
             --history-max 5 \
-            --values ./base/helm-charts/capsule-tenants/values.yaml \
+            --values $chartDir/values.yaml \
             --kubeconfig $KUBECONFIG
 
