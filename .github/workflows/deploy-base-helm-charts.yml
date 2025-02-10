@@ -83,20 +83,6 @@ jobs:
             --insecure-skip-tls-verify \
             --kubeconfig $KUBECONFIG
 
-      # - name: Upgrade Config-syncer
-      #   run: |
-      #     export helmChartVersion=${{env.configSyncerVersion}}
-      #     export helmRepoName='appscode'
-      #     export helmChartName='kubed'
-
-      #     helm upgrade -i config-syncer -n config-syncer \
-      #       oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
-      #       --version $helmChartVersion \
-      #       --history-max 5 \
-      #       -f ./base/external/config-syncer/values.yaml \
-      #       --insecure-skip-tls-verify \
-      #       --kubeconfig $KUBECONFIG
-
       - name: Upgrade Ingress-nginx
         run: |
           export helmChartVersion=${{env.nginxVersion}}
@@ -252,5 +238,19 @@ jobs:
       #       --version $helmChartVersion \
       #       --history-max 5 \
       #       -f ./base/external/harbor/values.yaml \
+      #       --insecure-skip-tls-verify \
+      #       --kubeconfig $KUBECONFIG
+
+      # - name: Upgrade Config-syncer
+      #   run: |
+      #     export helmChartVersion=${{env.configSyncerVersion}}
+      #     export helmRepoName='appscode'
+      #     export helmChartName='kubed'
+
+      #     helm upgrade -i config-syncer -n config-syncer \
+      #       oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
+      #       --version $helmChartVersion \
+      #       --history-max 5 \
+      #       -f ./base/external/config-syncer/values.yaml \
       #       --insecure-skip-tls-verify \
       #       --kubeconfig $KUBECONFIG
