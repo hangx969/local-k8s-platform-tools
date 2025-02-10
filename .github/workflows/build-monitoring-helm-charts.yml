@@ -91,6 +91,7 @@ jobs:
             -f ./monitoring/external/grafana-agent/values.yaml \
             --version $helmChartVersion \
             --insecure-skip-tls-verify \
+            --allow-unreleased \
             --kubeconfig $KUBECONFIG
 
       - name: Diff kube-prometheus-stack
@@ -105,6 +106,7 @@ jobs:
             --version $helmChartVersion \
             --set grafana.adminPassword='${{ secrets.GRAFANA_ADMIN_PASSWORD}}' \
             --insecure-skip-tls-verify \
+            --allow-unreleased \
             --kubeconfig $KUBECONFIG
 
       # - name: Diff prometheus-rules helm chart
@@ -112,6 +114,7 @@ jobs:
       #     helm diff upgrade prometheus-rules -n monitoring \
       #       ./monitoring/helm-charts/prometheus-rules \
       #       -f ./monitoring/helm-charts/prometheus-rules/values.yaml \
+      #       --allow-unreleased \
       #       --kubeconfig $KUBECONFIG
 
       # - name: Diff grafana-dashboards helm chart
@@ -119,6 +122,7 @@ jobs:
       #     helm diff upgrade grafana-dashboards -n monitoring \
       #       ./monitoring/helm-charts/grafana-dashboards \
       #       -f ./monitoring/helm-charts/grafana-dashboards/values.yaml \
+      #       --allow-unreleased \
       #       --kubeconfig $KUBECONFIG
 
       # - name: Diff grafana-datasources helm chart
@@ -126,6 +130,7 @@ jobs:
       #     helm diff upgrade commoninfra-grafana-external-datasource -n monitoring \
       #       ./monitoring/helm-charts/grafana-datasources \
       #       -f ./monitoring/external/grafana-datasources/values.yaml \
+      #       --allow-unreleased \
       #       --kubeconfig $KUBECONFIG
 
       - name: Diff loki
@@ -139,6 +144,7 @@ jobs:
             -f ./monitoring/external/loki/values.yaml \
             --version $helmChartVersion \
             --insecure-skip-tls-verify \
+            --allow-unreleased \
             --kubeconfig $KUBECONFIG
 
       - name: Diff promtail
@@ -152,6 +158,7 @@ jobs:
             -f ./monitoring/external/promtail/values.yaml \
             --version $helmChartVersion \
             --insecure-skip-tls-verify \
+            --allow-unreleased \
             --kubeconfig $KUBECONFIG
 
       - name: Diff tempo
@@ -165,4 +172,5 @@ jobs:
             -f ./monitoring/external/tempo/values.yaml \
             --version $helmChartVersion \
             --insecure-skip-tls-verify \
+            --allow-unreleased \
             --kubeconfig $KUBECONFIG

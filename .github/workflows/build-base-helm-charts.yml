@@ -82,6 +82,7 @@ jobs:
             -f ./base/external/capsule/values.yaml \
             --version $helmChartVersion \
             --insecure-skip-tls-verify \
+            --allow-unreleased \
             --kubeconfig $KUBECONFIG
 
       - name: Diff Cert-manager
@@ -94,6 +95,7 @@ jobs:
             oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
             -f ./base/external/cert-manager/values.yaml \
             --version $helmChartVersion \
+            --allow-unreleased \
             --insecure-skip-tls-verify \
             --kubeconfig $KUBECONFIG
 
@@ -108,6 +110,7 @@ jobs:
             --version $helmChartVersion \
             -f ./base/external/config-syncer/values.yaml \
             --insecure-skip-tls-verify \
+            --allow-unreleased \
             --kubeconfig $KUBECONFIG
 
       - name: Diff Ingress-nginx
@@ -121,6 +124,7 @@ jobs:
             --version $helmChartVersion \
             -f ./base/external/ingress-nginx/values.yaml \
             --insecure-skip-tls-verify \
+            --allow-unreleased \
             --kubeconfig $KUBECONFIG
 
       - name: Diff External DNS
@@ -134,6 +138,7 @@ jobs:
             --version $helmChartVersion \
             -f ./base/external/external-dns/values.yaml \
             --insecure-skip-tls-verify \
+            --allow-unreleased \
             --kubeconfig $KUBECONFIG
 
       - name: Diff External Secrets
@@ -147,6 +152,7 @@ jobs:
             --version $helmChartVersion \
             -f ./base/external/external-secrets/values.yaml \
             --insecure-skip-tls-verify \
+            --allow-unreleased \
             --kubeconfig $KUBECONFIG
 
       - name: Diff Oauth2-proxy
@@ -165,6 +171,7 @@ jobs:
             --set config.cookieSecret='${{ secrets.OAUTH2PROXY_COOKIE_SECRET}}' \
             --set global.redis.password=$REDIS_PASSWORD \
             --insecure-skip-tls-verify \
+            --allow-unreleased \
             --kubeconfig $KUBECONFIG
 
       - name: Diff Trivy Operator
@@ -178,6 +185,7 @@ jobs:
             --version $helmChartVersion \
             -f ./base/external/trivy-operator/values.yaml \
             --insecure-skip-tls-verify \
+            --allow-unreleased \
             --kubeconfig $KUBECONFIG
 
       - name: Diff Kyverno
@@ -191,6 +199,7 @@ jobs:
             --version $helmChartVersion \
             -f ./base/external/kyverno/values.yaml \
             --insecure-skip-tls-verify \
+            --allow-unreleased \
             --kubeconfig $KUBECONFIG
 
       - name: Diff Kyverno Policy Reporter
@@ -204,6 +213,7 @@ jobs:
             --version $helmChartVersion \
             -f ./base/external/policy-reporter/values.yaml \
             --insecure-skip-tls-verify \
+            --allow-unreleased \
             --kubeconfig $KUBECONFIG
 
       - name: Test Kyverno Policies
@@ -231,6 +241,7 @@ jobs:
             --version $helmChartVersion \
             --allow-unreleased \
             --insecure-skip-tls-verify \
+            --allow-unreleased \
             --kubeconfig $KUBECONFIG
 
       - name: Diff Nfs-subdir-external-provisioner
@@ -244,6 +255,7 @@ jobs:
             --version $helmChartVersion \
             -f ./base/external/nfs-subdir-external-provisioner/values.yaml \
             --insecure-skip-tls-verify \
+            --allow-unreleased \
             --kubeconfig $KUBECONFIG
 
       - name: Diff Harbor
@@ -257,4 +269,5 @@ jobs:
             --version $helmChartVersion \
             -f ./base/external/harbor/values.yaml \
             --insecure-skip-tls-verify \
+            --allow-unreleased \
             --kubeconfig $KUBECONFIG
