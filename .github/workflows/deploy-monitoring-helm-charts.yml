@@ -27,7 +27,7 @@ env:
   grafanaAgentVersion: '0.42.0'
 
 jobs:
-  helm-lint-and-diff:
+  helm-upgrade:
     runs-on: self-hosted
 
     steps:
