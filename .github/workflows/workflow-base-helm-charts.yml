@@ -7,17 +7,17 @@ on:
     paths:
     - 'base/**'
     - '.github/workflows/build-base-helm-charts.yml'
-    - '.github/workflows/workflow-base-helm-charts.yml'
     - '.github/workflows/deploy-base-helm-charts.yml'
+    - '.github/workflows/workflow-base-helm-charts.yml'
   pull_request:
     branches:
     - main
     paths:
     - 'base/**'
     - '.github/workflows/build-base-helm-charts.yml'
-    - '.github/workflows/workflow-base-helm-charts.yml'
     - '.github/workflows/deploy-base-helm-charts.yml'
-  # Allows you to run this workflow manually from the Actions tab
+    - '.github/workflows/workflow-base-helm-charts.yml'
+
   workflow_dispatch:
 
 jobs:

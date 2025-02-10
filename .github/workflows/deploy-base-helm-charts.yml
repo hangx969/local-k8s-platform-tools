@@ -55,6 +55,16 @@ jobs:
           --password ${{ secrets.HARBOR_PASSWORD }} \
           --insecure
 
+    ###=======Upgrade Base ns Helm Charts=======###
+      - name: Upgrade Base ns
+        run: |
+          export chartDir='./base/helm-charts/base-ns'
+
+          helm upgrade -i commoninfra -n kube-system $chartDir \
+            --history-max 5 \
+            --values $chartDir/values.yaml \
+            --kubeconfig $KUBECONFIG
+
     ###=======Upgrade External Helm Charts=======###
       - name: Upgrade Capsule
         run: |
@@ -256,15 +266,7 @@ jobs:
       #       --insecure-skip-tls-verify \
       #       --kubeconfig $KUBECONFIG
 
-    ###=======Upgrade Base Helm Charts=======###
-      - name: Upgrade Base ns
-        run: |
-          export chartDir='./base/helm-charts/base-ns'
-
-          helm upgrade -i commoninfra -n kube-system $chartDir \
-            --history-max 5 \
-            --values $chartDir/values.yaml \
-            --kubeconfig $KUBECONFIG
+    ###=======Upgrade Custom Helm Charts=======###
 
       - name: Upgrade cert-manager Certificates
         run: |

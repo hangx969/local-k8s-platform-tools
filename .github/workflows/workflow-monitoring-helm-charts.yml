@@ -7,6 +7,7 @@ on:
     paths:
     - 'monitoring/**'
     - '.github/workflows/build-monitoring-helm-charts.yml'
+    - '.github/workflows/deploy-monitoring-helm-charts.yml'
     - '.github/workflows/workflow-monitoring.yml'
   pull_request:
     branches:
@@ -14,8 +15,9 @@ on:
     paths:
     - 'monitoring/**'
     - '.github/workflows/build-monitoring-helm-charts.yml'
+    - '.github/workflows/deploy-monitoring-helm-charts.yml'
     - '.github/workflows/workflow-monitoring.yml'
-  # Allows you to run this workflow manually from the Actions tab
+
   workflow_dispatch:
 
 jobs:
@@ -23,6 +25,7 @@ jobs:
     uses: ./.github/workflows/build-monitoring-helm-charts.yml
     secrets: inherit
 
-  # deploy-monitoring:
-  #   needs: build-monitoring
-  #   uses: ./.github/workflows/deploy-monitoring.yml
+  deploy-monitoring-helm-charts:
+    needs: build-monitoring-helm-charts
+    uses: ./.github/workflows/deploy-monitoring-helm-charts.yml
+    secrets: inherit

@@ -1,0 +1,148 @@
+name: Deploy Monitoring Helm Charts
+
+on:
+  workflow_call:
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  # Define kubeconfig file path and name
+  KUBECONFIG: '${{ github.workspace }}/.kube/kubeconfig'
+
+  # Define harbor URL
+  harborURL: 'harbor.hanxux.local'
+  harborProjectName: 'platform-tools-local'
+
+  # Define helm chart versions
+  # The syntax of the version is keeping the same as the github release file name
+  lokiVersion: '5.48.0'
+  promtailVersion: '6.15.5'
+  kubePrometheusStackVersion: '59.1.0'
+  tempoVersion: '1.8.0'
+  grafanaAgentVersion: '0.42.0'
+
+jobs:
+  helm-lint-and-diff:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate kubeconfig from repository secret
+        run: |
+          mkdir -p '${{ github.workspace }}/.kube' \
+          && echo '${{ secrets.HP_LOCAL_KUBECONFIG}}' | base64 -d > $KUBECONFIG \
+          && chmod 600 $KUBECONFIG
+
+      - name: Login Harbor
+        run: |
+          helm registry login '${{ env.harborURL }}' \
+          --username ${{ secrets.HARBOR_USERNAME }} \
+          --password ${{ secrets.HARBOR_PASSWORD }} \
+          --insecure
+
+      ###===========helm Upgrade External Helm Charts===============###
+      - name: Upgrade grafana-agent
+        run: |
+          export helmChartVersion=${{env.grafanaAgentVersion}}
+          export helmRepoName='grafana'
+          export helmChartName='grafana-agent'
+
+          helm upgrade -i grafana-agent -n monitoring \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
+            -f ./monitoring/external/grafana-agent/values.yaml \
+            --version $helmChartVersion \
+            --history-max 5 \
+            --insecure-skip-tls-verify \
+            --kubeconfig $KUBECONFIG
+
+      - name: Upgrade kube-prometheus-stack
+        run: |
+          export helmChartVersion=${{env.kubePrometheusStackVersion}}
+          export helmRepoName='prometheus-community'
+          export helmChartName='kube-prometheus-stack'
+
+          helm upgrade -i kube-prometheus-stack -n monitoring \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
+            -f ./monitoring/external/kube-prometheus-stack/values.yaml \
+            --version $helmChartVersion \
+            --history-max 5 \
+            --set grafana.adminPassword='${{ secrets.GRAFANA_ADMIN_PASSWORD}}' \
+            --insecure-skip-tls-verify \
+            --kubeconfig $KUBECONFIG
+
+      - name: Upgrade loki
+        run: |
+          export helmChartVersion=${{env.lokiVersion}}
+          export helmRepoName='grafana'
+          export helmChartName='loki'
+
+          helm upgrade -i loki -n monitoring \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
+            -f ./monitoring/external/loki/values.yaml \
+            --version $helmChartVersion \
+            --history-max 5 \
+            --insecure-skip-tls-verify \
+            --kubeconfig $KUBECONFIG
+
+      - name: Upgrade promtail
+        run: |
+          export helmChartVersion=${{env.promtailVersion}}
+          export helmRepoName='grafana'
+          export helmChartName='promtail'
+
+          helm upgrade -i promtail -n monitoring \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
+            -f ./monitoring/external/promtail/values.yaml \
+            --version $helmChartVersion \
+            --history-max 5 \
+            --insecure-skip-tls-verify \
+            --kubeconfig $KUBECONFIG
+
+      - name: Upgrade tempo
+        run: |
+          export helmChartVersion=${{env.tempoVersion}}
+          export helmRepoName='grafana'
+          export helmChartName='tempo'
+
+          helm upgrade -i tempo -n monitoring \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
+            -f ./monitoring/external/tempo/values.yaml \
+            --version $helmChartVersion \
+            --history-max 5 \
+            --insecure-skip-tls-verify \
+            --kubeconfig $KUBECONFIG
+
+      ###===========helm Upgrade Custom Helm Charts===============###
+      - name: Upgrade prometheus-rules helm chart
+        run: |
+          export chartDir='./monitoring/helm-charts/prometheus-rules'
+
+          helm upgrade -i prometheus-rules -n monitoring $chartDir \
+            -f $chartDir/values.yaml \
+            --history-max 5 \
+            --kubeconfig $KUBECONFIG
+
+      - name: Upgrade grafana-dashboards helm chart
+        run: |
+          export chartDir='./monitoring/helm-charts/grafana-dashboards'
+
+          helm upgrade -i grafana-dashboards -n monitoring $chartDir \
+            -f $chartDir/values.yaml \
+            --history-max 5 \
+            --kubeconfig $KUBECONFIG
+
+      # - name: Upgrade grafana-datasources helm chart
+      #   run: |
+      #     export $chartDir='./monitoring/helm-charts/grafana-datasources'
+
+      #     helm upgrade -i grafana-datasources -n monitoring $chartDir \
+      #       -f $chartDir/values.yaml \
+      #       --history-max 5 \
+      #       --kubeconfig $KUBECONFIG
