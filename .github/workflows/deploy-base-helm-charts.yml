@@ -250,7 +250,6 @@ jobs:
             --version $helmChartVersion \
             -f ./base/external/vpa/values.yaml \
             --insecure-skip-tls-verify \
-            --allow-unreleased \
             --kubeconfig $KUBECONFIG
 
       # - name: Upgrade Harbor
