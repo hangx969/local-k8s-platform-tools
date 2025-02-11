@@ -30,7 +30,7 @@ env:
   oauth2proxyVersion: '7.7.22'
   policyReportVersion: '2.24.2'
   reloaderVersion: '1.0.115'
-  trivyOperatorVersion: '0.24.1'
+  trivyOperatorVersion: '0.25.0'
   configSyncerVersion: 'v0.13.2'
 
 jobs:
