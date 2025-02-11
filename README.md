@@ -24,7 +24,22 @@
 | grafana                         | https://grafana.github.io/helm-charts                        | tempo                           | 1.8.0         |
 | strimzi                         | https://strimzi.io/charts/                                   | strimzi-kafka-operator          | 0.42.0        |
 | kafka-ui                        | https://provectus.github.io/kafka-ui-charts                  | kafka-ui                        | 0.7.6         |
-|                                 |                                                              |                                 |               |
+| fairwinds-stable                | https://charts.fairwinds.com/stable                          | vpa                             | 4.7.1         |
 
+## How to install a new tool via helm chart
 
+1. Get below infomation:
+   1. helm repo name
+   2. helm repo URL
+   3. helm chart name
+   4. helm chart version
+2. Download the helm chart and push to harbor with above infomation using [This workflow](https://github.com/hangx969/local-k8s-platform-tools/actions/workflows/workflow-pull-push-to-harbor.yml)
+3. If this tool will be installed in a new namespace, create namespace YAML manifest under base/helm-charts/base-ns/
+4. add the folder and values.yaml file of this tool
+5. add `helm diff` part to build workflow
+6. add `helm upgrade` part to deploy workflow
+7. push code to github toi trigger the workflow to install it. 
 
+## How to uninstall a helm release
+
+Use [This workflow](https://github.com/hangx969/local-k8s-platform-tools/actions/workflows/workflow-uninstall.yml), provide release name and namespace to uninstall it

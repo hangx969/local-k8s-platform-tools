@@ -32,6 +32,8 @@ env:
   reloaderVersion: '1.0.115'
   trivyOperatorVersion: '0.25.0'
   configSyncerVersion: 'v0.13.2'
+  vpaVersion: '4.7.1'
+
 
 jobs:
   helm-upgrade:
@@ -235,6 +237,20 @@ jobs:
             --history-max 5 \
             -f ./base/external/nfs-subdir-external-provisioner/values.yaml \
             --insecure-skip-tls-verify \
+            --kubeconfig $KUBECONFIG
+
+      - name: Upgrade VPA
+        run: |
+          export helmChartVersion=${{env.vpaVersion}}
+          export helmRepoName='fairwinds-stable'
+          export helmChartName='vpa'
+
+          helm upgrade -i vpa -n vpa \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
+            --version $helmChartVersion \
+            -f ./base/external/vpa/values.yaml \
+            --insecure-skip-tls-verify \
+            --allow-unreleased \
             --kubeconfig $KUBECONFIG
 
       # - name: Upgrade Harbor
