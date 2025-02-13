@@ -22,7 +22,7 @@ env:
   lokiVersion: '5.48.0'
   promtailVersion: '6.15.5'
   kubePrometheusStackVersion: '59.1.0'
-  tempoVersion: '1.8.0'
+  tempoVersion: '1.16.0'
   grafanaAgentVersion: '0.42.0'
 
 jobs:
