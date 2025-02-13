@@ -1,0 +1,23 @@
+controller:
+  flags:
+    on-by-default: true
+dashboard:
+  flags:
+    on-by-default: true
+
+  ingress:
+    enabled: true
+    ingressClassName: nginx-default
+    hosts:
+    - host: goldilocks.hanxux.local
+      paths:
+      - path: /
+        type: ImplementationSpecific
+    tls:
+      - secretName: goldilocks-tls-cert-secret
+        hosts:
+          - goldilocks.hanxux.local
+    annotations:
+      nginx.ingress.kubernetes.io/auth-url: "https://oauth2proxy.hanxux.local/oauth2/auth"
+      nginx.ingress.kubernetes.io/auth-signin: "https://oauth2proxy.hanxux.local/oauth2/start?rd=https%3A%2F%2Fgoldilocks.hanxux.local"
+

@@ -11,4 +11,4 @@ metrics-server:
   # metrics-server.enabled -- Whether or not the metrics server Helm chart should be installed
   enabled: true
   args:
-  - --kubelet-insecure-tls
+  - --kubelet-insecure-tls # temporary workaround for issue: https://github.com/kubernetes-sigs/metrics-server/issues/196

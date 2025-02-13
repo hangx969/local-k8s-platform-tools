@@ -33,7 +33,7 @@ env:
   trivyOperatorVersion: '0.25.0'
   configSyncerVersion: 'v0.13.2'
   vpaVersion: '4.7.1'
-
+  goldilocksVersion: '9.0.1'
 
 jobs:
   helm-upgrade:
@@ -81,6 +81,15 @@ jobs:
             --insecure-skip-tls-verify \
             --kubeconfig $KUBECONFIG
 
+      - name: Upgrade Capsule Tenants
+        run: |
+          export chartDir='./base/helm-charts/capsule-tenants'
+
+          helm upgrade -i capsule-tenants -n capsule-system $chartDir \
+            --history-max 5 \
+            --values $chartDir/values.yaml \
+            --kubeconfig $KUBECONFIG
+
       - name: Upgrade Cert-manager
         run: |
           export helmChartVersion=${{env.certManagerVersion}}
@@ -93,6 +102,15 @@ jobs:
             -f ./base/external/cert-manager/values.yaml \
             --version $helmChartVersion \
             --insecure-skip-tls-verify \
+            --kubeconfig $KUBECONFIG
+
+      - name: Upgrade cert-manager Certificates
+        run: |
+          export chartDir='./base/helm-charts/cert-manager-certificates'
+
+          helm upgrade -i cert-manager-certificates -n cert-manager $chartDir \
+            --history-max 5 \
+            --values $chartDir/values.yaml \
             --kubeconfig $KUBECONFIG
 
       - name: Upgrade Ingress-nginx
@@ -253,6 +271,20 @@ jobs:
             --insecure-skip-tls-verify \
             --kubeconfig $KUBECONFIG
 
+      - name: Upgrade goldilocks
+        run: |
+          export helmChartVersion=${{env.goldilocksVersion}}
+          export helmRepoName='fairwinds-stable'
+          export helmChartName='goldilocks'
+
+          helm upgrade -i goldilocks -n goldilocks \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
+            --version $helmChartVersion \
+            -f ./base/external/goldilocks/values.yaml \
+            --history-max 5 \
+            --insecure-skip-tls-verify \
+            --kubeconfig $KUBECONFIG
+
       # - name: Upgrade Harbor
       #   run: |
       #     export helmChartVersion=${{env.harborVersion}}
@@ -281,23 +313,4 @@ jobs:
       #       --insecure-skip-tls-verify \
       #       --kubeconfig $KUBECONFIG
 
-    ###=======Upgrade Custom Helm Charts=======###
-
-      - name: Upgrade cert-manager Certificates
-        run: |
-          export chartDir='./base/helm-charts/cert-manager-certificates'
-
-          helm upgrade -i cert-manager-certificates -n cert-manager $chartDir \
-            --history-max 5 \
-            --values $chartDir/values.yaml \
-            --kubeconfig $KUBECONFIG
-
-      - name: Upgrade Capsule Tenants
-        run: |
-          export chartDir='./base/helm-charts/capsule-tenants'
-
-          helm upgrade -i capsule-tenants -n capsule-system $chartDir \
-            --history-max 5 \
-            --values $chartDir/values.yaml \
-            --kubeconfig $KUBECONFIG
 
