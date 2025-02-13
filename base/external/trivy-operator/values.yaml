@@ -573,7 +573,7 @@ trivy:
   serverCustomHeaders: ~
   # serverCustomHeaders: "foo=bar"
 
-  # dbRegistry: "ghcr.io"
+  dbRegistry: "ghcr.io"
   # dbRepository: "aquasecurity/trivy-db"
 
   # -- The username for dbRepository authentication
