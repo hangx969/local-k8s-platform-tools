@@ -25,6 +25,7 @@
 | strimzi                         | https://strimzi.io/charts/                                   | strimzi-kafka-operator          | 0.42.0        |
 | kafka-ui                        | https://provectus.github.io/kafka-ui-charts                  | kafka-ui                        | 0.7.6         |
 | fairwinds-stable                | https://charts.fairwinds.com/stable                          | vpa                             | 4.7.1         |
+| fairwinds-stable                | https://charts.fairwinds.com/stable                          | goldilocks                      | 9.0.1         |
 
 ## How to install a new tool via helm chart
 
