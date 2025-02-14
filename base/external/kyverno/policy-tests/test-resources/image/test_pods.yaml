@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-latest-external
+spec:
+  containers:
+    - name: web
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-latest
+spec:
+  containers:
+    - name: web
+      image: someimageregistry.domain.cn/abc/def:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-versioned
+  labels:
+    role: myrole
+spec:
+  containers:
+    - name: web
+      image: abc/def:1234
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-versioned-external
+  labels:
+    role: myrole
+spec:
+  containers:
+    - name: web
+      image: nginx:1234
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-no-tag
+  labels:
+    role: myrole
+spec:
+  containers:
+    - name: web
+      image: nginx
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+---

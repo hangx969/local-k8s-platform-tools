@@ -1,0 +1,19 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cert-kafka-ui
+  namespace: kafka
+spec:
+  secretName: kafka-ui-tls-cert-secret
+  privateKey:
+    rotationPolicy: Always
+  commonName: kafka-ui.hanxux.local
+  dnsNames:
+    - kafka-ui.hanxux.local
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+  issuerRef:
+    name: selfsigned
+    kind: ClusterIssuer

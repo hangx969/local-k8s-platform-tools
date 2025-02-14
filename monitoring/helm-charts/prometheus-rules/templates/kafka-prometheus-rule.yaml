@@ -1,0 +1,45 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: kafka
+  namespace: monitoring
+spec:
+  groups:
+    - name: kafka
+      rules:
+        - alert: KafkaBrokerOffline
+          expr: count(kafka_server_replicamanager_leadercount{namespace="kafka",strimzi_io_cluster="kafka"}) < 3
+          labels:
+            severity: warning
+            namespace: monitoring
+          annotations:
+            summary: "One or more Kafka brokers offline"
+            description: "Performance of Kafka cluster may be degraded"
+            runbook: ""
+        - alert: KafkaBrokersOfflineCritical
+          expr: count(kafka_server_replicamanager_leadercount{namespace="kafka",strimzi_io_cluster="kafka"}) < 2
+          labels:
+            severity: critical
+            namespace: monitoring
+          annotations:
+            summary: "Two or more Kafka brokers offline"
+            description: "Performance of Kafka cluster may be heavily degraded"
+            runbook: ""
+        - alert: KafkaStorage
+          expr: kubelet_volume_stats_available_bytes{namespace="kafka"} / 1024 / 1024 / 1024 < 10
+          labels:
+            severity: warning
+            namespace: monitoring
+          annotations:
+            summary: "Storage for Kafka running out"
+            description: "Less than 10 GB remaining"
+            runbook: ""
+        - alert: KafkaStorageCritical
+          expr: kubelet_volume_stats_available_bytes{namespace="kafka"} / 1024 / 1024 / 1024 < 5
+          labels:
+            severity: critical
+            namespace: monitoring
+          annotations:
+            summary: "Storage for Kafka critically low"
+            description: "Less than 5 GB remaining"
+            runbook: ""

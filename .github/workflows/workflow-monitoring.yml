@@ -1,0 +1,31 @@
+name: Workflow Monitoring Helm Charts
+
+on:
+  push:
+    branches:
+    - main
+    paths:
+    - 'monitoring/**'
+    - '.github/workflows/build-monitoring-helm-charts.yml'
+    - '.github/workflows/deploy-monitoring-helm-charts.yml'
+    - '.github/workflows/workflow-monitoring.yml'
+  pull_request:
+    branches:
+    - main
+    paths:
+    - 'monitoring/**'
+    - '.github/workflows/build-monitoring-helm-charts.yml'
+    - '.github/workflows/deploy-monitoring-helm-charts.yml'
+    - '.github/workflows/workflow-monitoring.yml'
+
+  workflow_dispatch:
+
+jobs:
+  build-monitoring-helm-charts:
+    uses: ./.github/workflows/build-monitoring-helm-charts.yml
+    secrets: inherit
+
+  deploy-monitoring-helm-charts:
+    needs: build-monitoring-helm-charts
+    uses: ./.github/workflows/deploy-monitoring-helm-charts.yml
+    secrets: inherit

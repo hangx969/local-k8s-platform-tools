@@ -1,0 +1,167 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: kyverno-test-deploy-secrets
+  name: kyverno-test-deploy-secrets
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kyverno-test-deploy-secrets
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: kyverno-test-deploy-secrets
+    spec:
+      containers:
+      - image: kyverno/kyverno:1.0
+        name: kyverno
+        resources: {}
+        env:
+        - name: token
+          value: Hello
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: kyverno-test-deploy-no-sensitive-data
+  name: kyverno-test-deploy-no-sensitive-data
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kyverno-test-deploy-no-sensitive-data
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: kyverno-test-deploy-no-sensitive-data
+    spec:
+      containers:
+      - image: kyverno/kyverno:1.0
+        name: kyverno
+        resources: {}
+        env:
+        - name: config_file
+          value: Hello
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: kyverno-test-deploy-no-secrets
+  name: kyverno-test-deploy-no-secrets
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kyverno-test-deploy-no-secrets
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: kyverno-test-deploy-no-secrets
+    spec:
+      containers:
+      - image: kyverno/kyverno:1.0
+        name: kyverno
+        resources: {}
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: kyverno-test-ss-secrets
+  name: kyverno-test-ss-secrets
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kyverno-test-ss-secrets
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: kyverno-test-ss-secrets
+    spec:
+      containers:
+      - image: kyverno/kyverno:1.0
+        name: kyverno
+        resources: {}
+        env:
+        - name: password
+          value: Hello
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: kyverno-test-ss-no-secrets
+  name: kyverno-test-ss-no-secrets
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kyverno-test-ss-no-secrets
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: kyverno-test-ss-no-secrets
+    spec:
+      containers:
+      - image: kyverno/kyverno:1.0
+        name: kyverno
+        resources: {}
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    app: kyverno-test-ds-secrets
+  name: kyverno-test-ds-secrets
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kyverno-test-ds-secrets
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: kyverno-test-ds-secrets
+    spec:
+      containers:
+      - image: kyverno/kyverno:1.0
+        name: kyverno
+        resources: {}
+        env:
+        - name: config
+          value: /app/config
+        - name: Authorizatio
+          value: Hello
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    app: kyverno-test-ds-no-secrets
+  name: kyverno-test-ds-no-secrets
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kyverno-test-ds-no-secrets
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: kyverno-test-ds-no-secrets
+    spec:
+      containers:
+      - image: kyverno/kyverno:1.0
+        name: kyverno
+        resources: {}

@@ -1,0 +1,90 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-team-labels
+  annotations:
+    policies.kyverno.io/title: Require capsule annotation
+    policies.kyverno.io/category: Traceability
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/subject: Pod/Secret/Ingress/KafkaUser/KafkaTopic
+    pod-policies.kyverno.io/autogen-controllers: none
+    policies.kyverno.io/description: >-
+      There are a few system resources that are not under multi-tenancy.
+      They reside in specific namespaces.
+      All other resources should have capsule annotations for managing them.
+spec:
+  validationFailureAction: Audit
+  background: false
+  failurePolicy: Ignore
+  rules:
+  - name: kafka-team-label
+    match:
+      any:
+      - resources:
+          kinds:
+          - KafkaUser
+          - KafkaTopic
+    validate:
+      message: "An owning team label is required."
+      pattern:
+        metadata:
+          labels:
+            team: "?*"
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-capsule-labels
+  annotations:
+    policies.kyverno.io/title: Require capsule annotation
+    policies.kyverno.io/category: Traceability
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/subject: Pod/Secret/Ingress/KafkaUser/KafkaTopic
+    pod-policies.kyverno.io/autogen-controllers: none
+    policies.kyverno.io/description: >-
+      There are a few system resources that are not under multi-tenancy.
+      They reside in specific namespaces.
+      All other resources should have capsule annotations for managing them.
+spec:
+  validationFailureAction: Audit
+  background: false
+  failurePolicy: Ignore
+  rules:
+  - name: namespace-capsule-label
+    match:
+      resources:
+        kinds:
+        - Namespace
+    preconditions:
+    # Check that the resource is not one of the excluded namespaces
+    - key: "{{ request.object.metadata.name }}"
+      operator: NotIn
+      value:
+      - ambassador
+      - apicurio-schema-registry
+      - capsule-system
+      - cert-manager
+      - default
+      - external-dns
+      - external-secrets
+      - gatekeeper-system
+      - helm-release
+      - ingress-nginx
+      - kafka
+      - kafka-ui
+      - kube-node-lease
+      - kube-public
+      - kube-system
+      - kyverno
+      - monitoring
+      - oauth2-proxy
+      - policy-reporter
+      - reloader
+      - tigera-operator
+      - trivy-system
+    validate:
+      message: "A tennant label is required."
+      pattern:
+        metadata:
+          labels:
+            capsule.clastix.io/tenant: "?*"

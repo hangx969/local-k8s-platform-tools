@@ -1,0 +1,78 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: aks
+  namespace: monitoring
+spec:
+  groups:
+    - name: aks
+      rules:
+        - record: apiserver_request_duration_p95
+          expr: histogram_quantile(0.95, sum(rate(apiserver_request_duration_seconds_bucket{verb!="WATCH"}[5m])) by (le)) 
+        - record: apiserver_request_duration_p99
+          expr: histogram_quantile(0.99, sum(rate(apiserver_request_duration_seconds_bucket{verb!="WATCH"}[5m])) by (le)) 
+
+        - alert: ApiServerLatency
+          expr: histogram_quantile(0.99, sum(rate(apiserver_request_duration_seconds_bucket{verb!="WATCH"}[1m])) by (verb, le)) > 5
+          for: 5m
+          labels:
+            severity: warning
+            namespace: monitoring
+          annotations:
+            summary: "API server is responding slowly"
+            description: "Some requests consistently took more than 5 seconds to respond during the last 5 minutes. May indicate saturation."
+        - alert: ApiServerTraffic
+          expr: sum(rate(apiserver_request_total[1m])) == 0
+          for: 5m
+          labels:
+            severity: warning
+            namespace: monitoring
+          annotations:
+            summary: "API server received no traffic"
+            description: "No traffic registered during the last 5 minutes"
+        - alert: ApiServerErrors
+          expr: sum(rate(apiserver_request_total{code=~"5.."}[1m])) by (resource) > 0
+          for: 5m
+          labels:
+            severity: warning
+            namespace: monitoring
+          annotations:
+            summary: "API server is returning 5XX"
+            description: "Some responses consistently returned 5XX during the last 5 minutes"
+        - alert: ApiServerTooManyRequests
+          expr: sum (rate(apiserver_request_total[5m])) > 50
+          for: 10m
+          labels:
+            severity: warning
+            namespace: monitoring
+          annotations:
+            summary: "API server requests spike"
+            description: "More than 50 requests/second last 10 minutes"
+        - alert: AKS CPU overcommit
+          expr: sum(kube_node_status_allocatable{resource="cpu"}) - sum(namespace_cpu:kube_pod_container_resource_requests:sum) < 1
+          for: 10m
+          labels:
+            severity: warning
+            namespace: monitoring
+          annotations:
+            summary: "Less than 1 CPU left"
+            description: "Containers requested almost all CPU power. Autoscale should happen automatically"
+        - alert: AKS Memory overcommit
+          expr: (sum(kube_node_status_allocatable{resource="memory"}) - sum(namespace_memory:kube_pod_container_resource_requests:sum)) / 1024 / 1024 / 1024 < 3
+          for: 10m
+          labels:
+            severity: warning
+            namespace: monitoring
+          annotations:
+            summary: "Less than 3 GB left"
+            description: "Containers requested almost all available memory. Autoscale should happen automatically"
+
+        - alert: AKS Too Many Nodes
+          expr: sum(kube_node_info)>20
+          for: 10m
+          labels:
+            severity: critical
+            namespace: monitoring
+          annotations:
+            summary: "Cluster scaled up to {{ `{{$value}}` }}"
+            description: "Too many nodes in the cluster"

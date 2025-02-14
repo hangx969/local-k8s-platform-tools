@@ -1,0 +1,103 @@
+name: Build Kafka Helm Charts
+
+on:
+  workflow_call:
+
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  # Define kubeconfig file path and name
+  KUBECONFIG: '${{ github.workspace }}/.kube/kubeconfig'
+
+  # Define harbor URL
+  harborURL: 'harbor.hanxux.local'
+  harborProjectName: 'platform-tools-local'
+
+  # Define helm chart versions
+  strimziVersion: '0.42.0'
+  kafkaUiVersion: '0.7.6'
+  apicurioVersion: '2.6.6.Final'
+
+jobs:
+  helm-lint-and-diff:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate kubeconfig from repository secret
+        run: |
+          mkdir -p '${{ github.workspace }}/.kube' \
+          && echo '${{ secrets.HP_LOCAL_KUBECONFIG}}' | base64 -d > $KUBECONFIG \
+          && chmod 600 $KUBECONFIG
+
+      - name: Login Harbor
+        run: |
+          helm registry login '${{ env.harborURL }}' \
+          --username ${{ secrets.HARBOR_USERNAME }} \
+          --password ${{ secrets.HARBOR_PASSWORD }} \
+          --insecure
+
+      ###===========helm lint============###
+      - name: Helm Lint and template Kafka Config
+        run: |
+          helm lint ./kafka/helm-charts/kafka-config \
+          --values ./kafka/helm-charts/kafka-config/values.yaml
+
+          # helm template ./kafka/helm-charts/kafka-config \
+          # --values ./kafka/helm-charts/kafka-config/values.yaml \
+          # --dry-run \
+          # --debug
+
+      - name: Helm Lint and template kafka-ui-config
+        run: |
+          helm lint ./kafka/helm-charts/kafka-ui-config \
+          --values ./kafka/helm-charts/kafka-ui-config/values.yaml
+
+          # helm template ./kafka/helm-charts/kafka-ui-config \
+          # --values ./kafka/helm-charts/kafka-ui-config/values.yaml \
+          # --dry-run \
+          # --debug
+
+      # - name: Helm Lint and template apicurio
+      #   run: |
+      #     helm lint ./kafka/helm-charts/apicurio \
+      #     --values ./kafka/helm-charts/apicurio/values.yaml
+      #     helm template ./kafka/helm-charts/apicurio \
+      #     --values ./kafka/helm-charts/apicurio/values.yaml \
+      #     --dry-run \
+      #     --debug
+
+      ###===========helm diff===============###
+      - name: Diff strimzi-kafka-operator
+        run: |
+          export helmChartVersion=${{env.strimziVersion}}
+          export helmRepoName='strimzi'
+          export helmChartName='strimzi-kafka-operator'
+
+          helm diff upgrade strimzi-kafka-operator -n kafka \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
+            -f ./kafka/external/strimzi-kafka-operator/values.yaml \
+            --version $helmChartVersion \
+            --allow-unreleased \
+            --insecure-skip-tls-verify \
+            --kubeconfig $KUBECONFIG
+
+      - name: Diff kafka-ui
+        run: |
+          export helmChartVersion=${{env.kafkaUiVersion}}
+          export helmRepoName='kafka-ui'
+          export helmChartName='kafka-ui'
+
+          helm diff upgrade kafka-ui -n kafka \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
+            -f ./kafka/external/kafka-ui/values.yaml \
+            --version $helmChartVersion \
+            --allow-unreleased \
+            --insecure-skip-tls-verify \
+            --kubeconfig $KUBECONFIG

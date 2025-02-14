@@ -1,0 +1,732 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-should-succeed
+spec:
+  containers:
+    - name: web
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-host-network
+spec:
+  hostNetwork: true
+  containers:
+    - name: web
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-host-pid
+spec:
+  hostPID: true
+  containers:
+    - name: web
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-host-ipc
+spec:
+  hostIPC: true
+  containers:
+    - name: web
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-container-privilege
+spec:
+  containers:
+    - name: web
+      securityContext:
+        privileged: true
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-init-container-privilege
+spec:
+  initContainers:
+    - name: web
+      securityContext:
+        privileged: true
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-ephemeral-container-privilege
+spec:
+  ephemeralContainers:
+    - name: web
+      securityContext:
+        privileged: true
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-container-cap-ptrace
+spec:
+  containers:
+    - name: web
+      securityContext:
+        capabilities:
+          add:
+          - CAP_PTRACE
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-init-container-cap-ptrace
+spec:
+  initContainers:
+    - name: web
+      securityContext:
+        capabilities:
+          add:
+          - CAP_PTRACE
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-ephemeral-container-cap-ptrace
+spec:
+  ephemeralContainers:
+    - name: web
+      securityContext:
+        capabilities:
+          add:
+          - CAP_PTRACE
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-hostpath
+spec:
+  volumes:
+  - name: abc
+    hostPath:
+      path: /etc
+      type: Directory
+  containers:
+    - name: web
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-container-hostport
+spec:
+  containers:
+    - name: web
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          hostPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-init-container-hostport
+spec:
+  initContainers:
+    - name: web
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          hostPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-ephemeral-container-hostport
+spec:
+  ephemeralContainers:
+    - name: web
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          hostPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-apparmor
+  annotations:
+    container.apparmor.security.beta.kubernetes.io/mycontainer: unconfined
+spec:
+  ephemeralContainers:
+    - name: web
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-selinux-base-type-change
+spec:
+  securityContext:
+    seLinuxOptions:
+      type: mytype
+  ephemeralContainers:
+    - name: web
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-selinux-base-user-change
+spec:
+  securityContext:
+    seLinuxOptions:
+      user: myuser
+  ephemeralContainers:
+    - name: web
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-selinux-base-role-change
+spec:
+  securityContext:
+    seLinuxOptions:
+      role: myrole
+  ephemeralContainers:
+    - name: web
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-selinux-container-type-change
+spec:
+  containers:
+    - name: web
+      securityContext:
+        seLinuxOptions:
+          type: mytype
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-selinux-container-user-change
+spec:
+  containers:
+    - name: web
+      securityContext:
+        seLinuxOptions:
+          user: myuser
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-selinux-container-role-change
+spec:
+  containers:
+    - name: web
+      securityContext:
+        seLinuxOptions:
+          role: myrole
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+
+
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-selinux-init-container-type-change
+spec:
+  initContainers:
+    - name: web
+      securityContext:
+        seLinuxOptions:
+          type: mytype
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-selinux-init-container-user-change
+spec:
+  initContainers:
+    - name: web
+      securityContext:
+        seLinuxOptions:
+          user: myuser
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-selinux-init-container-role-change
+spec:
+  initContainers:
+    - name: web
+      securityContext:
+        seLinuxOptions:
+          role: myrole
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-selinux-ephemeral-container-type-change
+spec:
+  ephemeralContainers:
+    - name: web
+      securityContext:
+        seLinuxOptions:
+          type: mytype
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-selinux-ephemeral-container-user-change
+spec:
+  ephemeralContainers:
+    - name: web
+      securityContext:
+        seLinuxOptions:
+          user: myuser
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-selinux-ephemeral-container-role-change
+spec:
+  ephemeralContainers:
+    - name: web
+      securityContext:
+        seLinuxOptions:
+          role: myrole
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-proc-container
+spec:
+  containers:
+    - name: web
+      securityContext:
+        procMount: Unmasked
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-proc-init-container
+spec:
+  initContainers:
+    - name: web
+      securityContext:
+        procMount: Unmasked
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-proc-ephemeral-container
+spec:
+  ephemeralContainers:
+    - name: web
+      securityContext:
+        procMount: Unmasked
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-seccomp-base
+spec:
+  containers:
+    - name: web
+      securityContext:
+        seccompProfile:
+          type: Unconfined
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-seccomp-container
+spec:
+  containers:
+    - name: web
+      securityContext:
+        seccompProfile:
+          type: Unconfined
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-seccomp-init-container
+spec:
+  initContainers:
+    - name: web
+      securityContext:
+        seccompProfile:
+          type: Unconfined
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-seccomp-ephemeral-container
+spec:
+  ephemeralContainers:
+    - name: web
+      securityContext:
+        seccompProfile:
+          type: Unconfined
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-test-sysctls
+spec:
+  securityContext:
+    sysctls:
+    - name: net.core.somaxconn
+  containers:
+    - name: web
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: promtail-abc
+  namespace: monitoring
+  annotations:
+    test-name: kyverno-test-selinux-base-type-change
+spec:
+  securityContext:
+    seLinuxOptions:
+      type: mytype
+  ephemeralContainers:
+    - name: web
+      image: nginx:latest
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: custom-pod
+  namespace: monitoring
+spec:
+  ephemeralContainers:
+    - name: web
+      image: nginx:latest
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: trivy-pod
+  namespace: trivy-system
+spec:
+  ephemeralContainers:
+    - name: web
+      image: nginx:latest

@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: apicurio-schema-registry
+  namespace: apicurio-schema-registry
+spec:
+  selector:
+    matchLabels:
+      app: apicurio-schema-registry
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 30s
+  namespaceSelector:
+    matchNames:
+      - apicurio-schema-registry

@@ -1,0 +1,19 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cert-oauth2proxy
+  namespace: oauth2-proxy
+spec:
+  secretName: oauth2proxy-tls-cert-secret
+  privateKey:
+    rotationPolicy: Always
+  commonName: oauth2proxy.hanxux.local
+  dnsNames:
+    - oauth2proxy.hanxux.local
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+  issuerRef:
+    name: selfsigned
+    kind: ClusterIssuer

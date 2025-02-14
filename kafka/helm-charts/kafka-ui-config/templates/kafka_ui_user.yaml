@@ -1,0 +1,32 @@
+apiVersion: kafka.strimzi.io/v1beta1
+kind: KafkaUser
+metadata:
+  name: kafka-ui-client
+  labels:
+    strimzi.io/cluster: my-cluster
+  namespace: kafka
+spec:
+  authentication:
+    type: tls
+  authorization:
+    acls:
+      {{- with .Values.acls }}
+        {{- toYaml . | nindent 6 }}
+      {{- end }}
+      - resource:
+          name: 'kafka-ui-client'
+          patternType: literal
+          type: group
+        operations:
+          - All
+      - resource:
+          type: cluster
+        operations:
+          - Describe
+          - DescribeConfigs
+    type: simple
+  template:
+    secret:
+      metadata:
+        annotations:
+          kubed.appscode.com/sync: "config-sync-app=kafka-ui"

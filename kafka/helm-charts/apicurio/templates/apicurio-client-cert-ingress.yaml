@@ -1,0 +1,36 @@
+﻿{{ $ing := .Values.commonparameters.apicurio_registry.mtls }}
+{{- if $ing }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  # connect to apicurio using kafka certificates
+  name: apicurio-mtls
+  namespace: apicurio-schema-registry
+  annotations:
+    # Enable client certificate authentication
+    nginx.ingress.kubernetes.io/auth-tls-verify-client: "on"
+    # Create the secret containing the trusted ca certificates
+    nginx.ingress.kubernetes.io/auth-tls-secret: "kafka/kafka-clients-ca-cert"
+    # Specify the verification depth in the client certificates chain
+    # nginx.ingress.kubernetes.io/auth-tls-verify-depth: "1"
+    # Specify an error page to be redirected to verification errors
+    # nginx.ingress.kubernetes.io/auth-tls-error-page: "http://www.mysite.com/error-cert.html"
+    # Specify if certificates are passed to upstream server
+    # nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: "false"
+spec:
+  ingressClassName: nginx-default
+  rules:
+  - host: {{ $ing.host }}
+    http:
+      paths:
+      - path: {{ $ing.path }}
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: apicurio-schema-registry
+            port:
+              name: http
+  tls:
+  - hosts:
+    - {{ $ing.host }}
+{{- end }}
