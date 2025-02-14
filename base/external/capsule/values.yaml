@@ -45,7 +45,7 @@ manager:
   kind: Deployment
 
   image:
-     # -- Set the image registry of capsule.
+    # -- Set the image registry of capsule.
     registry: ghcr.io
     # -- Set the image repository of capsule.
     repository: projectcapsule/capsule
