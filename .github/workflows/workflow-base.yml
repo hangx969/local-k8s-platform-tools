@@ -9,14 +9,14 @@ on:
     - '.github/workflows/build-base-helm-charts.yml'
     - '.github/workflows/deploy-base-helm-charts.yml'
     - '.github/workflows/workflow-base.yml'
-  pull_request:
-    types:
-    - closed
-    paths:
-    - 'base/**'
-    - '.github/workflows/build-base-helm-charts.yml'
-    - '.github/workflows/deploy-base-helm-charts.yml'
-    - '.github/workflows/workflow-base.yml'
+  # pull_request:
+  #   types:
+  #   - closed
+  #   paths:
+  #   - 'base/**'
+  #   - '.github/workflows/build-base-helm-charts.yml'
+  #   - '.github/workflows/deploy-base-helm-charts.yml'
+  #   - '.github/workflows/workflow-base.yml'
 
   workflow_dispatch:
 
