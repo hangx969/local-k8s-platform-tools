@@ -10,8 +10,8 @@ on:
     - '.github/workflows/deploy-base-helm-charts.yml'
     - '.github/workflows/workflow-base.yml'
   pull_request:
-    branches:
-    - main
+    types:
+    - closed
     paths:
     - 'base/**'
     - '.github/workflows/build-base-helm-charts.yml'

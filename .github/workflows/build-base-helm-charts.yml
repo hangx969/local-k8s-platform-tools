@@ -5,6 +5,15 @@ on:
 
   workflow_dispatch:
 
+  pull_request:
+    type:
+    - opened
+    paths:
+    - 'base/**'
+    - '.github/workflows/build-base-helm-charts.yml'
+    - '.github/workflows/deploy-base-helm-charts.yml'
+    - '.github/workflows/workflow-base.yml'
+
 defaults:
   run:
     shell: bash
