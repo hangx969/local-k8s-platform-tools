@@ -128,7 +128,8 @@ updater:
   # updater.annotations -- Annotations to add to the updater deployment
   annotations: {}
   # updater.extraArgs -- A key-value map of flags to pass to the updater
-  extraArgs: {}
+  extraArgs:
+  # - "--min-replicas=1" 设置最小副本数为 1，确保当部署的副本数大于等于 1 时，VPA Updater 才会执行更新操作，防止在只有一个副本时频繁重启影响服务可用性。
   replicaCount: 1
   # updater.revisionHistoryLimit -- The number of old replicasets to retain, default is 10, 0 will garbage-collect old replicasets
   revisionHistoryLimit: 10

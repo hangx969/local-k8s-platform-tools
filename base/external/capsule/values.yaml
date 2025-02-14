@@ -106,11 +106,11 @@ manager:
   # -- Set the resource requests/limits for the Capsule manager container
   resources:
     limits:
-      cpu: 500m
-      memory: 256Mi
+      cpu: 15m
+      memory: 184Mi
     requests:
-      cpu: 200m
-      memory: 128Mi
+      cpu: 15m
+      memory: 184Mi
 
 # -- Configuration for `imagePullSecrets` so that you can use a private images registry.
 imagePullSecrets: []
