@@ -9,14 +9,14 @@ on:
     - '.github/workflows/build-kafka-helm-charts.yml'
     - '.github/workflows/deploy-kafka-helm-charts.yml'
     - '.github/workflows/workflow-kafka.yml'
-  pull_request:
-    branches:
-    - main
-    paths:
-    - 'kafka/**'
-    - '.github/workflows/build-kafka-helm-charts.yml'
-    - '.github/workflows/deploy-kafka-helm-charts.yml'
-    - '.github/workflows/workflow-kafka.yml'
+  # pull_request:
+  #   branches:
+  #   - main
+  #   paths:
+  #   - 'kafka/**'
+  #   - '.github/workflows/build-kafka-helm-charts.yml'
+  #   - '.github/workflows/deploy-kafka-helm-charts.yml'
+  #   - '.github/workflows/workflow-kafka.yml'
 
   workflow_dispatch:
 

@@ -5,6 +5,15 @@ on:
 
   workflow_dispatch:
 
+  pull_request:
+    type:
+    - opened
+    paths:
+    - 'kafka/**'
+    - '.github/workflows/build-kafka-helm-charts.yml'
+    - '.github/workflows/deploy-kafka-helm-charts.yml'
+    - '.github/workflows/workflow-kafka.yml'
+
 defaults:
   run:
     shell: bash
