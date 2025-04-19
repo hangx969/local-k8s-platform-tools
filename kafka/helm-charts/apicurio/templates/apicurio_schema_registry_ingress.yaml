@@ -1,0 +1,27 @@
+{{ $ing := .Values.commonparameters.apicurio_registry.ingress }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: apicurio-schema-registry
+  namespace: apicurio-schema-registry
+  {{- with $ing.annotations }}
+  annotations:
+    {{- . | toYaml | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if $ing.tls }}
+  tls:
+    - hosts:
+        - {{ $ing.host }}
+  {{- end }}
+  rules:
+    - host: {{ $ing.host }}
+      http:
+        paths:
+          - path: {{ $ing.path }}
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: apicurio-schema-registry
+                port:
+                  name: http

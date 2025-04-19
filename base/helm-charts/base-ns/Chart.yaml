@@ -1,0 +1,7 @@
+apiVersion: v2
+name: commoninfra
+description: Custom Helm chart for basic namespaces for platform tools
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+# Note： will be installed in kube-system namespace

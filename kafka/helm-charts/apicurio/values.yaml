@@ -1,0 +1,30 @@
+commonparameters:
+  apicurio_registry:
+    image:
+      registry: "quay.io"
+      repository: "apicurio/apicurio-registry"
+    kafka:
+      bootstrapServers: 'kafka-kafka-bootstrap.kafka.svc:9093'
+      security:
+        tls:
+          keystoreSecretName: apicurio
+          truststoreSecretName: kafka-cluster-ca-cert
+    resources:
+      limits:
+        cpu: 250m
+        memory: 512Mi
+      requests:
+        cpu: 100m
+        memory: 256Mi
+    extraEnv: []
+    ingress:
+      host: "apicurio.hanxux.local"
+      path: "/"
+      tls: true
+      annotations:
+        nginx.ingress.kubernetes.io/auth-signin: https://oauth2proxy.hanxux.local/oauth2/start?rd=https%3A%2F%2Fapicurio.hanxux.local
+        nginx.ingress.kubernetes.io/auth-url: https://oauth2proxy.hanxux.local/oauth2/auth
+      labels: {}
+    mtls:
+      host: "apicurio-mtls.hanxux.local"
+      path: "/"

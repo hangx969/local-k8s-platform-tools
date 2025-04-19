@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: infinity-datasource
+  namespace: monitoring
+  labels:
+    grafana_datasource: "1"
+data:
+  infinity_datasource.yaml: |-
+    apiVersion: 1
+    datasources:
+      - uid: "infinity-datasource"
+        name: Infinity
+        type: "yesoreyeram-infinity-datasource"
+        url: "" # Set this in query
+        basicAuth: false
+        basicAuthUser: ""
+        isDefault: false
+        jsonData:
+            global_queries: []
+            readOnly: false

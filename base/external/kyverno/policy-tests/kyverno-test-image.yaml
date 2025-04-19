@@ -1,0 +1,186 @@
+
+name: test_image_policies
+policies:
+  - ../policies/common/image/disallow-latest-tag-external-images.yaml
+  - ../policies/common/image/disallow-latest-tag-pod.yaml
+resources:
+  - test-resources/image/test_deployments.yaml
+  - test-resources/image/test_pods.yaml
+
+results:
+# Deployments
+## Require
+### Should pass
+  - policy: disallow-latest-tag-external-images
+    rule: require-image-tag-d
+    resource: kyverno-test-versioned
+    #namespace: <name> (OPTIONAL)
+    kind: Deployment
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: pass #<pass|fail|skip>
+
+  - policy: disallow-latest-tag-external-images
+    rule: require-image-tag-d
+    resource: kyverno-test-versioned-external
+    #namespace: <name> (OPTIONAL)
+    kind: Deployment
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: pass #<pass|fail|skip>
+
+  - policy: disallow-latest-tag-external-images
+    rule: require-image-tag-d
+    resource: kyverno-test-latest
+    #namespace: <name> (OPTIONAL)
+    kind: Deployment
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: pass #<pass|fail|skip>
+
+  - policy: disallow-latest-tag-external-images
+    rule: require-image-tag-d
+    resource: kyverno-test-multi-2
+    #namespace: <name> (OPTIONAL)
+    kind: Deployment
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: pass #<pass|fail|skip>
+
+### Should fail
+  - policy: disallow-latest-tag-external-images
+    rule: require-image-tag-d
+    resource: kyverno-test-no-tag
+    #namespace: <name> (OPTIONAL)
+    kind: Deployment
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+
+  - policy: disallow-latest-tag-external-images
+    rule: require-image-tag-d
+    resource: kyverno-test-multi-1
+    #namespace: <name> (OPTIONAL)
+    kind: Deployment
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+
+## Validate
+### Should pass
+
+  - policy: disallow-latest-tag-external-images
+    rule: validate-image-tag-d
+    resource: kyverno-test-versioned
+    #namespace: <name> (OPTIONAL)
+    kind: Deployment
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: pass #<pass|fail|skip>
+
+  - policy: disallow-latest-tag-external-images
+    rule: validate-image-tag-d
+    resource: kyverno-test-versioned-external
+    #namespace: <name> (OPTIONAL)
+    kind: Deployment
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: pass #<pass|fail|skip>
+
+### Should fail
+  - policy: disallow-latest-tag-external-images
+    rule: validate-image-tag-d
+    resource: kyverno-test-latest
+    #namespace: <name> (OPTIONAL)
+    kind: Deployment
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+
+  - policy: disallow-latest-tag-external-images
+    rule: validate-image-tag-d
+    resource: kyverno-test-latest-external
+    #namespace: <name> (OPTIONAL)
+    kind: Deployment
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+
+  - policy: disallow-latest-tag-external-images
+    rule: validate-image-tag-d
+    resource: kyverno-test-multi-2
+    #namespace: <name> (OPTIONAL)
+    kind: Deployment
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+
+  - policy: disallow-latest-tag-external-images
+    rule: validate-image-tag-d
+    resource: kyverno-test-multi-2
+    #namespace: <name> (OPTIONAL)
+    kind: Deployment
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+
+# Pods
+## Require
+### Should pass
+
+  - policy: disallow-latest-tag-pod
+    rule: require-image-tag
+    resource: kyverno-test-versioned
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: pass #<pass|fail|skip>
+
+  - policy: disallow-latest-tag-pod
+    rule: require-image-tag
+    resource: kyverno-test-versioned-external
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: pass #<pass|fail|skip>
+
+  - policy: disallow-latest-tag-pod
+    rule: require-image-tag
+    resource: kyverno-test-latest
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: pass #<pass|fail|skip>
+
+### Should fail
+  - policy: disallow-latest-tag-pod
+    rule: require-image-tag
+    resource: kyverno-test-no-tag
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+
+## Validate
+### Should pass
+
+  - policy: disallow-latest-tag-pod
+    rule: validate-image-tag
+    resource: kyverno-test-versioned
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: pass #<pass|fail|skip>
+
+  - policy: disallow-latest-tag-pod
+    rule: validate-image-tag
+    resource: kyverno-test-versioned-external
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: pass #<pass|fail|skip>
+
+### Should fail
+  - policy: disallow-latest-tag-pod
+    rule: validate-image-tag
+    resource: kyverno-test-latest-external
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>
+
+  - policy: disallow-latest-tag-pod
+    rule: validate-image-tag
+    resource: kyverno-test-latest
+    #namespace: <name> (OPTIONAL)
+    kind: Pod
+    #patchedResource: <path/to/patched/resource.yaml>
+    result: fail #<pass|fail|skip>

@@ -1,0 +1,32 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: disable-automountserviceaccounttoken
+  annotations:
+    policies.kyverno.io/title: Disable automountServiceAccountToken
+    policies.kyverno.io/category: Other, EKS Best Practices
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/subject: ServiceAccount
+    policies.kyverno.io/description: >-
+      A new ServiceAccount called `default` is created whenever a new Namespace is created.
+      Pods spawned in that Namespace, unless otherwise set, will be assigned this ServiceAccount.
+      This policy mutates any new `default` ServiceAccounts to disable auto-mounting of the token
+spec:
+  background: false
+  validationFailureAction: Audit
+  failurePolicy: Ignore
+  rules:
+  - name: disable-automountserviceaccounttoken
+    match:
+      any:
+      - resources:
+          kinds:
+          - ServiceAccount
+          names:
+          - default
+          namespaces:
+          # Only affect this namespace for test
+          - test-kyverno-policy
+    mutate:
+      patchStrategicMerge:
+        automountServiceAccountToken: false

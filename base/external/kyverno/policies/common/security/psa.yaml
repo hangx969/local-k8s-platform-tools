@@ -1,0 +1,44 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: psa
+  annotations:
+    policies.kyverno.io/title: Pod Security base-line
+    policies.kyverno.io/category: Security
+    policies.kyverno.io/severity: critical
+    policies.kyverno.io/subject: Pod
+    policies.kyverno.io/description: Monitor pods deployed in cluster for security best practices
+    pod-policies.kyverno.io/autogen-controllers: none
+spec:
+  background: false
+  validationFailureAction: Audit
+  failurePolicy: Ignore
+  rules:
+  - name: baseline
+    match:
+      any:
+      - resources:
+          kinds:
+          - Pod
+    validate:
+      podSecurity:
+        level: baseline
+        version: latest
+    preconditions:
+      any:
+      - key: "{{ request.object.metadata.name || '' }}"
+        operator: NotIn
+        value:
+        - 'kube-prometheus-stack-prometheus-node-exporter-*'
+        - 'loki-logs-*'
+        - 'promtail-*'
+      - key: "{{ request.object.metadata.namespace || '' }}"
+        operator: NotIn
+        value:
+        - 'monitoring'
+      all:
+      - key: "{{ request.object.metadata.namespace || '' }}"
+        operator: NotIn
+        value:
+        - 'trivy-system'
+        - 'dataprotection-microsoft'

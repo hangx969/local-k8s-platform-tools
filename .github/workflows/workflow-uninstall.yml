@@ -1,0 +1,37 @@
+name: Workflow Uninstall Helm Charts
+
+on:
+  workflow_dispatch:
+    inputs:
+      release-name:
+        description: 'Release Name of the helm chart'
+        required: true
+      namespace:
+        description: 'Namespace of the helm chart'
+        required: true
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  # Define kubeconfig file path and name
+  KUBECONFIG: '${{ github.workspace }}/.kube/kubeconfig'
+
+
+jobs:
+  uninstall-helm-charts:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Generate kubeconfig from repository secret
+        run: |
+          mkdir -p '${{ github.workspace }}/.kube' \
+          && echo '${{ secrets.HP_LOCAL_KUBECONFIG}}' | base64 -d > $KUBECONFIG \
+          && chmod 600 $KUBECONFIG
+
+      - name: uninstall helm chart
+        run: |
+          helm uninstall ${{ github.event.inputs.release-name }} -n ${{ github.event.inputs.namespace }} --kubeconfig $KUBECONFIG

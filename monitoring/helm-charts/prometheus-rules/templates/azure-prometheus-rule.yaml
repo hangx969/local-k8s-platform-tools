@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: azure
+  namespace: monitoring
+spec:
+  groups:
+    - name: azure-prometheus
+      rules:
+        - alert: ContainerRegistryHigh
+          expr: azure_microsoft_containerregistry_registries_storageused_average_bytes>450*1024*1024*1024
+          labels:
+            severity: critical
+            namespace: monitoring
+          annotations:
+            summary: "ACR storage is high"
+            description: "Azure Container Registry storage is high. Please remove unused containers"
