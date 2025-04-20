@@ -29,7 +29,7 @@ helm repo add --force-update $helm_repo_name $helm_repo_url
 helm repo update $helm_repo_name
 
 cd $helm_chart_dir
-#检查目录下是否已下载helm chart文件
+
 if [ -f $helm_chart_file_name-$helm_chart_version_new.tgz ]; then
     echo "helm chart file $helm_chart_file_name-$helm_chart_version_new.tgz exists."
 else
