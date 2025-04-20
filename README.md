@@ -1,6 +1,8 @@
 # k8s-platform-tools
 
-## Helm Chart List
+This repository installs below helm charts of cloud platform tools in a kubernetes cluster.
+
+## Helm Charts List
 
 | Repo Name                       | Repo URL                                                     | Chart Name                      | Chart Version | Github/Releases Page | ArtifactHub for Helm Charts |
 | ------------------------------- | ------------------------------------------------------------ | ------------------------------- | ------------- | ------------- | ------------- |
@@ -34,13 +36,13 @@
    2. helm repo URL
    3. helm chart name
    4. helm chart version
-2. Download the helm chart and push to harbor with above infomation using [This workflow](https://github.com/hangx969/local-k8s-platform-tools/actions/workflows/workflow-pull-push-to-harbor.yml)
-3. If this tool will be installed in a new namespace, create namespace YAML manifest under base/helm-charts/base-ns/
-4. add the folder and values.yaml file of this tool
-5. add `helm diff` part to build workflow
-6. add `helm upgrade` part to deploy workflow
-7. push code to github to trigger the workflow to install it.
+2. Download the helm chart and push to harbor with above infomation using [This workflow](https://github.com/hangx969/local-k8s-platform-tools/actions/workflows/workflow-pull-push-to-harbor.yml).
+3. If this helm chart will be installed in a new namespace, create namespace YAML manifest under base/helm-charts/base-ns/.
+4. Add the folder and values.yaml file of the helm chart.
+5. Add `helm diff` part to build workflow.
+6. Add `helm upgrade` part to deploy workflow.
+7. Push code to github to trigger the workflow to install it.
 
 ## How to uninstall a helm release
 
-Use [This workflow](https://github.com/hangx969/local-k8s-platform-tools/actions/workflows/workflow-uninstall.yml), provide release name and namespace to uninstall it
+Use [This workflow](https://github.com/hangx969/local-k8s-platform-tools/actions/workflows/workflow-uninstall.yml), provide release name and namespace to uninstall it.
