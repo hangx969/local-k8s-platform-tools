@@ -1,0 +1,113 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apicurio-schema-registry
+  namespace: apicurio-schema-registry
+  annotations:
+    runterrascan.io/skip: "[{\"rule\": \"AC-K8-NS-PO-H-0117\", \"comment\": \"Referencing secrets in environment variables is ok\"}]"
+spec:
+  selector:
+    matchLabels:
+      {{- include "apicurio-registry.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: registry
+  template:
+    metadata:
+      labels:
+        {{- include "apicurio-registry.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: registry
+    spec:
+      securityContext:
+        runAsUser: 1001
+        runAsGroup: 0
+        seccompProfile:
+          type: 'RuntimeDefault'
+      volumes:
+        - emptyDir: {}
+          name: tmp
+        - name: registry-kafkasql-tls-keystore
+          secret:
+            defaultMode: 420
+            secretName: {{ .Values.commonparameters.apicurio_registry.kafka.security.tls.keystoreSecretName }}
+        - name: registry-kafkasql-tls-truststore
+          secret:
+            defaultMode: 420
+            secretName: {{ .Values.commonparameters.apicurio_registry.kafka.security.tls.truststoreSecretName }}
+      containers:
+        - name: registry
+          securityContext:
+            runAsNonRoot: true
+            capabilities:
+              drop:
+              - ALL
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+          image: "quay.io/apicurio/apicurio-registry-kafkasql:{{ .Values.commonparameters.apicurio_registry.image.tag}}"
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+          env:
+            - name: REGISTRY_LOG_LEVEL
+              value: INFO
+            - name: LOG_LEVEL
+              value: INFO
+            - name: QUARKUS_PROFILE
+              value: prod
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              value: {{ .Values.commonparameters.apicurio_registry.kafka.bootstrapServers }}
+            - name: REGISTRY_PROPERTIES_PREFIX
+              value: REGISTRY_
+            - name: REGISTRY_KAFKA_COMMON_SECURITY_PROTOCOL
+              value: SSL
+            - name: REGISTRY_KAFKA_COMMON_SSL_KEYSTORE_TYPE
+              value: PKCS12
+            - name: REGISTRY_KAFKA_COMMON_SSL_TRUSTSTORE_TYPE
+              value: PKCS12
+            - name: REGISTRY_KAFKA_COMMON_SSL_KEYSTORE_LOCATION
+              value: "/etc/secrets/registry-kafkasql-tls-keystore/user.p12"
+            - name: REGISTRY_KAFKA_COMMON_SSL_TRUSTSTORE_LOCATION
+              value: "/etc/secrets/registry-kafkasql-tls-truststore/ca.p12"
+            - name: REGISTRY_KAFKA_COMMON_SSL_KEYSTORE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: user.password
+                  name: apicurio
+            - name: REGISTRY_KAFKA_COMMON_SSL_TRUSTSTORE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: ca.password
+                  name: kafka-cluster-ca-cert
+            {{- with .Values.commonparameters.apicurio_registry.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          volumeMounts:
+            - mountPath: /tmp
+              name: tmp
+            - mountPath: "/etc/secrets/registry-kafkasql-tls-keystore"
+              name: registry-kafkasql-tls-keystore
+              readOnly: true
+            - mountPath: "/etc/secrets/registry-kafkasql-tls-truststore"
+              name: registry-kafkasql-tls-truststore
+              readOnly: true
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: 8080
+            periodSeconds: 30
+            initialDelaySeconds: 15
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 8080
+            periodSeconds: 20
+            initialDelaySeconds: 15
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
+          {{- with .Values.commonparameters.apicurio_registry.resources }}
+          resources:
+            {{- . | toYaml | nindent 12 }}
+          {{- end }}

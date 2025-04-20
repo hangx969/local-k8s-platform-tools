@@ -1,0 +1,19 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cert-pact-broker
+  namespace: observability
+spec:
+  secretName: pact-broker-tls-cert-secret
+  privateKey:
+    rotationPolicy: Always
+  commonName: pact-broker.hanxux.local
+  dnsNames:
+    - pact-broker.hanxux.local
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+  issuerRef:
+    name: selfsigned
+    kind: ClusterIssuer

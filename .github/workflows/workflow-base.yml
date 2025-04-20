@@ -1,0 +1,31 @@
+name: Workflow Base Helm Charts
+
+on:
+  push:
+    branches:
+    - main
+    paths:
+    - 'base/**'
+    - '.github/workflows/build-base-helm-charts.yml'
+    - '.github/workflows/deploy-base-helm-charts.yml'
+    - '.github/workflows/workflow-base.yml'
+  # pull_request:
+  #   types:
+  #   - closed
+  #   paths:
+  #   - 'base/**'
+  #   - '.github/workflows/build-base-helm-charts.yml'
+  #   - '.github/workflows/deploy-base-helm-charts.yml'
+  #   - '.github/workflows/workflow-base.yml'
+
+  workflow_dispatch:
+
+jobs:
+  build-base-helm-charts:
+    uses: ./.github/workflows/build-base-helm-charts.yml
+    secrets: inherit
+
+  deploy-base-helm-charts:
+    needs: build-base-helm-charts
+    uses: ./.github/workflows/deploy-base-helm-charts.yml
+    secrets: inherit

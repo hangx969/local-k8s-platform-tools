@@ -1,0 +1,676 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Dashboard to work with ModSecurity and the OWASP Coreruleset.",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "gnetId": 15495,
+  "graphTooltip": 0,
+  "id": 53,
+  "links": [
+    {
+      "asDropdown": true,
+      "icon": "external link",
+      "includeVars": false,
+      "keepTime": false,
+      "tags": [],
+      "targetBlank": false,
+      "title": "Dashboards",
+      "tooltip": "",
+      "type": "dashboards",
+      "url": ""
+    }
+  ],
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 14,
+      "panels": [],
+      "title": "Graphs",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "P8E80F9AEF21F6940"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-BlYlRd"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 1
+      },
+      "id": 8,
+      "maxDataPoints": 1,
+      "options": {
+        "displayMode": "gradient",
+        "minVizHeight": 10,
+        "minVizWidth": 0,
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true,
+        "text": {}
+      },
+      "pluginVersion": "9.3.8",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P8E80F9AEF21F6940"
+          },
+          "editorMode": "code",
+          "expr": "sum by (client) (count_over_time({job=\"nginx_error\"} |= \"$service\" |= \"ModSecurity\" |= \"coreruleset\" | pattern \"<date> <time> [<level>]      <_> <_> ModSecurity: <modsec_action> [file \\\"/usr/local/etc/modsecurity/coreruleset/rules/<rule_set>.conf<_> [id \\\"<rule_id>\\\"<_>[ver \\\"     <owasp_version>\\\"]<_>, client: <client>, server: <server>, request: \\\"<request_method> <ressource> <http_version>\\\", <_>\" |  __error__=\"     \" [$__interval]))\n",
+          "hide": true,
+          "queryType": "range",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P8E80F9AEF21F6940"
+          },
+          "editorMode": "code",
+          "expr": "sum by (client) (count_over_time({job=\"ingress-nginx/ingress-nginx\"} |= \"$service\" |= \"ModSecurity\" |= \"coreruleset\" | json date=\"transaction.time_stamp\", id=\"transaction.messages[0].details.ruleId\", client=\"transaction.client_ip\", server=\"transaction.request.headers.host\" | __error__=\"\" [$__interval]))",
+          "legendFormat": "{{client}}",
+          "queryType": "range",
+          "refId": "B"
+        }
+      ],
+      "title": "Top Attackers",
+      "transformations": [],
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "P8E80F9AEF21F6940"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-BlYlRd"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 18,
+        "w": 9,
+        "x": 12,
+        "y": 1
+      },
+      "id": 5,
+      "maxDataPoints": 10,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {
+          "titleSize": 14
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "9.3.8",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P8E80F9AEF21F6940"
+          },
+          "editorMode": "code",
+          "expr": "sum by (server,msg, rule_id) (count_over_time({job=\"nginx_error\"} |= \"$service\" |= \"ModSecurity\" |= \"coreruleset\" | pattern \"<date> <time> [<level>] <_> ModSecurity: <modsec_action> [file \\\"/usr/local/etc/modsecurity/coreruleset/rules/<rule_set>.conf<_> [id \\\"<rule_id>\\\"<_> [msg \\\"<msg>\\\"] <_>[ver \\\"<owasp_version>\\\"]<_>] [tag <tags>] [host<_>, client: <client>, server: <server>, request: \\\"<request_method> <ressource> <http_version>\\\", <_>\" |  __error__=\"\" [$__interval]))",
+          "hide": true,
+          "queryType": "range",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P8E80F9AEF21F6940"
+          },
+          "editorMode": "code",
+          "expr": "sum by (server, msg, rule_id) (count_over_time({job=\"ingress-nginx/ingress-nginx\"} |= \"$service\" |= \"ModSecurity\" |= \"coreruleset\" | json date=\"transaction.time_stamp\", server=\"transaction.request.headers.host\", msg=\"transaction.messages[0].message\", rule_id=\"transaction.messages[0].details.ruleId\", client=\"transaction.client_ip\"| __error__=\"\" [$__interval]))",
+          "hide": false,
+          "legendFormat": "{{rule_id}}: {{msg}} {{server}}",
+          "queryType": "range",
+          "refId": "B"
+        }
+      ],
+      "title": "RuleId's at Vhost",
+      "transformations": [],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "P8E80F9AEF21F6940"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 32,
+            "gradientMode": "hue",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "always",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 10
+      },
+      "id": 7,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "8.1.7",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P8E80F9AEF21F6940"
+          },
+          "editorMode": "code",
+          "expr": "sum by (level) (count_over_time({job=\"nginx_error\"}|= \"$service\" |= \"ModSecurity\" |= \"coreruleset\" | pattern \"<date> <time> [<level>] <_     > ModSecurity: <modsec_action> [file \\\"/usr/local/etc/modsecurity/coreruleset/rules/<rule_set>.conf<_> [id \\\"<rule_id>\\\"<_> [msg \\\"<msg>\\\"] <_>[ver \\\"<owasp_version>\\\"]<_>] [tag <tags>] [host<_>, client: <client>, server: <server>, request: \\\"<request_method> <ressource> <http_version>\\\", <_>\" | __error__=\"\" [$__interval]))",
+          "hide": true,
+          "queryType": "range",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P8E80F9AEF21F6940"
+          },
+          "editorMode": "code",
+          "expr": "sum by (level) ({job=\"nginx_error\"}|= \"$service\" |= \"ModSecurity\"|= \"error\" |= \"coreruleset\" | pattern \"<date> <time> [<level>] <_> ModSecurity: modsec_action> [file \\\"/usr/local/etc/modsecurity/coreruleset/rules/<rule_set>.conf<_> [id \\\"<rule_id>\\\"<_> [msg \\\"<msg>\\\"] <_>[ver \\\"<owasp_version>\\\"]<_>] [tag <tags>] [host<_>, client: <client>, server: <server>, request: \\\"<request_method> <ressource> <http_version>\\\", <_>\")",
+          "hide": true,
+          "queryType": "range",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P8E80F9AEF21F6940"
+          },
+          "editorMode": "code",
+          "expr": "sum by (level) (count_over_time({job=\"ingress-nginx/ingress-nginx\"} |= \"$service\" |= \"ModSecurity\" |= \"coreruleset\" | json date=\"transaction.time_stamp\", client=\"transaction.client_ip\", server=\"transaction.request.headers.host\", request=\"transaction.request.method\", msg=\"transaction.messages[0].message\", level=\"transaction.messages[0].details.severity\" | __error__=\"\" [$__interval]))",
+          "hide": false,
+          "legendFormat": "Severity: {{level}}",
+          "queryType": "range",
+          "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P8E80F9AEF21F6940"
+          },
+          "editorMode": "code",
+          "expr": "sum by (level) ({job=\"ingress-nginx/ingress-nginx\"} |= \"$service\" |= \"ModSecurity\" |= \"coreruleset\" | json date=\"transaction.time_stamp\", client=\"transaction.client_ip\", server=\"transaction.request.headers.host\", request=\"transaction.request.method\", msg=\"transaction.messages[0].message\", level=\"transaction.messages[0].details.severity\" | __error__=\"\")",
+          "hide": true,
+          "queryType": "range",
+          "refId": "D"
+        }
+      ],
+      "thresholds": [],
+      "title": "ModSec Activity",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 19
+      },
+      "id": 16,
+      "panels": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P8E80F9AEF21F6940"
+          },
+          "gridPos": {
+            "h": 13,
+            "w": 24,
+            "x": 0,
+            "y": 2
+          },
+          "id": 4,
+          "options": {
+            "dedupStrategy": "none",
+            "enableLogDetails": true,
+            "prettifyLogMessage": true,
+            "showCommonLabels": true,
+            "showLabels": false,
+            "showTime": false,
+            "sortOrder": "Descending",
+            "wrapLogMessage": false
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "loki",
+                "uid": "P8E80F9AEF21F6940"
+              },
+              "editorMode": "code",
+              "expr": "{job=\"ingress-nginx/ingress-nginx\"}|= \"$service\" |= \"ModSecurity\" |= \"coreruleset\" | pattern \"<date> <time> [<level>] <_> ModSecurity: <modsec_action> [file \\\"/usr/local/etc/modsecurity/coreruleset/rules/<rule_set>.conf<_> [id \\\"<rule_id>\\\"<_> [msg \\\"<msg>\\\"] <_>[ver \\\"<owasp_version>\\\"]<_>] [tag <tags>] [host<_>, client: <client>, server: <server>, request: \\\"<request_method> <ressource> <http_version>\\\", <_>\"\n\n| line_format \"🕗️ {{.date}} {{.time}} 🌐 {{.server}} {{.request_method}} {{.ressource}} ❗️☠️ {{.client}} ☠️️❗️ \\n➡️ RuleSet: {{.rule_set}} RuleId: {{.rule_id}} {{.msg}}\\n🏷️ [tag {{.tags}}]\"",
+              "hide": true,
+              "queryType": "range",
+              "refId": "A"
+            },
+            {
+              "datasource": {
+                "type": "loki",
+                "uid": "P8E80F9AEF21F6940"
+              },
+              "editorMode": "code",
+              "expr": "{job=\"ingress-nginx/ingress-nginx\"}|= \"$service\" |= \"ModSecurity\" |= \"coreruleset\" | json timestamp=\"transaction.time_stamp\", hostname=\"transaction.request.headers.host\", method=\"transaction.request.method\", ip=\"transaction.client_ip\", ruleset=\"transaction.producer.components[0]\", ruleid0=\"transaction.messages[0].details.ruleId\", message0=\"transaction.messages[0].message\", tag0=\"transaction.messages[0].details.tags\", ruleid1=\"transaction.messages[1].details.ruleId\", message1=\"transaction.messages[1].message\", tag1=\"transaction.messages[1].details.tags\", resource=\"transaction.request.uri\"\n\n| line_format \"🕗️ {{.timestamp}} 🌐 {{.method}} {{.hostname}} {{.resource}} \\n❗️☠️ ClientIP: {{.ip}} ☠️️❗️ ➡️ RuleSet: {{.ruleset }}\\n RuleId: {{.ruleid0}} {{.message0}} \\n🏷️ [tag {{.tag0}}] \\n➡️ RuleId: {{.ruleid1}} {{.message0}} \\n🏷️ [tag {{.tag1}}]  \"",
+              "hide": false,
+              "queryType": "range",
+              "refId": "B"
+            }
+          ],
+          "title": "Error Logs  ➡️ only ModSecurity",
+          "type": "logs"
+        }
+      ],
+      "title": "Error Logs",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 20
+      },
+      "id": 12,
+      "panels": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P8E80F9AEF21F6940"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "continuous-BlPu"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 14,
+            "w": 24,
+            "x": 0,
+            "y": 3
+          },
+          "id": 10,
+          "options": {
+            "colorMode": "background",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "horizontal",
+            "reduceOptions": {
+              "calcs": [
+                "sum"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "text": {
+              "titleSize": 12,
+              "valueSize": 12
+            },
+            "textMode": "auto"
+          },
+          "pluginVersion": "9.3.8",
+          "targets": [
+            {
+              "datasource": {
+                "type": "loki",
+                "uid": "P8E80F9AEF21F6940"
+              },
+              "editorMode": "code",
+              "expr": "topk (2, sum by (server, ressource, rule_id, tags) (count_over_time({job=\"nginx_error\"}|= \"$service\" |= \"ModSecurity\" |= \"coreruleset\" | pattern \"<date> <time> [<level>] <_> ModSecurity: <modsec_action> [file \\\"/usr/local/etc/modsecurity/coreruleset/rules/<rule_set>.conf<_> [id \\\"<rule_id>\\\"<_> [msg \\\"<msg>\\\"] <_>[ver \\\"<owasp_version>\\\"]<_>] [tag <tags>] [host<_>, client: <client>, server: <server>, request: \\\"<request_method> <ressource> <http_version>\\\", <_>\"[$__interval])))",
+              "hide": true,
+              "queryType": "range",
+              "refId": "A"
+            },
+            {
+              "datasource": {
+                "type": "loki",
+                "uid": "P8E80F9AEF21F6940"
+              },
+              "editorMode": "code",
+              "expr": "topk (2, sum by (server, resource, rule_id, tags) (count_over_time({job=\"ingress-nginx/ingress-nginx\"}|= \"$service\" |= \"ModSecurity\" |= \"coreruleset\" | json server=\"transaction.request.headers.host\", resource=\"transaction.request.uri\", rule_id=\"transaction.messages[0].details.ruleId\", tags=\"transaction.messages[0].details.tags\", msg=\"transaction.messages[0].message\" | __error__=\"\" [$__interval])))",
+              "hide": false,
+              "legendFormat": "{{rule_id}}: {{server}}{{resource}} {{msg}}",
+              "queryType": "range",
+              "refId": "B"
+            }
+          ],
+          "title": "Exact Rule Infos",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P8E80F9AEF21F6940"
+          },
+          "gridPos": {
+            "h": 12,
+            "w": 24,
+            "x": 0,
+            "y": 17
+          },
+          "id": 6,
+          "options": {
+            "dedupStrategy": "none",
+            "enableLogDetails": true,
+            "prettifyLogMessage": true,
+            "showCommonLabels": true,
+            "showLabels": false,
+            "showTime": false,
+            "sortOrder": "Descending",
+            "wrapLogMessage": false
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "loki",
+                "uid": "P8E80F9AEF21F6940"
+              },
+              "expr": "{job=\"ingress-nginx/ingress-nginx\"}",
+              "queryType": "range",
+              "refId": "A"
+            }
+          ],
+          "title": "Error Logs all",
+          "type": "logs"
+        }
+      ],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "Details",
+      "type": "row"
+    }
+  ],
+  "refresh": "15m",
+  "schemaVersion": 37,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "allValue": " ",
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        },
+        "hide": 0,
+        "includeAll": true,
+        "label": "Service",
+        "multi": false,
+        "name": "service",
+        "options": [
+          {
+            "selected": true,
+            "text": "All",
+            "value": "$__all"
+          },
+          {
+            "selected": false,
+            "text": "apicurio-schema-registry",
+            "value": "apicurio-schema-registry"
+          },
+          {
+            "selected": false,
+            "text": "kafka-ui",
+            "value": "kafka-ui"
+          },
+          {
+            "selected": false,
+            "text": "map-delivery-web-ui",
+            "value": "map-delivery-web-ui"
+          },
+          {
+            "selected": false,
+            "text": "mapapps-tile-server-ingress",
+            "value": "mapapps-tile-server-ingress"
+          },
+          {
+            "selected": false,
+            "text": "mimex-consumer-ingress",
+            "value": "mimex-consumer-ingress"
+          },
+          {
+            "selected": false,
+            "text": "mimex-ingress",
+            "value": "mimex-ingress"
+          },
+          {
+            "selected": false,
+            "text": "alertmanager",
+            "value": "alertmanager"
+          },
+          {
+            "selected": false,
+            "text": "grafana",
+            "value": "grafana"
+          },
+          {
+            "selected": false,
+            "text": "prometheus",
+            "value": "prometheus"
+          },
+          {
+            "selected": false,
+            "text": "oauth2-proxy",
+            "value": "oauth2-proxy"
+          },
+          {
+            "selected": false,
+            "text": "mqtt",
+            "value": "mqtt"
+          },
+          {
+            "selected": false,
+            "text": "sonarqube",
+            "value": "sonarqube"
+          },
+          {
+            "selected": false,
+            "text": "event-control-request-service",
+            "value": "event-control-request-service"
+          },
+          {
+            "selected": false,
+            "text": "probing-request-service",
+            "value": "probing-request-service"
+          },
+          {
+            "selected": false,
+            "text": "zebra-fleet-map-ingress",
+            "value": "zebra-fleet-map-ingress"
+          }
+        ],
+        "query": "apicurio-schema-registry,kafka-ui,map-delivery-web-ui,mapapps-tile-server-ingress,mimex-consumer-ingress,mimex-ingress,alertmanager,grafana,prometheus,oauth2-proxy,mqtt,sonarqube,event-control-request-service,probing-request-service,zebra-fleet-map-ingress",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "NGINX ModSecurity OWASP CRS",
+  "uid": "a3ya23526t2",
+  "version": 2,
+  "weekStart": ""
+}

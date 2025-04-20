@@ -1,0 +1,16 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaNodePool
+metadata:
+  name: controller
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: {{ .Values.commonparameters.kafka.name }}
+spec:
+  replicas: {{ .Values.commonparameters.kafka.replicas }}
+  roles:
+    - controller
+  resources: {{- .Values.commonparameters.kafka.kafka_controller_resources | toYaml | trim | nindent 4 }}
+  storage:
+    type: {{ .Values.commonparameters.kafka.storage.type }}
+    size: {{ .Values.commonparameters.kafka.storage.size }}
+    class: {{ .Values.commonparameters.kafka.storage.class }}

@@ -1,0 +1,34 @@
+apiVersion: kafka.strimzi.io/v1beta1
+kind: KafkaUser
+metadata:
+  name: apicurio
+  labels:
+    strimzi.io/cluster: kafka
+  namespace: kafka
+spec:
+  authentication:
+    type: tls
+  authorization:
+    acls:
+      - operations:
+          - All
+        resource:
+          name: 'kafkasql-journal'
+          patternType: literal
+          type: topic
+      - operations:
+          - All
+        resource:
+          name: '*' #TODO: add registry.id when https://github.com/Apicurio/apicurio-registry-operator/issues/167 is solved.
+          patternType: literal
+          type: group
+      - operations:
+          - Describe
+        resource:
+          type: cluster
+    type: simple
+  template:
+    secret:
+      metadata:
+        annotations:
+          kubed.appscode.com/sync: "config-sync-app=apicurio-schema-registry"

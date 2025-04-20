@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: trivy
+  namespace: monitoring
+spec:
+  groups:
+    - name: trivy-prometheus
+      rules:
+        - alert: CriticalVulnerability
+          expr: avg by (namespace, resource_name) (quantile_over_time(0.5, trivy_image_vulnerabilities{severity="Critical"}[5m])) > 0
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Critical vulnerability"
+            description: "One or more critical vulnerabilities found"
