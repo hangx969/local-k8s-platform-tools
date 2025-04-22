@@ -59,7 +59,16 @@ nodeSelector: {}
 tolerations: []
 
 # Affinity rules for pod assignment
-affinity: {}
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+            - key: app.kubernetes.io/instance
+              operator: In
+              values:
+                - config-syncer
+        topologyKey: kubernetes.io/hostname
 
 # Security options the operator pod should run with.
 podSecurityContext:  # +doc-gen:break
