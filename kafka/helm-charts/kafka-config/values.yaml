@@ -9,7 +9,7 @@ commonparameters:
   kafka:
     name: kafka
     zoneredundant: "false"
-    version: 3.8.0
+    version: 3.9.0
     replicas: 1
     storage:
       type: persistent-claim
