@@ -340,5 +340,5 @@ jobs:
               -f ./base/external/pact-broker/values.yaml \
               --insecure-skip-tls-verify \
               --allow-unreleased \
-              --kubeconfig $KUBECONFIG \
+              --kubeconfig $KUBECONFIG
           fi;
