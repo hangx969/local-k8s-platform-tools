@@ -329,7 +329,7 @@ jobs:
               --insecure-skip-tls-verify \
               --kubeconfig $KUBECONFIG \
               --allow-unreleased \
-              --set global.postgresql.auth.password=$PASSWD
+              --set postgresql.auth.password=$PASSWD
           else
             PASSWD=$( openssl rand -base64 10 )
             kubectl create secret generic pact-pg-local-passwd  --from-literal=passwd=$PASSWD --namespace=observability --kubeconfig $KUBECONFIG
@@ -341,5 +341,5 @@ jobs:
               --insecure-skip-tls-verify \
               --allow-unreleased \
               --kubeconfig $KUBECONFIG \
-              --set global.postgresql.auth.password=$PASSWD
+              --set postgresql.auth.password=$PASSWD
           fi;
