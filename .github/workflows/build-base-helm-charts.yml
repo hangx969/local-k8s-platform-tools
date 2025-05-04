@@ -331,8 +331,8 @@ jobs:
               --allow-unreleased \
               --set postgresql.auth.password=$PASSWD
           else
-            PASSWD=$( openssl rand -base64 10 )
-            kubectl create secret generic pact-pg-local-passwd  --from-literal=passwd=$PASSWD --namespace=observability --kubeconfig $KUBECONFIG
+            PASSWD=$( cat /dev/urandom | tr -dc A-Za-z0-9 | head -c 10 )
+            kubectl create secret generic pact-pg-local-passwd --from-literal=passwd=$PASSWD --namespace=observability --kubeconfig $KUBECONFIG
 
             helm diff upgrade pact-broker -n observability \
               oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
@@ -341,5 +341,4 @@ jobs:
               --insecure-skip-tls-verify \
               --allow-unreleased \
               --kubeconfig $KUBECONFIG \
-              --set postgresql.auth.password=$PASSWD
           fi;

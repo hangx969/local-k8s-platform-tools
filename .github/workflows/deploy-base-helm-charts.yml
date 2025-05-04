@@ -288,11 +288,10 @@ jobs:
               --history-max 5 \
               --insecure-skip-tls-verify \
               --kubeconfig $KUBECONFIG \
-              --set global.postgresql.auth.password=$PASSWD
+              --set postgresql.auth.password=$PASSWD
           else
-            PASSWD=$( openssl rand -base64 10 )
-
-            kubectl create secret generic pact-pg-local-passwd  --from-literal=passwd=$PASSWD --namespace=observability --kubeconfig $KUBECONFIG
+            PASSWD=$( cat /dev/urandom | tr -dc A-Za-z0-9 | head -c 10 )
+            kubectl create secret generic pact-pg-local-passwd --from-literal=passwd=$PASSWD --namespace=observability --kubeconfig $KUBECONFIG
 
             helm upgrade -i pact-broker -n observability \
               oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
@@ -301,61 +300,4 @@ jobs:
               --history-max 5 \
               --insecure-skip-tls-verify \
               --kubeconfig $KUBECONFIG \
-              --set global.postgresql.auth.password=$PASSWD
           fi;
-
-      # - name: Upgrade Harbor
-      #   run: |
-      #     export helmChartVersion=${{env.harborVersion}}
-      #     export helmRepoName='harbor'
-      #     export helmChartName='harbor'
-
-      #     helm upgrade -i harbor -n harbor \
-      #       oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
-      #       --version $helmChartVersion \
-      #       --history-max 5 \
-      #       -f ./base/external/harbor/values.yaml \
-      #       --insecure-skip-tls-verify \
-      #       --kubeconfig $KUBECONFIG
-
-      # - name: Upgrade Config-syncer
-      #   run: |
-      #     export helmChartVersion=${{env.configSyncerVersion}}
-      #     export helmRepoName='appscode'
-      #     export helmChartName='kubed'
-
-      #     helm upgrade -i config-syncer -n config-syncer \
-      #       oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
-      #       --version $helmChartVersion \
-      #       --history-max 5 \
-      #       -f ./base/external/config-syncer/values.yaml \
-      #       --insecure-skip-tls-verify \
-      #       --kubeconfig $KUBECONFIG
-
-      # - name: Upgrade Kyverno
-      #   run: |
-      #     export helmChartVersion=${{env.kyvernoVersion}}
-      #     export helmRepoName='kyverno'
-      #     export helmChartName='kyverno'
-
-      #     helm upgrade -i kyverno -n kyverno \
-      #       oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
-      #       --version $helmChartVersion \
-      #       --history-max 5 \
-      #       -f ./base/external/kyverno/values.yaml \
-      #       --insecure-skip-tls-verify \
-      #       --kubeconfig $KUBECONFIG
-
-      # - name: Upgrade VPA
-      #   run: |
-      #     export helmChartVersion=${{env.vpaVersion}}
-      #     export helmRepoName='fairwinds-stable'
-      #     export helmChartName='vpa'
-
-      #     helm upgrade -i vpa -n vpa \
-      #       oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
-      #       --version $helmChartVersion \
-      #       -f ./base/external/vpa/values.yaml \
-      #       --history-max 5 \
-      #       --insecure-skip-tls-verify \
-      #       --kubeconfig $KUBECONFIG
