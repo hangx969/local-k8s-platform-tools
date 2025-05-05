@@ -42,7 +42,7 @@ postgresql:
     database: bitnami_broker
 
     # -- Name of existing secret to use for PostgreSQL credentials
-    existingSecret: "pact-pg-local-passwd"
+    existingSecret: ""
 
     # The secret keys Postgres will look for to retrieve the relevant password
     secretKeys:
