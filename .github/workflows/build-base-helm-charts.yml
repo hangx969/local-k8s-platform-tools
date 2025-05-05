@@ -319,25 +319,10 @@ jobs:
           export helmRepoName='pact-broker'
           export helmChartName='pact-broker'
 
-          if kubectl get secret pact-pg-local-passwd -n observability --kubeconfig $KUBECONFIG 2>&1; then
-            PASSWD=$(kubectl get secret pact-pg-local-passwd -n observability --kubeconfig $KUBECONFIG -o jsonpath="{.data.passwd}" | base64 --decode)
-
-            helm diff upgrade pact-broker -n observability \
-              oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
-              --version $helmChartVersion \
-              -f ./base/external/pact-broker/values.yaml \
-              --insecure-skip-tls-verify \
-              --kubeconfig $KUBECONFIG \
-              --allow-unreleased
-          else
-            PASSWD=$( openssl rand -base64 10 )
-            kubectl create secret generic pact-pg-local-passwd --from-literal=passwd=$PASSWD --namespace=observability --kubeconfig $KUBECONFIG
-
-            helm diff upgrade pact-broker -n observability \
-              oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
-              --version $helmChartVersion \
-              -f ./base/external/pact-broker/values.yaml \
-              --insecure-skip-tls-verify \
-              --allow-unreleased \
-              --kubeconfig $KUBECONFIG
-          fi;
+          helm diff upgrade pact-broker -n observability \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
+            --version $helmChartVersion \
+            -f ./base/external/pact-broker/values.yaml \
+            --insecure-skip-tls-verify \
+            --allow-unreleased \
+            --kubeconfig $KUBECONFIG
