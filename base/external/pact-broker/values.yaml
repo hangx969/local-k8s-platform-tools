@@ -23,17 +23,17 @@ ingress:
     # -- ingress.tls.secretName The name to which the TLS Secret will be called
     secretName: "pact-broker-tls-cert-secret"
 
-# PostgreSQL [chart configuration](https://github.com/bitnami/charts/blob/master/bitnami/postgresql/values.yaml)
-postgresql:
+# # PostgreSQL [chart configuration](https://github.com/bitnami/charts/blob/master/bitnami/postgresql/values.yaml)
+# postgresql:
 
-  # -- Switch to enable or disable the PostgreSQL helm chart
-  enabled: true
+#   # -- Switch to enable or disable the PostgreSQL helm chart
+#   enabled: true
 
-  # The authentication details of the Postgres database
-  auth:
+#   # The authentication details of the Postgres database
+#   auth:
 
-    # -- Name for a custom user to create
-    username: bn_broker
+#     # -- Name for a custom user to create
+#     username: bn_broker
 
-    # -- Password for the custom user to create
-    password: "abc123abc123"
+#     # -- Password for the custom user to create
+#     password: "abc123abc123"
