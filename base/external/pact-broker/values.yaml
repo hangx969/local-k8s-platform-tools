@@ -37,24 +37,3 @@ postgresql:
 
     # -- Password for the custom user to create
     password: "abc123abc123"
-
-    # -- Name for a custom database to create
-    database: bitnami_broker
-
-    # -- Name of existing secret to use for PostgreSQL credentials
-    existingSecret: ""
-
-    # The secret keys Postgres will look for to retrieve the relevant password
-    secretKeys:
-
-      # -- The key in which Postgres well look for, for the admin password, in the existing Secret
-      adminPasswordKey: "password"
-
-      # -- The key in which Postgres well look for, for the user password, in the existing Secret
-      userPasswordKey: "password"
-
-      # -- The key in which Postgres well look for, for the replication password, in the existing Secret
-      replicationPasswordKey: "password"
-
-  # -- PostgreSQL architecture (`standalone` or `replication`)
-  architecture: standalone
