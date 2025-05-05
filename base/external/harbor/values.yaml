@@ -52,7 +52,7 @@ persistence:
 
     # If external database is used, the following settings for database will be ignored
     database:
-      storageClass: "sc-nfs"
+      storageClass: ""
       accessMode: ReadWriteMany
       size: 1Gi
 
