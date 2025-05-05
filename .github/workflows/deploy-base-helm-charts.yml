@@ -299,5 +299,6 @@ jobs:
               -f ./base/external/pact-broker/values.yaml \
               --history-max 5 \
               --insecure-skip-tls-verify \
-              --kubeconfig $KUBECONFIG
+              --kubeconfig $KUBECONFIG \
+              --set postgresql.auth.password=$PASSWD
           fi;
