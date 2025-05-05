@@ -27,7 +27,7 @@ ingress:
 postgresql:
 
   # -- Switch to enable or disable the PostgreSQL helm chart
-  enabled: false
+  enabled: true
 
   # The authentication details of the Postgres database
   auth:
@@ -36,7 +36,7 @@ postgresql:
     username: bn_broker
 
     # -- Password for the custom user to create
-    password: ""
+    password: "abc123abc123"
 
     # -- Name for a custom database to create
     database: bitnami_broker
