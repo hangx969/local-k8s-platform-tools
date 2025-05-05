@@ -48,13 +48,13 @@ postgresql:
     secretKeys:
 
       # -- The key in which Postgres well look for, for the admin password, in the existing Secret
-      adminPasswordKey: ""
+      adminPasswordKey: "password"
 
       # -- The key in which Postgres well look for, for the user password, in the existing Secret
-      userPasswordKey: ""
+      userPasswordKey: "password"
 
       # -- The key in which Postgres well look for, for the replication password, in the existing Secret
-      replicationPasswordKey: ""
+      replicationPasswordKey: "password"
 
   # -- PostgreSQL architecture (`standalone` or `replication`)
   architecture: standalone
