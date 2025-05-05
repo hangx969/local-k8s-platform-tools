@@ -27,7 +27,7 @@ ingress:
 postgresql:
 
   # -- Switch to enable or disable the PostgreSQL helm chart
-  enabled: true
+  enabled: false
 
   # The authentication details of the Postgres database
   auth:
