@@ -331,7 +331,7 @@ jobs:
               --allow-unreleased \
               --set postgresql.auth.password=$PASSWD
           else
-            PASSWD=$( tr -dc A-Za-z0-9 </dev/urandom | awk '{print substr($0, 1, 10)}' )
+            PASSWD=$( openssl rand -base64 10 )
             kubectl create secret generic pact-pg-local-passwd --from-literal=passwd=$PASSWD --namespace=observability --kubeconfig $KUBECONFIG
 
             helm diff upgrade pact-broker -n observability \
