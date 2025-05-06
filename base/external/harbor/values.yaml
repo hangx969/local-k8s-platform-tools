@@ -58,7 +58,7 @@ persistence:
 
     # If external Redis is used, the following settings for Redis will be ignored
     redis:
-      storageClass: "sc-nfs"
+      storageClass: ""
       accessMode: ReadWriteMany
       size: 1Gi
       annotations: {}
