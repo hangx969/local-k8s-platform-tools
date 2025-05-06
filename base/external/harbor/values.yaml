@@ -52,13 +52,13 @@ persistence:
 
     # If external database is used, the following settings for database will be ignored
     database:
-      storageClass: ""
+      storageClass: "sc-nfs"
       accessMode: ReadWriteMany
       size: 1Gi
 
     # If external Redis is used, the following settings for Redis will be ignored
     redis:
-      storageClass: ""
+      storageClass: "sc-nfs"
       accessMode: ReadWriteMany
       size: 1Gi
       annotations: {}
@@ -114,21 +114,6 @@ trivy:
 
 database:
   type: internal
-  external:
-    host: "10.107.214.50"
-    port: "5432"
-    username: "test"
-    password: "password"
-    coreDatabase: "registry"
 
 redis:
-  # if external Redis is used, set "type" to "external"
-  # and fill the connection information in "external" section
   type: internal
-  external:
-    # support redis, redis+sentinel
-    # addr for redis: <host_redis>:<port_redis>
-    # addr for redis+sentinel: <host_sentinel1>:<port_sentinel1>,<host_sentinel2>:<port_sentinel2>,<host_sentinel3>:<port_sentinel3>
-    addr: "10.106.153.182:6379"
-    username: "test"
-    password: "password"
