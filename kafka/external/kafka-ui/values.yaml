@@ -1,83 +1,8 @@
 replicaCount: 1
 
-image:
-  registry: docker.io
-  repository: provectuslabs/kafka-ui
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
-
-imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
-
-serviceAccount:
-  # Specifies whether a service account should be created
-  create: true
-  # Annotations to add to the service account
-  annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
-
-existingConfigMap: ""
 yamlApplicationConfig:
   server:
     max-http-header-size: 20000
-  # kafka:
-  #   clusters:
-  #     - name: my-cluster
-  #       bootstrapServers: my-cluster-kafka-bootstrap.kafka.svc:9093
-  # # spring:
-  # #   security:
-  # #     oauth2:
-  # auth:
-  #   type: disabled
-  # management:
-  #   health:
-  #     ldap:
-  #       enabled: false
-yamlApplicationConfigConfigMap:
-  {}
-  # keyName: config.yml
-  # name: configMapName
-existingSecret: ""
-envs:
-  secret: {}
-  config: {}
-
-networkPolicy:
-  enabled: false
-  egressRules:
-    ## Additional custom egress rules
-    ## e.g:
-    ## customRules:
-    ##   - to:
-    ##       - namespaceSelector:
-    ##           matchLabels:
-    ##             label: example
-    customRules: []
-  ingressRules:
-    ## Additional custom ingress rules
-    ## e.g:
-    ## customRules:
-    ##   - from:
-    ##       - namespaceSelector:
-    ##           matchLabels:
-    ##             label: example
-    customRules: []
-
-podAnnotations: {}
-podLabels: {}
-
-## Annotations to be added to kafka-ui Deployment
-##
-annotations: {}
-
-## Set field schema as HTTPS for readines and liveness probe
-##
-probes:
-  useHttpsScheme: false
 
 podSecurityContext:
   fsGroup: 2000
@@ -90,15 +15,6 @@ securityContext:
   runAsNonRoot: true
   runAsUser: 1000
 
-service:
-  type: ClusterIP
-  port: 80
-  # In case of service type LoadBalancer, you can specify reserved static IP
-  # loadBalancerIP: 10.11.12.13
-  # if you want to force a specific nodePort. Must be use with service.type=NodePort
-  # nodePort:
-
-# Ingress configuration
 ingress:
   # Enable ingress resource
   enabled: true
@@ -127,12 +43,6 @@ ingress:
     # the name of a pre-created Secret containing a TLS private key and certificate
     secretName: "cert-kafka-ui"
 
-  # HTTP paths to add to the Ingress before the default path
-  precedingPaths: []
-
-  # Http paths to add to the Ingress after the default path
-  succeedingPaths: []
-
 resources:
   limits:
     cpu: 200m
@@ -146,15 +56,6 @@ autoscaling:
   minReplicas: 1
   maxReplicas: 2
   targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
-
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
-
-initContainers: {}
 
 env:
   - name: MANAGEMENT_HEALTH_LDAP_ENABLED
@@ -172,7 +73,7 @@ env:
   - name: KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS
     value: my-cluster-kafka-bootstrap.kafka.svc:9092
   #- name: KAFKA_CLUSTERS_0_SCHEMAREGISTRY
-    #value: http://apicurio-schema-registry.apicurio-schema-registry.svc:8080/apis/ccompat/v6
+    # value: http://apicurio-schema-registry.apicurio-schema-registry.svc:8080/apis/ccompat/v6
 #   - name: KAFKA_CLUSTERS_0_PROPERTIES_SSL_TRUSTSTORE_TYPE
 #     value: "PKCS12"
 #   - name: KAFKA_CLUSTERS_0_PROPERTIES_SSL_TRUSTSTORE_PASSWORD
