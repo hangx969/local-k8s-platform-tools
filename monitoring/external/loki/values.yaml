@@ -125,6 +125,9 @@ ingress:
   # -- TLS configuration for the ingress. Hosts passed through the `tpl` function to allow templating
   tls: []
 
+test:
+  enabled: false
+
 extraObjects:
 - apiVersion: v1
   kind: ConfigMap
