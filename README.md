@@ -29,6 +29,7 @@ This repository installs below helm charts of cloud platform tools in a kubernet
 | fairwinds-stable                | https://charts.fairwinds.com/stable                          | vpa                             | 4.7.1         | https://github.com/kubernetes/autoscaler/releases | https://artifacthub.io/packages/helm/fairwinds-stable/vpa | [vpa](https://github.com/hangx969/learning-notes/blob/main/Docker-Kubernetes/helm/helm%E9%83%A8%E7%BD%B2vpa.md) |
 | fairwinds-stable                | https://charts.fairwinds.com/stable                          | goldilocks                      | 9.0.1         | https://github.com/FairwindsOps/goldilocks/releases | https://artifacthub.io/packages/helm/fairwinds-stable/goldilocks | [goldilocks](https://github.com/hangx969/learning-notes/blob/main/Docker-Kubernetes/helm/helm%E9%83%A8%E7%BD%B2goldilock.md) |
 | pact-broker | https://pact-foundation.github.io/pact-broker-chart/ | pact-broker | 1.1.0 | https://github.com/pact-foundation/pact-broker-chart/releases | N/A | [pact-broker](https://github.com/hangx969/learning-notes/blob/main/Docker-Kubernetes/helm/helm%E9%83%A8%E7%BD%B2pact-broker.md) |
+| jaegertracing | https://jaegertracing.github.io/helm-charts | jaeger | 3.4.1 | https://github.com/jaegertracing/helm-charts/releases | https://artifacthub.io/packages/helm/jaegertracing/jaeger |  |
 
 ## How to install a new tool via helm chart
 
