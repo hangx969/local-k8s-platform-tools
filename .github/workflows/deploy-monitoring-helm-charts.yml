@@ -137,7 +137,7 @@ jobs:
           export helmChartName='jaeger'
 
           # Create Badger PVC
-          kubectl apply -f $DIRECTORY/external/jaeger/storage/pvc.yaml -n monitoring
+          kubectl apply -f $DIRECTORY/external/jaeger/storage/pvc-jaeger.yaml -n monitoring
 
           # Install Jaeger
           helm upgrade -i jaeger -n monitoring \
