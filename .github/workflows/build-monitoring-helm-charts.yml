@@ -33,6 +33,7 @@ env:
   kubePrometheusStackVersion: '59.1.0'
   tempoVersion: '1.16.0'
   grafanaAgentVersion: '0.42.0'
+  jaegerVersion: '3.4.1'
 
 jobs:
   helm-lint-and-diff:
@@ -179,6 +180,20 @@ jobs:
           helm diff upgrade tempo -n monitoring \
             oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
             -f ./monitoring/external/tempo/values.yaml \
+            --version $helmChartVersion \
+            --insecure-skip-tls-verify \
+            --allow-unreleased \
+            --kubeconfig $KUBECONFIG
+
+      - name: Diff jaeger
+        run: |
+          export helmChartVersion=${{env.jaegerVersion}}
+          export helmRepoName='jaegertracing'
+          export helmChartName='jaeger'
+
+          helm diff upgrade jaeger -n monitoring \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
+            -f ./monitoring/external/jaeger/values.yaml \
             --version $helmChartVersion \
             --insecure-skip-tls-verify \
             --allow-unreleased \

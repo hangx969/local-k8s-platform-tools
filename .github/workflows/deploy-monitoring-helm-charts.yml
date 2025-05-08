@@ -24,6 +24,7 @@ env:
   kubePrometheusStackVersion: '59.1.0'
   tempoVersion: '1.16.0'
   grafanaAgentVersion: '0.42.0'
+  jaegerVersion: '3.4.1'
 
 jobs:
   helm-upgrade:
@@ -128,6 +129,30 @@ jobs:
             --history-max 5 \
             --insecure-skip-tls-verify \
             --kubeconfig $KUBECONFIG
+
+      - name: Upgrade jaeger
+        run: |
+          export helmChartVersion=${{env.jaegerVersion}}
+          export helmRepoName='jaegertracing'
+          export helmChartName='jaeger'
+
+          # Create Badger PVC
+          kubectl apply -f $DIRECTORY/external/jaeger/storage/pvc.yaml -n monitoring
+
+          # Install Jaeger
+          helm upgrade -i jaeger -n monitoring \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
+            -f ./monitoring/external/jaeger/values.yaml \
+            --version $helmChartVersion \
+            --history-max 5 \
+            --insecure-skip-tls-verify \
+            --kubeconfig $KUBECONFIG
+
+          # allow slow badger startup
+          kubectl patch deployment/jaeger -n monitoring --type='json' -p='[
+            {"op": "replace", "path": "/spec/template/spec/containers/0/readinessProbe/failureThreshold", "value": 100},
+            {"op": "replace", "path": "/spec/template/spec/containers/0/livenessProbe/failureThreshold", "value": 100}
+          ]'
 
       ###===========helm Upgrade Custom Helm Charts===============###
       - name: Upgrade prometheus-rules helm chart
