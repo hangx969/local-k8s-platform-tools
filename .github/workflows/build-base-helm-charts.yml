@@ -40,7 +40,7 @@ env:
   oauth2proxyVersion: '7.12.6'
   policyReportVersion: '2.24.2'
   reloaderVersion: '1.0.115'
-  trivyOperatorVersion: '0.27.0'
+  trivyOperatorVersion: '0.28.1'
   configSyncerVersion: 'v0.13.2'
   vpaVersion: '4.7.1'
   goldilocksVersion: '9.0.1'
