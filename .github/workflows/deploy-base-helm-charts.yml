@@ -20,7 +20,7 @@ env:
   # Define helm chart versions
   # Note that the helm chart version of cert-manager and kubed are with 'v' prefix by default
   capsuleVersion: '0.7.4'
-  certManagerVersion: 'v1.17.1'
+  certManagerVersion: 'v1.17.2'
   externalDNSVersion: '1.15.2'
   externalSecretsVersion: '0.14.4'
   harborVersion: '1.16.0'
