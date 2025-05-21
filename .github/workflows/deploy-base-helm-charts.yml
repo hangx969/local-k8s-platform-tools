@@ -27,7 +27,7 @@ env:
   nginxVersion: '4.12.2'
   kyvernoVersion: '3.2.7'
   nfsSubdirExternalProvisionerVersion: '4.0.18'
-  oauth2proxyVersion: '7.12.6'
+  oauth2proxyVersion: '7.12.13'
   policyReportVersion: '2.24.2'
   reloaderVersion: '1.0.115'
   trivyOperatorVersion: '0.28.1'
