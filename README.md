@@ -4,5 +4,5 @@ This project provides tools for setting up a Kubernetes application deployment p
 
 ## Available Documentation
 
-- [中文文档 (README-CN)](./README_cn.md)
-- [English Documentation (README-EN)](./README_en.md)
+- [中文文档 (README_cn)](./README_cn.md)
+- [English Documentation (README_en)](./README_en.md)
