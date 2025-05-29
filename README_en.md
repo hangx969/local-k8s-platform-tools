@@ -121,6 +121,18 @@ Install the helm charts provided in the above table, use [this workflow](https:/
 6. **Trigger Installation**
    Push the code to GitHub to trigger the workflow to complete the tool installation.
 
+## Upgrade Tools
+
+1. **Get helm chart info of newer version**:
+   - Helm repository name
+   - Helm repository URL
+   - Helm chart name
+   - Helm chart version
+2. **Download and Push Helm Chart**
+   Use [this workflow](https://github.com/hangx969/local-k8s-platform-tools/actions/workflows/workflow-pull-push-to-harbor.yml) to download the newer version Helm chart and push it to Harbor.
+3. Update the version in [github workflow yml](./.github/workflows)
+4. Create Pull Request to merge to main branch, which will trigger the workflow to deploy.
+
 ## Uninstall Tools
 
 Use [this workflow](https://github.com/hangx969/local-k8s-platform-tools/actions/workflows/workflow-uninstall.yml), providing the Helm release name and namespace to uninstall the helm chart.

@@ -121,6 +121,22 @@ helm upgrade -i harbor -n harbor \
 6. **触发安装**
    将代码推送到 GitHub，触发工作流以完成工具的安装。
 
+## 升级工具
+
+1. **获取新版本helm chart信息**
+   确定需要升级的工具的以下信息：
+   - Helm 仓库名称
+   - Helm 仓库 URL
+   - Helm Chart 名称
+   - Helm Chart 版本
+
+2. **下载并推送 Helm Chart**
+   使用 [此工作流](https://github.com/hangx969/local-k8s-platform-tools/actions/workflows/workflow-pull-push-to-harbor.yml) 下载新版本 Helm Chart 并推送到 Harbor。
+
+3. 在[github workflow yml](./.github/workflows)中更新工具的版本号
+
+4. 通过Pull Request合并到main branch，触发workflow部署。
+
 ## 卸载工具
 
 使用 [此工作流](https://github.com/hangx969/local-k8s-platform-tools/actions/workflows/workflow-uninstall.yml)，提供 Helm Release 名称和命名空间即可卸载helm chart。
