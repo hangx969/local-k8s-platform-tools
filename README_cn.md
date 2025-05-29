@@ -86,7 +86,7 @@ helm upgrade -i harbor -n harbor \
             -f ./base/external/harbor/values.yaml \
 ~~~
 
-2. harbor部署完成后，使用 [此工作流](https://github.com/hangx969/local-k8s-platform-tools/actions/workflows/workflow-pull-push-to-harbor.yml) 下载harbor的helm chart并推送到harbor，以供后续调整配置是使用。
+2. harbor部署完成后，使用 [此工作流](https://github.com/hangx969/local-k8s-platform-tools/actions/workflows/workflow-pull-push-to-harbor.yml) 下载harbor的helm chart并推送到harbor，以供后续调整配置时使用。
 
 ### 配置nfs存储
 
@@ -94,7 +94,7 @@ helm upgrade -i harbor -n harbor \
 
 ### 推送helm chart
 
-安装上述表格中提供的helm chart信息，使用 [此工作流](https://github.com/hangx969/local-k8s-platform-tools/actions/workflows/workflow-pull-push-to-harbor.yml) 逐个下载对应的helm chart并推送到harbor，以供后续github action中安装使用。
+安装上述表格中提供的helm chart，使用 [此工作流](https://github.com/hangx969/local-k8s-platform-tools/actions/workflows/workflow-pull-push-to-harbor.yml) 逐个下载对应的helm chart并推送到harbor，以供后续github action中安装使用。
 
 ## 添加新的工具
 
