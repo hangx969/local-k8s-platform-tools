@@ -28,11 +28,16 @@ controller:
   prometheus:
     enabled: true
 
+  additionalPlugins:
+  - blue-ocean:1.27.21
+
 agent:
   enabled: true
   namespace: "jenkins"
   privileged: true
   podName: "jnlp"
+  command: ""
+  args: ""
 
   volumes:
   - type: HostPath
