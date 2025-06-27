@@ -30,6 +30,7 @@
 | goldilocks                     | 提供资源请求和限制的优化建议。                                           | [goldilocks](https://github.com/hangx969/learning-notes/blob/main/Docker-Kubernetes/helm/helm部署goldilock.md) |
 | pact-broker                    | 用于管理 Pact 合约的服务。                                              | [pact-broker](https://github.com/hangx969/learning-notes/blob/main/Docker-Kubernetes/helm/helm部署pact-broker.md) |
 | jaeger                         | 分布式追踪系统，用于监控和调试微服务架构。                               | [jaeger](https://github.com/hangx969/learning-notes/blob/af933226a50422c14a3e0eedda421d0e2e3271ad/Docker-Kubernetes/helm/helm部署jaeger.md) |
+| jenkins | 用于创建和管理CICD流水线 | [jenkins](https://github.com/hangx969/learning-notes/blob/a56e46501f66873382a0f64149e5e7678054ef0e/Docker-Kubernetes/helm/helm%E9%83%A8%E7%BD%B2jenkins.md) |
 
 ## Helm Chart版本
 
@@ -59,6 +60,7 @@
 | fairwinds-stable                | https://charts.fairwinds.com/stable                          | goldilocks                      | 9.0.1         | https://github.com/FairwindsOps/goldilocks/releases          | https://artifacthub.io/packages/helm/fairwinds-stable/goldilocks |
 | pact-broker                     | https://pact-foundation.github.io/pact-broker-chart/         | pact-broker                     | 1.1.0         | https://github.com/pact-foundation/pact-broker-chart/releases | N/A                                                          |
 | jaegertracing                   | https://jaegertracing.github.io/helm-charts                  | jaeger                          | 3.4.1         | https://github.com/jaegertracing/helm-charts/releases        | https://artifacthub.io/packages/helm/jaegertracing/jaeger    |
+| jenkins                         | https://charts.jenkins.io                                    | jenkins                         | 5.8.61        | https://github.com/jenkinsci/helm-charts/tree/main/charts/jenkins | https://artifacthub.io/packages/helm/jenkinsci/jenkins       |
 
 ## 部署前提条件
 

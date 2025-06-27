@@ -30,6 +30,7 @@ This project is used to install the following open-source tools in a Kubernetes 
 | goldilocks                     | Provides optimization suggestions for resource requests and limits.       | [goldilocks](https://github.com/hangx969/learning-notes/blob/main/Docker-Kubernetes/helm/helm部署goldilock.md) |
 | pact-broker                    | A service for managing Pact contracts.                                   | [pact-broker](https://github.com/hangx969/learning-notes/blob/main/Docker-Kubernetes/helm/helm部署pact-broker.md) |
 | jaeger                         | A distributed tracing system for monitoring and debugging microservices architectures. | [jaeger](https://github.com/hangx969/learning-notes/blob/af933226a50422c14a3e0eedda421d0e2e3271ad/Docker-Kubernetes/helm/helm部署jaeger.md) |
+| jenkins | A CICD pipeline manager | [jenkins](https://github.com/hangx969/learning-notes/blob/a56e46501f66873382a0f64149e5e7678054ef0e/Docker-Kubernetes/helm/helm%E9%83%A8%E7%BD%B2jenkins.md) |
 
 ## Helm Chart Versions
 
@@ -59,6 +60,7 @@ This project is used to install the following open-source tools in a Kubernetes 
 | fairwinds-stable                | https://charts.fairwinds.com/stable                          | goldilocks                      | 9.0.1         | https://github.com/FairwindsOps/goldilocks/releases          | https://artifacthub.io/packages/helm/fairwinds-stable/goldilocks |
 | pact-broker                     | https://pact-foundation.github.io/pact-broker-chart/         | pact-broker                     | 1.1.0         | https://github.com/pact-foundation/pact-broker-chart/releases | N/A                                                          |
 | jaegertracing                   | https://jaegertracing.github.io/helm-charts                  | jaeger                          | 3.4.1         | https://github.com/jaegertracing/helm-charts/releases        | https://artifacthub.io/packages/helm/jaegertracing/jaeger    |
+| jenkins                         | https://charts.jenkins.io                                    | jenkins                         | 5.8.61        | https://github.com/jenkinsci/helm-charts/tree/main/charts/jenkins | https://artifacthub.io/packages/helm/jenkinsci/jenkins       |
 
 ## Prerequisites
 
