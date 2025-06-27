@@ -35,6 +35,7 @@ env:
   vpaVersion: '4.7.1'
   goldilocksVersion: '9.0.1'
   pactVersion: '1.1.0'
+  jenkinsVersion: '5.8.61'
 
 
 jobs:
@@ -282,6 +283,20 @@ jobs:
             oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
             --version $helmChartVersion \
             -f ./base/external/pact-broker/values.yaml \
+            --history-max 5 \
+            --insecure-skip-tls-verify \
+            --kubeconfig $KUBECONFIG
+
+      - name: Upgrade pact-broker
+        run: |
+          export helmChartVersion=${{env.jenkinsVersion}}
+          export helmRepoName='jenkins'
+          export helmChartName='jenkins'
+
+          helm upgrade -i jenkins -n jenkins \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
+            --version $helmChartVersion \
+            -f ./base/external/jenkins/values.yaml \
             --history-max 5 \
             --insecure-skip-tls-verify \
             --kubeconfig $KUBECONFIG
