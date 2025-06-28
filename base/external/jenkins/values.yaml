@@ -63,6 +63,8 @@ agent:
     # -- Namespaces to look at for garbage collection, in addition to the default namespace defined for the cloud. One namespace per line.
     namespaces: "jenkins"
 
+  serviceAccount: jenkins
+
 persistence:
   enabled: true
   storageClass: "sc-nfs"
