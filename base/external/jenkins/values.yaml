@@ -47,8 +47,8 @@ agent:
     hostPath: /usr/bin/docker
     mountPath: /usr/bin/docker
   - type: HostPath
-    hostPath: /usr/local/bin/kubectl
-    mountPath: /usr/local/bin/kubectl
+    hostPath: /usr/bin/kubectl
+    mountPath: /usr/bin/kubectl
   - type: HostPath
     hostPath: /etc/docker/daemon.json
     mountPath: /etc/docker/daemon.json
