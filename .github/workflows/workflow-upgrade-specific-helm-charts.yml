@@ -1,4 +1,4 @@
-name: Deploy Specific Helm Charts (Windows)
+﻿name: Deploy Specific Helm Charts (Windows)
 # Migrated from Linux to Windows
 
 on:
@@ -34,7 +34,6 @@ jobs:
 
       - name: Generate kubeconfig from repository secret
         run: |
-          # Linux command: mkdir -p '${{ github.workspace }}/.kube' && echo '${{ secrets.HP_LOCAL_KUBECONFIG}}' | base64 -d > $KUBECONFIG && chmod 600 $KUBECONFIG
           New-Item -ItemType Directory -Path "${{ github.workspace }}\.kube" -Force
           $base64String = "${{ secrets.HP_LOCAL_KUBECONFIG}}"
           $bytes = [System.Convert]::FromBase64String($base64String)
@@ -43,14 +42,12 @@ jobs:
 
       - name: Login Harbor
         run: |
-          # Linux command: helm registry login '${{ env.harborURL }}' --username ${{ secrets.HARBOR_USERNAME }} --password ${{ secrets.HARBOR_PASSWORD }} --insecure
           helm registry login '${{ env.harborURL }}' --username ${{ secrets.HARBOR_USERNAME }} --password ${{ secrets.HARBOR_PASSWORD }} --insecure
 
     # Helm charts that we want to upgrade manually, not by the commit triggered.
     # Because even if there are no updates at all, they will still be upgraded due to some "checksum" changes.
       - name: Upgrade Config-syncer
         run: |
-          # Linux command: export helmChartVersion=${{env.configSyncerVersion}}; export helmRepoName='appscode'; export helmChartName='kubed'
           $env:helmChartVersion = '${{env.configSyncerVersion}}'
           $env:helmRepoName = 'appscode'
           $env:helmChartName = 'kubed'
@@ -59,7 +56,6 @@ jobs:
 
       - name: Upgrade Harbor
         run: |
-          # Linux command: export helmChartVersion=${{env.harborVersion}}; export helmRepoName='harbor'; export helmChartName='harbor'
           $env:helmChartVersion = '${{env.harborVersion}}'
           $env:helmRepoName = 'harbor'
           $env:helmChartName = 'harbor'
@@ -68,7 +64,6 @@ jobs:
 
       - name: Upgrade Kyverno
         run: |
-          # Linux command: export helmChartVersion=${{env.kyvernoVersion}}; export helmRepoName='kyverno'; export helmChartName='kyverno'
           $env:helmChartVersion = '${{env.kyvernoVersion}}'
           $env:helmRepoName = 'kyverno'
           $env:helmChartName = 'kyverno'
@@ -77,7 +72,6 @@ jobs:
 
       - name: Upgrade VPA
         run: |
-          # Linux command: export helmChartVersion=${{env.vpaVersion}}; export helmRepoName='fairwinds-stable'; export helmChartName='vpa'
           $env:helmChartVersion = '${{env.vpaVersion}}'
           $env:helmRepoName = 'fairwinds-stable'
           $env:helmChartName = 'vpa'

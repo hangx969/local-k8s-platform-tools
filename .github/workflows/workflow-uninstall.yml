@@ -1,4 +1,4 @@
-name: Workflow Uninstall Helm Charts (Windows)
+﻿name: Workflow Uninstall Helm Charts (Windows)
 # Migrated from Linux to Windows
 
 on:
@@ -28,7 +28,6 @@ jobs:
 
       - name: Generate kubeconfig from repository secret
         run: |
-          # Linux command: mkdir -p '${{ github.workspace }}/.kube' && echo '${{ secrets.HP_LOCAL_KUBECONFIG}}' | base64 -d > $KUBECONFIG && chmod 600 $KUBECONFIG
           New-Item -ItemType Directory -Path "${{ github.workspace }}\.kube" -Force
           $base64String = "${{ secrets.HP_LOCAL_KUBECONFIG}}"
           $bytes = [System.Convert]::FromBase64String($base64String)
@@ -37,5 +36,4 @@ jobs:
 
       - name: uninstall helm chart
         run: |
-          # Linux command: helm uninstall ${{ github.event.inputs.release-name }} -n ${{ github.event.inputs.namespace }} --kubeconfig $KUBECONFIG
           helm uninstall ${{ github.event.inputs.release-name }} -n ${{ github.event.inputs.namespace }} --kubeconfig $env:KUBECONFIG

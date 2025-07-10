@@ -1,4 +1,4 @@
-name: Deploy Base Helm Charts (Windows)
+﻿name: Deploy Base Helm Charts (Windows)
 # Migrated from Linux to Windows
 
 on:
@@ -46,7 +46,6 @@ jobs:
 
       - name: Generate kubeconfig from repository secret
         run: |
-          # Linux command: mkdir -p '${{ github.workspace }}/.kube' && echo '${{ secrets.HP_LOCAL_KUBECONFIG}}' | base64 -d > $KUBECONFIG && chmod 600 $KUBECONFIG
           New-Item -ItemType Directory -Path "${{ github.workspace }}\.kube" -Force
           $base64String = "${{ secrets.HP_LOCAL_KUBECONFIG}}"
           $bytes = [System.Convert]::FromBase64String($base64String)
@@ -55,13 +54,11 @@ jobs:
 
       - name: Login Harbor
         run: |
-          # Linux command: helm registry login '${{ env.harborURL }}' --username ${{ secrets.HARBOR_USERNAME }} --password ${{ secrets.HARBOR_PASSWORD }} --insecure
           helm registry login '${{ env.harborURL }}' --username ${{ secrets.HARBOR_USERNAME }} --password ${{ secrets.HARBOR_PASSWORD }} --insecure
 
     ###=======Upgrade Base ns Helm Charts=======###
       - name: Upgrade Base ns
         run: |
-          # Linux command: export chartDir='./base/helm-charts/base-ns'
           $env:chartDir = './base/helm-charts/base-ns'
 
           helm upgrade -i commoninfra -n kube-system $env:chartDir --history-max 5 --values $env:chartDir/values.yaml --kubeconfig $env:KUBECONFIG
@@ -69,7 +66,6 @@ jobs:
     ###=======Upgrade External Helm Charts=======###
       - name: Upgrade Capsule
         run: |
-          # Linux command: export helmChartVersion=${{env.capsuleVersion}}; export helmRepoName='projectcapsule'; export helmChartName='capsule'
           $env:helmChartVersion = '${{env.capsuleVersion}}'
           $env:helmRepoName = 'projectcapsule'
           $env:helmChartName = 'capsule'
@@ -78,14 +74,12 @@ jobs:
 
       - name: Upgrade Capsule Tenants
         run: |
-          # Linux command: export chartDir='./base/helm-charts/capsule-tenants'
           $env:chartDir = './base/helm-charts/capsule-tenants'
 
           helm upgrade -i capsule-tenants -n capsule-system $env:chartDir --history-max 5 --values $env:chartDir/values.yaml --kubeconfig $env:KUBECONFIG
 
       - name: Upgrade Cert-manager
         run: |
-          # Linux command: export helmChartVersion=${{env.certManagerVersion}}; export helmRepoName='jetstack'; export helmChartName='cert-manager'
           $env:helmChartVersion = '${{env.certManagerVersion}}'
           $env:helmRepoName = 'jetstack'
           $env:helmChartName = 'cert-manager'
@@ -94,14 +88,12 @@ jobs:
 
       - name: Upgrade cert-manager Certificates
         run: |
-          # Linux command: export chartDir='./base/helm-charts/cert-manager-certificates'
           $env:chartDir = './base/helm-charts/cert-manager-certificates'
 
           helm upgrade -i cert-manager-certificates -n cert-manager $env:chartDir --history-max 5 --values $env:chartDir/values.yaml --kubeconfig $env:KUBECONFIG
 
       - name: Upgrade Ingress-nginx
         run: |
-          # Linux command: export helmChartVersion=${{env.nginxVersion}}; export helmRepoName='ingress-nginx'; export helmChartName='ingress-nginx'
           $env:helmChartVersion = '${{env.nginxVersion}}'
           $env:helmRepoName = 'ingress-nginx'
           $env:helmChartName = 'ingress-nginx'
@@ -110,7 +102,6 @@ jobs:
 
       - name: Upgrade External DNS
         run: |
-          # Linux command: export helmChartVersion=${{env.externalDNSVersion}}; export helmRepoName='external-dns'; export helmChartName='external-dns'
           $env:helmChartVersion = '${{env.externalDNSVersion}}'
           $env:helmRepoName = 'external-dns'
           $env:helmChartName = 'external-dns'
@@ -119,7 +110,6 @@ jobs:
 
       - name: Upgrade External Secrets
         run: |
-          # Linux command: export helmChartVersion=${{env.externalSecretsVersion}}; export helmRepoName='external-secrets'; export helmChartName='external-secrets'
           $env:helmChartVersion = '${{env.externalSecretsVersion}}'
           $env:helmRepoName = 'external-secrets'
           $env:helmChartName = 'external-secrets'
@@ -128,7 +118,6 @@ jobs:
 
       - name: Upgrade Oauth2-proxy
         run: |
-          # Linux command: export helmChartVersion=${{env.oauth2proxyVersion}}; export helmRepoName='oauth2-proxy'; export helmChartName='oauth2-proxy'; export REDIS_PASSWORD=$(kubectl get secret --namespace "oauth2-proxy" oauth2-proxy-redis --kubeconfig $KUBECONFIG -o jsonpath="{.data.redis-password}" | base64 -d)
           $env:helmChartVersion = '${{env.oauth2proxyVersion}}'
           $env:helmRepoName = 'oauth2-proxy'
           $env:helmChartName = 'oauth2-proxy'
@@ -138,7 +127,6 @@ jobs:
 
       - name: Upgrade Trivy Operator
         run: |
-          # Linux command: export helmChartVersion=${{env.trivyOperatorVersion}}; export helmRepoName='aqua'; export helmChartName='trivy-operator'
           $env:helmChartVersion = '${{env.trivyOperatorVersion}}'
           $env:helmRepoName = 'aqua'
           $env:helmChartName = 'trivy-operator'
@@ -146,22 +134,18 @@ jobs:
           helm pull oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName --version $env:helmChartVersion --insecure-skip-tls-verify
 
           Write-Host "Extract CRDs"
-          # Linux command: tar xvf $helmChartName-$helmChartVersion.tgz trivy-operator/crds
           tar xvf "$env:helmChartName-$env:helmChartVersion.tgz" trivy-operator/crds
 
           Write-Host "Diff CRDs"
-          # Linux command: kubectl diff -f trivy-operator/crds/ -R --kubeconfig $KUBECONFIG
           kubectl diff -f trivy-operator/crds/ -R --kubeconfig $env:KUBECONFIG
 
           Write-Host "Install CRDs"
-          # Linux command: kubectl apply --server-side -f trivy-operator/crds/ -R --kubeconfig $KUBECONFIG
           kubectl apply --server-side -f trivy-operator/crds/ -R --kubeconfig $env:KUBECONFIG
 
           helm upgrade -i trivy-operator -n trivy-system oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName --version $env:helmChartVersion --history-max 5 -f ./base/external/trivy-operator/values.yaml --insecure-skip-tls-verify --kubeconfig $env:KUBECONFIG
 
       - name: Upgrade Kyverno
         run: |
-          # Linux command: export helmChartVersion=${{env.kyvernoVersion}}; export helmRepoName='kyverno'; export helmChartName='kyverno'
           $env:helmChartVersion = '${{env.kyvernoVersion}}'
           $env:helmRepoName = 'kyverno'
           $env:helmChartName = 'kyverno'
@@ -170,7 +154,6 @@ jobs:
 
       - name: Upgrade Kyverno Policy Reporter
         run: |
-          # Linux command: export helmChartVersion=${{env.policyReportVersion}}; export helmRepoName='policy-reporter'; export helmChartName='policy-reporter'
           $env:helmChartVersion = '${{env.policyReportVersion}}'
           $env:helmRepoName = 'policy-reporter'
           $env:helmChartName = 'policy-reporter'
@@ -179,7 +162,6 @@ jobs:
 
       - name: Test Kyverno Policies
         run: |
-          # Linux command: export PATH=$PATH:$KREW_ROOT/bin
           $env:PATH = "$env:PATH;$env:KREW_ROOT\bin"
 
           # To set pipeline to exit on any policy assessment failed, add `$ErrorActionPreference = "Stop"`
@@ -193,7 +175,6 @@ jobs:
 
       - name: Upgrade Reloader
         run: |
-          # Linux command: export helmChartVersion=${{env.reloaderVersion}}; export helmRepoName='stakater'; export helmChartName='reloader'
           $env:helmChartVersion = '${{env.reloaderVersion}}'
           $env:helmRepoName = 'stakater'
           $env:helmChartName = 'reloader'
@@ -202,7 +183,6 @@ jobs:
 
       - name: Upgrade Nfs-subdir-external-provisioner
         run: |
-          # Linux command: export helmChartVersion=${{env.nfsSubdirExternalProvisionerVersion}}; export helmRepoName='nfs-subdir-external-provisioner'; export helmChartName='nfs-subdir-external-provisioner'
           $env:helmChartVersion = '${{env.nfsSubdirExternalProvisionerVersion}}'
           $env:helmRepoName = 'nfs-subdir-external-provisioner'
           $env:helmChartName = 'nfs-subdir-external-provisioner'
@@ -211,7 +191,6 @@ jobs:
 
       - name: Upgrade goldilocks
         run: |
-          # Linux command: export helmChartVersion=${{env.goldilocksVersion}}; export helmRepoName='fairwinds-stable'; export helmChartName='goldilocks'
           $env:helmChartVersion = '${{env.goldilocksVersion}}'
           $env:helmRepoName = 'fairwinds-stable'
           $env:helmChartName = 'goldilocks'
@@ -220,7 +199,6 @@ jobs:
 
       - name: Upgrade pact-broker
         run: |
-          # Linux command: export helmChartVersion=${{env.pactVersion}}; export helmRepoName='pact-broker'; export helmChartName='pact-broker'
           $env:helmChartVersion = '${{env.pactVersion}}'
           $env:helmRepoName = 'pact-broker'
           $env:helmChartName = 'pact-broker'
@@ -229,7 +207,6 @@ jobs:
 
       - name: Upgrade jenkins
         run: |
-          # Linux command: export helmChartVersion=${{env.jenkinsVersion}}; export helmRepoName='jenkins'; export helmChartName='jenkins'
           $env:helmChartVersion = '${{env.jenkinsVersion}}'
           $env:helmRepoName = 'jenkins'
           $env:helmChartName = 'jenkins'

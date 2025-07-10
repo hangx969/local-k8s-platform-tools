@@ -1,4 +1,4 @@
-name: Diagnose Windows Runner Environment
+﻿name: Diagnose Windows Runner Environment
 
 on:
   workflow_dispatch:
