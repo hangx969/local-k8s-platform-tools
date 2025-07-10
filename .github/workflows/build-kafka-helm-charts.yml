@@ -41,7 +41,7 @@ jobs:
       - name: Generate kubeconfig from repository secret
         run: |
           # Linux command: mkdir -p '${{ github.workspace }}/.kube' && echo '${{ secrets.HP_LOCAL_KUBECONFIG}}' | base64 -d > $KUBECONFIG && chmod 600 $KUBECONFIG
-          New-Item -ItemType Directory -Path '${{ github.workspace }}\.kube' -Force
+          New-Item -ItemType Directory -Path "${{ github.workspace }}\.kube" -Force
           $base64String = "${{ secrets.HP_LOCAL_KUBECONFIG}}"
           $bytes = [System.Convert]::FromBase64String($base64String)
           $decodedString = [System.Text.Encoding]::UTF8.GetString($bytes)
