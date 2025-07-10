@@ -30,7 +30,10 @@ jobs:
         run: |
           # Linux command: mkdir -p '${{ github.workspace }}/.kube' && echo '${{ secrets.HP_LOCAL_KUBECONFIG}}' | base64 -d > $KUBECONFIG && chmod 600 $KUBECONFIG
           New-Item -ItemType Directory -Path '${{ github.workspace }}\.kube' -Force
-          [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('${{ secrets.HP_LOCAL_KUBECONFIG}}')) | Out-File -FilePath $env:KUBECONFIG -Encoding UTF8
+          $base64String = "${{ secrets.HP_LOCAL_KUBECONFIG}}"
+          $bytes = [System.Convert]::FromBase64String($base64String)
+          $decodedString = [System.Text.Encoding]::UTF8.GetString($bytes)
+          $decodedString | Out-File -FilePath $env:KUBECONFIG -Encoding UTF8
 
       - name: uninstall helm chart
         run: |
