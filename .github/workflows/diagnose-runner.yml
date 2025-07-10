@@ -1,0 +1,59 @@
+name: Diagnose Windows Runner Environment
+
+on:
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  diagnose:
+    runs-on: windows-local # Use the pre-configured self-hosted runner
+
+    steps:
+      - name: Check PowerShell Version
+        run: |
+          Write-Host "PowerShell Version:"
+          $PSVersionTable
+
+      - name: Check Available Shells
+        run: |
+          Write-Host "Checking available shells..."
+          Get-Command powershell -ErrorAction SilentlyContinue
+          Get-Command pwsh -ErrorAction SilentlyContinue
+          Get-Command cmd -ErrorAction SilentlyContinue
+
+      - name: Check Environment Variables
+        run: |
+          Write-Host "Environment Variables:"
+          Get-ChildItem Env: | Sort-Object Name
+
+      - name: Check Path
+        run: |
+          Write-Host "PATH:"
+          $env:PATH -split ';' | ForEach-Object { Write-Host "  $_" }
+
+      - name: Test Basic Commands
+        run: |
+          Write-Host "Testing basic commands..."
+          Get-Location
+          Get-ChildItem
+
+      - name: Check if Helm is available
+        run: |
+          try {
+            helm version
+            Write-Host "Helm is available"
+          } catch {
+            Write-Host "Helm is NOT available: $_"
+          }
+
+      - name: Check if kubectl is available
+        run: |
+          try {
+            kubectl version --client
+            Write-Host "kubectl is available"
+          } catch {
+            Write-Host "kubectl is NOT available: $_"
+          }
