@@ -53,7 +53,7 @@ jobs:
           $env:helmRepoName = 'grafana'
           $env:helmChartName = 'loki'
 
-          helm upgrade -i loki -n observability oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName --history-max 5 -f ./monitoring/external/loki/values.yaml --version $env:helmChartVersion --insecure-skip-tls-verify --kubeconfig $env:KUBECONFIG
+          helm upgrade -i loki -n monitoring oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName --history-max 5 -f ./monitoring/external/loki/values.yaml --version $env:helmChartVersion --insecure-skip-tls-verify --kubeconfig $env:KUBECONFIG
 
       - name: Upgrade Promtail
         run: |
@@ -61,7 +61,7 @@ jobs:
           $env:helmRepoName = 'grafana'
           $env:helmChartName = 'promtail'
 
-          helm upgrade -i promtail -n observability oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName --history-max 5 -f ./monitoring/external/promtail/values.yaml --version $env:helmChartVersion --insecure-skip-tls-verify --kubeconfig $env:KUBECONFIG
+          helm upgrade -i promtail -n monitoring oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName --history-max 5 -f ./monitoring/external/promtail/values.yaml --version $env:helmChartVersion --insecure-skip-tls-verify --kubeconfig $env:KUBECONFIG
 
       - name: Upgrade Kube Prometheus Stack
         run: |
@@ -69,7 +69,7 @@ jobs:
           $env:helmRepoName = 'prometheus-community'
           $env:helmChartName = 'kube-prometheus-stack'
 
-          helm upgrade -i kube-prometheus-stack -n observability oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName --history-max 5 -f ./monitoring/external/kube-prometheus-stack/values.yaml --version $env:helmChartVersion --insecure-skip-tls-verify --kubeconfig $env:KUBECONFIG
+          helm upgrade -i kube-prometheus-stack -n monitoring oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName --history-max 5 -f ./monitoring/external/kube-prometheus-stack/values.yaml --version $env:helmChartVersion --insecure-skip-tls-verify --kubeconfig $env:KUBECONFIG
 
       - name: Upgrade Tempo
         run: |
@@ -77,7 +77,7 @@ jobs:
           $env:helmRepoName = 'grafana'
           $env:helmChartName = 'tempo'
 
-          helm upgrade -i tempo -n observability oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName --history-max 5 -f ./monitoring/external/tempo/values.yaml --version $env:helmChartVersion --insecure-skip-tls-verify --kubeconfig $env:KUBECONFIG
+          helm upgrade -i tempo -n monitoring oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName --history-max 5 -f ./monitoring/external/tempo/values.yaml --version $env:helmChartVersion --insecure-skip-tls-verify --kubeconfig $env:KUBECONFIG
 
       - name: Upgrade Grafana Agent
         run: |
@@ -85,24 +85,24 @@ jobs:
           $env:helmRepoName = 'grafana'
           $env:helmChartName = 'grafana-agent'
 
-          helm upgrade -i grafana-agent -n observability oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName --history-max 5 -f ./monitoring/external/grafana-agent/values.yaml --version $env:helmChartVersion --insecure-skip-tls-verify --kubeconfig $env:KUBECONFIG
+          helm upgrade -i grafana-agent -n monitoring oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName --history-max 5 -f ./monitoring/external/grafana-agent/values.yaml --version $env:helmChartVersion --insecure-skip-tls-verify --kubeconfig $env:KUBECONFIG
 
       ###===========helm Upgrade Internal Helm Charts===============###
       - name: Upgrade Grafana Dashboards
         run: |
           $env:chartDir = './monitoring/helm-charts/grafana-dashboards'
 
-          helm upgrade -i grafana-dashboards -n observability $env:chartDir --history-max 5 --values $env:chartDir/values.yaml --kubeconfig $env:KUBECONFIG
+          helm upgrade -i grafana-dashboards -n monitoring $env:chartDir --history-max 5 --values $env:chartDir/values.yaml --kubeconfig $env:KUBECONFIG
 
       # - name: Upgrade Grafana Datasources
       #   run: |
       #     # Linux command: export chartDir='./monitoring/helm-charts/grafana-datasources'
       #     $env:chartDir = './monitoring/helm-charts/grafana-datasources'
 
-      #     helm upgrade -i grafana-datasources -n observability $env:chartDir --history-max 5 --values $env:chartDir/values.yaml --kubeconfig $env:KUBECONFIG
+      #     helm upgrade -i grafana-datasources -n monitoring $env:chartDir --history-max 5 --values $env:chartDir/values.yaml --kubeconfig $env:KUBECONFIG
 
       - name: Upgrade Prometheus Rules
         run: |
           $env:chartDir = './monitoring/helm-charts/prometheus-rules'
 
-          helm upgrade -i prometheus-rules -n observability $env:chartDir --history-max 5 --values $env:chartDir/values.yaml --kubeconfig $env:KUBECONFIG
+          helm upgrade -i prometheus-rules -n monitoring $env:chartDir --history-max 5 --values $env:chartDir/values.yaml --kubeconfig $env:KUBECONFIG
