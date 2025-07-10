@@ -176,7 +176,6 @@ jobs:
       # - name: Upgrade grafana-datasources helm chart
       #   run: |
       #     export $chartDir='./monitoring/helm-charts/grafana-datasources'
-
       #     helm upgrade -i grafana-datasources -n monitoring $chartDir \
       #       -f $chartDir/values.yaml \
       #       --history-max 5 \
