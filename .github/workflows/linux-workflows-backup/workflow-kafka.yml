@@ -1,5 +1,4 @@
-name: Workflow Kafka Helm Charts (Windows)
-# Migrated from Linux to Windows
+name: Workflow Kafka Helm Charts
 
 on:
   push:

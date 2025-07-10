@@ -1,0 +1,104 @@
+name: Deploy Specific Helm Charts
+
+on:
+  workflow_call:
+
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  # Define kubeconfig file path and name
+  KUBECONFIG: '${{ github.workspace }}/.kube/kubeconfig'
+
+  # Define harbor URL
+  harborURL: 'harbor.hanxux.local'
+  harborProjectName: 'platform-tools-local'
+
+  # Define helm chart versions
+  # Note that the helm chart version of cert-manager and kubed are with 'v' prefix by default
+  harborVersion: '1.17.0'
+  configSyncerVersion: 'v0.13.2'
+  kyvernoVersion: '3.2.7'
+  vpaVersion: '4.7.1'
+
+jobs:
+  helm-upgrade:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate kubeconfig from repository secret
+        run: |
+          mkdir -p '${{ github.workspace }}/.kube' \
+          && echo '${{ secrets.HP_LOCAL_KUBECONFIG}}' | base64 -d > $KUBECONFIG \
+          && chmod 600 $KUBECONFIG
+
+      - name: Login Harbor
+        run: |
+          helm registry login '${{ env.harborURL }}' \
+          --username ${{ secrets.HARBOR_USERNAME }} \
+          --password ${{ secrets.HARBOR_PASSWORD }} \
+          --insecure
+
+    # Helm charts that we want to upgrade manually, not by the commit triggered.
+    # Because even if there are no updates at all, they will still be upgraded due to some "checksum" changes.
+      - name: Upgrade Config-syncer
+        run: |
+          export helmChartVersion=${{env.configSyncerVersion}}
+          export helmRepoName='appscode'
+          export helmChartName='kubed'
+
+          helm upgrade -i config-syncer -n config-syncer \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
+            --version $helmChartVersion \
+            --history-max 5 \
+            -f ./base/external/config-syncer/values.yaml \
+            --insecure-skip-tls-verify \
+            --kubeconfig $KUBECONFIG
+
+      - name: Upgrade Harbor
+        run: |
+          export helmChartVersion=${{env.harborVersion}}
+          export helmRepoName='harbor'
+          export helmChartName='harbor'
+
+          helm upgrade -i harbor -n harbor \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
+            --version $helmChartVersion \
+            --history-max 5 \
+            -f ./base/external/harbor/values.yaml \
+            --insecure-skip-tls-verify \
+            --kubeconfig $KUBECONFIG
+
+      - name: Upgrade Kyverno
+        run: |
+          export helmChartVersion=${{env.kyvernoVersion}}
+          export helmRepoName='kyverno'
+          export helmChartName='kyverno'
+
+          helm upgrade -i kyverno -n kyverno \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
+            --version $helmChartVersion \
+            --history-max 5 \
+            -f ./base/external/kyverno/values.yaml \
+            --insecure-skip-tls-verify \
+            --kubeconfig $KUBECONFIG
+
+      - name: Upgrade VPA
+        run: |
+          export helmChartVersion=${{env.vpaVersion}}
+          export helmRepoName='fairwinds-stable'
+          export helmChartName='vpa'
+
+          helm upgrade -i vpa -n vpa \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
+            --version $helmChartVersion \
+            -f ./base/external/vpa/values.yaml \
+            --history-max 5 \
+            --insecure-skip-tls-verify \
+            --kubeconfig $KUBECONFIG

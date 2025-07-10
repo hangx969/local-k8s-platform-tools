@@ -50,19 +50,19 @@ monitoring:
 
 write:
   persistence:
-    size: 10Gi
+    size: 1Gi
     storageClass: sc-nfs
 
 read:
   persistence:
     enableStatefulSetAutoDeletePVC: false
-    size: 10Gi
+    size: 1Gi
     storageClass: sc-nfs
 
 backend:
   persistence:
     enableStatefulSetAutoDeletePVC: false
-    size: 10Gi
+    size: 1Gi
     storageClass: sc-nfs
 
 singleBinary:
@@ -82,7 +82,7 @@ singleBinary:
       memory: 2Gi
     requests:
       cpu: 100m
-      memory: 1Gi
+      memory: 256Mi
 
   persistence:
     enableStatefulSetAutoDeletePVC: false

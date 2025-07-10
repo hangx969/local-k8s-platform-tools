@@ -7,7 +7,7 @@ allInOne:
   enabled: true
   replicas: 1
   image:
-    registry: "quay.io" # ocker.io is also available
+    registry: "docker.io" # quay.io is also available
     repository: jaegertracing/all-in-one
     tag: "1.65.0"
   extraEnv:

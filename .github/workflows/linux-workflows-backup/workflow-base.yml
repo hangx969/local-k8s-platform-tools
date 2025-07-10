@@ -1,5 +1,4 @@
-name: Workflow Base Helm Charts (Windows)
-# Migrated from Linux to Windows
+name: Workflow Base Helm Charts
 
 on:
   push:

@@ -1,17 +1,17 @@
-name: Deploy Specific Helm Charts
+name: Deploy Specific Helm Charts (Windows)
+# Migrated from Linux to Windows
 
 on:
   workflow_call:
-
   workflow_dispatch:
 
 defaults:
   run:
-    shell: bash
+    shell: pwsh # Changed from bash to PowerShell for Windows
 
 env:
-  # Define kubeconfig file path and name
-  KUBECONFIG: '${{ github.workspace }}/.kube/kubeconfig'
+  # Define kubeconfig file path and name - Windows style path
+  KUBECONFIG: '${{ github.workspace }}\.kube\kubeconfig'
 
   # Define harbor URL
   harborURL: 'harbor.hanxux.local'
@@ -26,7 +26,7 @@ env:
 
 jobs:
   helm-upgrade:
-    runs-on: self-hosted
+    runs-on: windows-local # Changed from windows-latest to windows-local
 
     steps:
       - name: Checkout repository
@@ -34,71 +34,49 @@ jobs:
 
       - name: Generate kubeconfig from repository secret
         run: |
-          mkdir -p '${{ github.workspace }}/.kube' \
-          && echo '${{ secrets.HP_LOCAL_KUBECONFIG}}' | base64 -d > $KUBECONFIG \
-          && chmod 600 $KUBECONFIG
+          # Linux command: mkdir -p '${{ github.workspace }}/.kube' && echo '${{ secrets.HP_LOCAL_KUBECONFIG}}' | base64 -d > $KUBECONFIG && chmod 600 $KUBECONFIG
+          New-Item -ItemType Directory -Path '${{ github.workspace }}\.kube' -Force
+          [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('${{ secrets.HP_LOCAL_KUBECONFIG}}')) | Out-File -FilePath $env:KUBECONFIG -Encoding UTF8
 
       - name: Login Harbor
         run: |
-          helm registry login '${{ env.harborURL }}' \
-          --username ${{ secrets.HARBOR_USERNAME }} \
-          --password ${{ secrets.HARBOR_PASSWORD }} \
-          --insecure
+          # Linux command: helm registry login '${{ env.harborURL }}' --username ${{ secrets.HARBOR_USERNAME }} --password ${{ secrets.HARBOR_PASSWORD }} --insecure
+          helm registry login '${{ env.harborURL }}' --username ${{ secrets.HARBOR_USERNAME }} --password ${{ secrets.HARBOR_PASSWORD }} --insecure
 
     # Helm charts that we want to upgrade manually, not by the commit triggered.
     # Because even if there are no updates at all, they will still be upgraded due to some "checksum" changes.
       - name: Upgrade Config-syncer
         run: |
-          export helmChartVersion=${{env.configSyncerVersion}}
-          export helmRepoName='appscode'
-          export helmChartName='kubed'
+          # Linux command: export helmChartVersion=${{env.configSyncerVersion}}; export helmRepoName='appscode'; export helmChartName='kubed'
+          $env:helmChartVersion = '${{env.configSyncerVersion}}'
+          $env:helmRepoName = 'appscode'
+          $env:helmChartName = 'kubed'
 
-          helm upgrade -i config-syncer -n config-syncer \
-            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
-            --version $helmChartVersion \
-            --history-max 5 \
-            -f ./base/external/config-syncer/values.yaml \
-            --insecure-skip-tls-verify \
-            --kubeconfig $KUBECONFIG
+          helm upgrade -i config-syncer -n config-syncer oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName --history-max 5 --version $env:helmChartVersion -f ./base/external/config-syncer/values.yaml --insecure-skip-tls-verify --kubeconfig $env:KUBECONFIG
 
       - name: Upgrade Harbor
         run: |
-          export helmChartVersion=${{env.harborVersion}}
-          export helmRepoName='harbor'
-          export helmChartName='harbor'
+          # Linux command: export helmChartVersion=${{env.harborVersion}}; export helmRepoName='harbor'; export helmChartName='harbor'
+          $env:helmChartVersion = '${{env.harborVersion}}'
+          $env:helmRepoName = 'harbor'
+          $env:helmChartName = 'harbor'
 
-          helm upgrade -i harbor -n harbor \
-            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
-            --version $helmChartVersion \
-            --history-max 5 \
-            -f ./base/external/harbor/values.yaml \
-            --insecure-skip-tls-verify \
-            --kubeconfig $KUBECONFIG
+          helm upgrade -i harbor -n harbor oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName --history-max 5 --version $env:helmChartVersion -f ./base/external/harbor/values.yaml --insecure-skip-tls-verify --kubeconfig $env:KUBECONFIG
 
       - name: Upgrade Kyverno
         run: |
-          export helmChartVersion=${{env.kyvernoVersion}}
-          export helmRepoName='kyverno'
-          export helmChartName='kyverno'
+          # Linux command: export helmChartVersion=${{env.kyvernoVersion}}; export helmRepoName='kyverno'; export helmChartName='kyverno'
+          $env:helmChartVersion = '${{env.kyvernoVersion}}'
+          $env:helmRepoName = 'kyverno'
+          $env:helmChartName = 'kyverno'
 
-          helm upgrade -i kyverno -n kyverno \
-            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
-            --version $helmChartVersion \
-            --history-max 5 \
-            -f ./base/external/kyverno/values.yaml \
-            --insecure-skip-tls-verify \
-            --kubeconfig $KUBECONFIG
+          helm upgrade -i kyverno -n kyverno oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName --history-max 5 --version $env:helmChartVersion -f ./base/external/kyverno/values.yaml --insecure-skip-tls-verify --kubeconfig $env:KUBECONFIG
 
       - name: Upgrade VPA
         run: |
-          export helmChartVersion=${{env.vpaVersion}}
-          export helmRepoName='fairwinds-stable'
-          export helmChartName='vpa'
+          # Linux command: export helmChartVersion=${{env.vpaVersion}}; export helmRepoName='fairwinds-stable'; export helmChartName='vpa'
+          $env:helmChartVersion = '${{env.vpaVersion}}'
+          $env:helmRepoName = 'fairwinds-stable'
+          $env:helmChartName = 'vpa'
 
-          helm upgrade -i vpa -n vpa \
-            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
-            --version $helmChartVersion \
-            -f ./base/external/vpa/values.yaml \
-            --history-max 5 \
-            --insecure-skip-tls-verify \
-            --kubeconfig $KUBECONFIG
+          helm upgrade -i vpa -n vpa oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName --history-max 5 --version $env:helmChartVersion -f ./base/external/vpa/values.yaml --insecure-skip-tls-verify --kubeconfig $env:KUBECONFIG

@@ -1,4 +1,5 @@
-name: Workflow Uninstall Helm Charts
+name: Workflow Uninstall Helm Charts (Windows)
+# Migrated from Linux to Windows
 
 on:
   workflow_dispatch:
@@ -12,26 +13,26 @@ on:
 
 defaults:
   run:
-    shell: bash
+    shell: pwsh # Changed from bash to PowerShell for Windows
 
 env:
-  # Define kubeconfig file path and name
-  KUBECONFIG: '${{ github.workspace }}/.kube/kubeconfig'
-
+  # Define kubeconfig file path and name - Windows style path
+  KUBECONFIG: '${{ github.workspace }}\.kube\kubeconfig'
 
 jobs:
   uninstall-helm-charts:
-    runs-on: self-hosted
+    runs-on: windows-local # Changed from windows-latest to windows-local
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4 # Updated from v2 to v4
 
       - name: Generate kubeconfig from repository secret
         run: |
-          mkdir -p '${{ github.workspace }}/.kube' \
-          && echo '${{ secrets.HP_LOCAL_KUBECONFIG}}' | base64 -d > $KUBECONFIG \
-          && chmod 600 $KUBECONFIG
+          # Linux command: mkdir -p '${{ github.workspace }}/.kube' && echo '${{ secrets.HP_LOCAL_KUBECONFIG}}' | base64 -d > $KUBECONFIG && chmod 600 $KUBECONFIG
+          New-Item -ItemType Directory -Path '${{ github.workspace }}\.kube' -Force
+          [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('${{ secrets.HP_LOCAL_KUBECONFIG}}')) | Out-File -FilePath $env:KUBECONFIG -Encoding UTF8
 
       - name: uninstall helm chart
         run: |
-          helm uninstall ${{ github.event.inputs.release-name }} -n ${{ github.event.inputs.namespace }} --kubeconfig $KUBECONFIG
+          # Linux command: helm uninstall ${{ github.event.inputs.release-name }} -n ${{ github.event.inputs.namespace }} --kubeconfig $KUBECONFIG
+          helm uninstall ${{ github.event.inputs.release-name }} -n ${{ github.event.inputs.namespace }} --kubeconfig $env:KUBECONFIG

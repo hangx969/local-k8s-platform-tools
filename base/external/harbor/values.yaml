@@ -114,6 +114,17 @@ trivy:
 
 database:
   type: internal
+  # Fix issue: https://github.com/goharbor/harbor-helm/issues/1811
+  internal:
+    extrInitContainers:
+      - name: db-permission-fix
+        securityContext:
+          runAsUser: 0  # Run as root user
+        image: busybox:1.28
+        command: [ 'sh', '-c', 'mkdir -p /var/lib/postgresql/data/; chown -R 999:999 /var/lib/postgresql/data/; chmod -R 700 /var/lib/postgresql/data/' ]
+        volumeMounts:
+          - name: database-data
+            mountPath: /var/lib/postgresql/data
 
 redis:
   type: internal

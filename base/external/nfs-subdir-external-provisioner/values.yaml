@@ -1,7 +1,7 @@
-replicaCount: 2
+replicaCount: 1
 
 nfs:
-  server: 172.16.183.100
+  server: 192.168.40.180
   path: /data/nfs_pro/
 
 # For creating the StorageClass automatically:
@@ -21,8 +21,8 @@ storageClass:
 
 resources:
   limits:
-   cpu: 100m
-   memory: 128Mi
+    cpu: 100m
+    memory: 128Mi
   requests:
-   cpu: 100m
-   memory: 128Mi
+    cpu: 100m
+    memory: 128Mi

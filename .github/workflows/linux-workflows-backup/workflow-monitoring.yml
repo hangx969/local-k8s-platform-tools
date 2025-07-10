@@ -1,5 +1,4 @@
-name: Workflow Monitoring Helm Charts (Windows)
-# Migrated from Linux to Windows
+name: Workflow Monitoring Helm Charts
 
 on:
   push:

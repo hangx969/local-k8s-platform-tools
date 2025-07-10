@@ -1,4 +1,5 @@
-name: Workflow Pull and Push to Harbor
+name: Workflow Pull and Push to Harbor (Windows)
+# Migrated from Linux to Windows
 
 on:
   workflow_dispatch:
@@ -26,47 +27,51 @@ on:
 
 defaults:
   run:
-    shell: bash
+    shell: pwsh # Changed from bash to PowerShell for Windows
 
 env:
-  # Define the dir where helm will pull this chart into: 'reponame-chartname'
-  downloadDir: '${{ github.workspace }}/${{ github.event.inputs.helmRepoName }}-${{ github.event.inputs.helmChartName }}'
+  # Define the dir where helm will pull this chart into: 'reponame-chartname' - Windows style path
+  downloadDir: '${{ github.workspace }}\${{ github.event.inputs.helmRepoName }}-${{ github.event.inputs.helmChartName }}'
   # Define the fixed pattern for the downloaded helm chart file: 'chartname-chartversion.tgz'
   chartFileName: '${{ github.event.inputs.helmChartName }}-${{ github.event.inputs.helmChartVersion }}.tgz'
 
 jobs:
   pull-and-push-helm-charts:
-    runs-on: self-hosted
+    runs-on: windows-local # Changed from windows-latest to windows-local
     steps:
       - name: Pull Helm Chart
         # Download the helm chart to the specified downloadDir
         run: |
+          # Linux command: helm repo add ${{ github.event.inputs.helmRepoName }} ${{ github.event.inputs.helmRepoURL }}; helm repo update ${{ github.event.inputs.helmRepoName }}; mkdir -p '${{ env.downloadDir }}'; helm pull ${{ github.event.inputs.helmRepoName }}/${{ github.event.inputs.helmChartName }} --version=${{ github.event.inputs.helmChartVersion }} --destination '${{ env.downloadDir }}'
           helm repo add ${{ github.event.inputs.helmRepoName }} ${{ github.event.inputs.helmRepoURL }}
           helm repo update ${{ github.event.inputs.helmRepoName }}
 
-          mkdir -p '${{ env.downloadDir }}'
-          helm pull \
-          ${{ github.event.inputs.helmRepoName }}/${{ github.event.inputs.helmChartName }} \
-          --version=${{ github.event.inputs.helmChartVersion }} --destination '${{ env.downloadDir }}'
+          New-Item -ItemType Directory -Path '${{ env.downloadDir }}' -Force
+          helm pull ${{ github.event.inputs.helmRepoName }}/${{ github.event.inputs.helmChartName }} --version=${{ github.event.inputs.helmChartVersion }} --destination '${{ env.downloadDir }}'
 
       # Rename the helm chart file name to a fixed pattern
       - name: Rename Helm Chart
         run: |
-          if test -e '${{ env.downloadDir }}/${{ env.chartFileName }}'; then
-            echo "Helm chart file name is already the wanted name, skip renaming"
-          else
-            mv ${{ env.downloadDir }}/*.tgz '${{ env.downloadDir }}/${{ env.chartFileName }}'
-          fi
+          # Linux command: if test -e '${{ env.downloadDir }}/${{ env.chartFileName }}'; then echo "Helm chart file name is already the wanted name, skip renaming"; else mv ${{ env.downloadDir }}/*.tgz '${{ env.downloadDir }}/${{ env.chartFileName }}'; fi
+          if (Test-Path '${{ env.downloadDir }}\${{ env.chartFileName }}') {
+            Write-Host "Helm chart file name is already the wanted name, skip renaming"
+          } else {
+            $tgzFile = Get-ChildItem -Path '${{ env.downloadDir }}' -Filter "*.tgz" | Select-Object -First 1
+            if ($tgzFile) {
+              Move-Item -Path $tgzFile.FullName -Destination '${{ env.downloadDir }}\${{ env.chartFileName }}'
+            }
+          }
 
       - name: Push Helm Chart to Harbor
         # Push the helm chart to the specified harbor project
         run: |
-          helm registry login ${{ github.event.inputs.harborURL }} \
-          --insecure \
-          --username ${{ secrets.HARBOR_USERNAME }} \
-          --password ${{ secrets.HARBOR_PASSWORD }}
+          # Linux command: helm registry login ${{ github.event.inputs.harborURL }} --insecure --username ${{ secrets.HARBOR_USERNAME }} --password ${{ secrets.HARBOR_PASSWORD }}
+          helm registry login ${{ github.event.inputs.harborURL }} --insecure --username ${{ secrets.HARBOR_USERNAME }} --password ${{ secrets.HARBOR_PASSWORD }}
 
-          helm push \
-          '${{ env.downloadDir }}/${{ env.chartFileName }}' \
-          oci://${{ github.event.inputs.harborURL }}/${{ github.event.inputs.harborProjectName }}/${{ github.event.inputs.helmRepoName }} \
-          --insecure-skip-tls-verify
+          # Linux command: helm push '${{ env.downloadDir }}/${{ env.chartFileName }}' oci://${{ github.event.inputs.harborURL }}/${{ github.event.inputs.harborProjectName }}/${{ github.event.inputs.helmRepoName }} --insecure-skip-tls-verify
+          helm push '${{ env.downloadDir }}\${{ env.chartFileName }}' oci://${{ github.event.inputs.harborURL }}/${{ github.event.inputs.harborProjectName }}/${{ github.event.inputs.helmRepoName }} --insecure-skip-tls-verify
+
+      - name: Clean up
+        run: |
+          # Linux command: rm -rf '${{ env.downloadDir }}'
+          Remove-Item -Path '${{ env.downloadDir }}' -Recurse -Force

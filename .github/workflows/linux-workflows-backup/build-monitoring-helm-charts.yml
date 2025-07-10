@@ -1,0 +1,200 @@
+name: Build Monitoring Helm Charts
+
+on:
+  workflow_call:
+
+  workflow_dispatch:
+
+  pull_request:
+    types:
+    - opened
+    paths:
+    - 'monitoring/**'
+    - '.github/workflows/build-monitoring-helm-charts.yml'
+    - '.github/workflows/deploy-monitoring-helm-charts.yml'
+    - '.github/workflows/workflow-monitoring.yml'
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  # Define kubeconfig file path and name
+  KUBECONFIG: '${{ github.workspace }}/.kube/kubeconfig'
+
+  # Define harbor URL
+  harborURL: 'harbor.hanxux.local'
+  harborProjectName: 'platform-tools-local'
+
+  # Define helm chart versions
+  # The syntax of the version is keeping the same as the github release file name
+  lokiVersion: '5.48.0'
+  promtailVersion: '6.15.5'
+  kubePrometheusStackVersion: '59.1.0'
+  tempoVersion: '1.16.0'
+  grafanaAgentVersion: '0.42.0'
+  jaegerVersion: '3.4.1'
+
+jobs:
+  helm-lint-and-diff:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate kubeconfig from repository secret
+        run: |
+          mkdir -p '${{ github.workspace }}/.kube' \
+          && echo '${{ secrets.HP_LOCAL_KUBECONFIG}}' | base64 -d > $KUBECONFIG \
+          && chmod 600 $KUBECONFIG
+
+      - name: Login Harbor
+        run: |
+          helm registry login '${{ env.harborURL }}' \
+          --username ${{ secrets.HARBOR_USERNAME }} \
+          --password ${{ secrets.HARBOR_PASSWORD }} \
+          --insecure
+
+      ###===========helm lint============###
+      - name: Helm Lint and template Grafana Dashboards
+        run: |
+          helm lint ./monitoring/helm-charts/grafana-dashboards \
+          --values ./monitoring/helm-charts/grafana-dashboards/values.yaml
+
+          # helm template ./monitoring/helm-charts/grafana-dashboards \
+          # --values ./monitoring/helm-charts/grafana-dashboards/values.yaml \
+          # --dry-run \
+          # --debug
+
+      - name: Helm Lint prometheus-rules
+        run: |
+          helm lint ./monitoring/helm-charts/prometheus-rules \
+          --values ./monitoring/helm-charts/prometheus-rules/values.yaml
+
+          # helm template ./monitoring/helm-charts/prometheus-rules \
+          # --values ./monitoring/helm-charts/prometheus-rules/values.yaml \
+          # --dry-run \
+          # --debug
+
+    ## Not installed yet. Uncomment it after install it.
+    # - name: Helm Lint and template Grafana Datasources
+    #   run: |
+    #     helm lint ./monitoring/helm-charts/grafana-datasources \
+    #     --values ./monitoring/helm-charts/grafana-datasources/values.yaml
+
+    #     helm template ./monitoring/helm-charts/grafana-datasources \
+    #     --values ./monitoring/helm-charts/grafana-datasources/values.yaml \
+    #     --dry-run \
+    #     --debug
+
+
+      ###===========helm diff===============###
+      - name: Diff grafana-agent
+        run: |
+          export helmChartVersion=${{env.grafanaAgentVersion}}
+          export helmRepoName='grafana'
+          export helmChartName='grafana-agent'
+
+          helm diff upgrade grafana-agent -n monitoring \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
+            -f ./monitoring/external/grafana-agent/values.yaml \
+            --version $helmChartVersion \
+            --insecure-skip-tls-verify \
+            --allow-unreleased \
+            --kubeconfig $KUBECONFIG
+
+      - name: Diff kube-prometheus-stack
+        run: |
+          export helmChartVersion=${{env.kubePrometheusStackVersion}}
+          export helmRepoName='prometheus-community'
+          export helmChartName='kube-prometheus-stack'
+
+          helm diff upgrade kube-prometheus-stack -n monitoring \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
+            -f ./monitoring/external/kube-prometheus-stack/values.yaml \
+            --version $helmChartVersion \
+            --set grafana.adminPassword='${{ secrets.GRAFANA_ADMIN_PASSWORD}}' \
+            --insecure-skip-tls-verify \
+            --allow-unreleased \
+            --kubeconfig $KUBECONFIG
+
+      # - name: Diff prometheus-rules helm chart
+      #   run: |
+      #     helm diff upgrade prometheus-rules -n monitoring \
+      #       ./monitoring/helm-charts/prometheus-rules \
+      #       -f ./monitoring/helm-charts/prometheus-rules/values.yaml \
+      #       --allow-unreleased \
+      #       --kubeconfig $KUBECONFIG
+
+      # - name: Diff grafana-dashboards helm chart
+      #   run: |
+      #     helm diff upgrade grafana-dashboards -n monitoring \
+      #       ./monitoring/helm-charts/grafana-dashboards \
+      #       -f ./monitoring/helm-charts/grafana-dashboards/values.yaml \
+      #       --allow-unreleased \
+      #       --kubeconfig $KUBECONFIG
+
+      # - name: Diff grafana-datasources helm chart
+      #   run: |
+      #     helm diff upgrade commoninfra-grafana-external-datasource -n monitoring \
+      #       ./monitoring/helm-charts/grafana-datasources \
+      #       -f ./monitoring/external/grafana-datasources/values.yaml \
+      #       --allow-unreleased \
+      #       --kubeconfig $KUBECONFIG
+
+      - name: Diff loki
+        run: |
+          export helmChartVersion=${{env.lokiVersion}}
+          export helmRepoName='grafana'
+          export helmChartName='loki'
+
+          helm diff upgrade loki -n monitoring \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
+            -f ./monitoring/external/loki/values.yaml \
+            --version $helmChartVersion \
+            --insecure-skip-tls-verify \
+            --allow-unreleased \
+            --kubeconfig $KUBECONFIG
+
+      - name: Diff promtail
+        run: |
+          export helmChartVersion=${{env.promtailVersion}}
+          export helmRepoName='grafana'
+          export helmChartName='promtail'
+
+          helm diff upgrade promtail -n monitoring \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
+            -f ./monitoring/external/promtail/values.yaml \
+            --version $helmChartVersion \
+            --insecure-skip-tls-verify \
+            --allow-unreleased \
+            --kubeconfig $KUBECONFIG
+
+      - name: Diff tempo
+        run: |
+          export helmChartVersion=${{env.tempoVersion}}
+          export helmRepoName='grafana'
+          export helmChartName='tempo'
+
+          helm diff upgrade tempo -n monitoring \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
+            -f ./monitoring/external/tempo/values.yaml \
+            --version $helmChartVersion \
+            --insecure-skip-tls-verify \
+            --allow-unreleased \
+            --kubeconfig $KUBECONFIG
+
+      - name: Diff jaeger
+        run: |
+          export helmChartVersion=${{env.jaegerVersion}}
+          export helmRepoName='jaegertracing'
+          export helmChartName='jaeger'
+
+          helm diff upgrade jaeger -n monitoring \
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
+            -f ./monitoring/external/jaeger/values.yaml \
+            --version $helmChartVersion \
+            --insecure-skip-tls-verify \
+            --allow-unreleased \
+            --kubeconfig $KUBECONFIG

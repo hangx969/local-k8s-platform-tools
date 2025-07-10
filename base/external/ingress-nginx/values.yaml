@@ -1,5 +1,9 @@
 controller:
   name: controller
+  image:
+    image: ingress-nginx/controller
+    tag: "v1.12.1"
+    digest: ""
   enableAnnotationValidations: false
   config:
     proxy-buffer-size: "16k"
@@ -40,6 +44,13 @@ controller:
       SecRule REQUEST_URI "@beginsWith /api/ds/query" \
           "id:10001,phase:1,pass,nolog,ctl:ruleRemoveById=949110"
 
+  admissionWebhooks:
+    patch:
+      image:
+        image: ingress-nginx/kube-webhook-certgen
+        tag: v1.5.2
+        digest: ""
+
   watchIngressWithoutClass: true
   ingressClassByName: true
   hostNetwork: true
@@ -74,7 +85,7 @@ controller:
     type: NodePort
 
   metrics:
-    enabled: true
+    enabled: false # enable this after prometheus is installed
     service:
       enabled: true
       annotations:
