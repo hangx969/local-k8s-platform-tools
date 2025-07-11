@@ -35,7 +35,7 @@ securityContext:
 serviceAccount:
   create: true
 
-replicaCount: 2
+replicaCount: 1
 
 customLabels:
   capsule.workload: "true"
