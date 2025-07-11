@@ -198,7 +198,7 @@ jobs:
           $env:helmRepoName = 'nfs-subdir-external-provisioner'
           $env:helmChartName = 'nfs-subdir-external-provisioner'
 
-          helm upgrade -i nfs-provisioner -n default oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName --version $env:helmChartVersion --history-max 5 -f ./base/external/nfs-subdir-external-provisioner/values.yaml --insecure-skip-tls-verify --kubeconfig $env:KUBECONFIG
+          helm upgrade -i nfs-subdir-external-provisioner -n default oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName --version $env:helmChartVersion --history-max 5 -f ./base/external/nfs-subdir-external-provisioner/values.yaml --insecure-skip-tls-verify --kubeconfig $env:KUBECONFIG
 
       - name: Upgrade goldilocks
         run: |
