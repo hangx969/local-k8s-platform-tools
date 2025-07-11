@@ -85,7 +85,7 @@ controller:
     type: NodePort
 
   metrics:
-    enabled: false # enable this after prometheus is installed
+    enabled: true
     service:
       enabled: true
       annotations:

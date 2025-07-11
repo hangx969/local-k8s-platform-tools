@@ -70,6 +70,17 @@ jobs:
           $env:helmRepoName = 'projectcapsule'
           $env:helmChartName = 'capsule'
 
+          helm pull oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName --version $env:helmChartVersion --insecure-skip-tls-verify
+
+          Write-Host "Extract CRDs"
+          tar xvf "$env:helmChartName-$env:helmChartVersion.tgz" capsule/crds
+
+          Write-Host "Diff CRDs"
+          kubectl diff -f capsule/crds/ -R --kubeconfig $env:KUBECONFIG
+
+          Write-Host "Install CRDs"
+          kubectl apply --server-side -f capsule/crds/ -R --kubeconfig $env:KUBECONFIG
+
           helm upgrade -i capsule -n capsule-system oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName --history-max 5 -f ./base/external/capsule/values.yaml --version $env:helmChartVersion --insecure-skip-tls-verify --kubeconfig $env:KUBECONFIG
 
       - name: Upgrade Capsule Tenants

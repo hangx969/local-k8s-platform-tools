@@ -76,6 +76,19 @@ jobs:
           export helmRepoName='projectcapsule'
           export helmChartName='capsule'
 
+          helm pull oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
+            --version $helmChartVersion \
+            --insecure-skip-tls-verify
+
+          echo "Extract CRDs"
+          tar xvf $helmChartName-$helmChartVersion.tgz capsule/crds
+
+          echo "Diff CRDs"
+          kubectl diff -f capsule/crds/ -R --kubeconfig $KUBECONFIG
+
+          echo "Install CRDs"
+          kubectl apply --server-side -f capsule/crds/ -R --kubeconfig $KUBECONFIG
+
           helm upgrade -i capsule -n capsule-system \
             oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
             --history-max 5 \
