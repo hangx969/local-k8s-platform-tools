@@ -13,7 +13,7 @@ dashboard:
   # dashboard.flags -- A map of additional flags to pass to the dashboard. For monitoring all namespaces out of the box, add the following flag "on-by-default: true".
   flags:
     on-by-default: true
-
+  replicaCount: 1
   ingress:
     # dashboard.ingress.enabled -- Enables an ingress object for the dashboard.
     enabled: true
