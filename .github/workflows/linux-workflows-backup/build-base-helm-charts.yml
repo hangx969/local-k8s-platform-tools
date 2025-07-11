@@ -264,7 +264,7 @@ jobs:
           export helmRepoName='nfs-subdir-external-provisioner'
           export helmChartName='nfs-subdir-external-provisioner'
 
-          helm diff upgrade nfs-provisioner -n default \
+          helm diff upgrade nfs-subdir-external-provisioner -n default \
             oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$helmRepoName/$helmChartName \
             --version $helmChartVersion \
             -f ./base/external/nfs-subdir-external-provisioner/values.yaml \
