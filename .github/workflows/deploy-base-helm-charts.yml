@@ -155,13 +155,13 @@ jobs:
 
           helm upgrade -i trivy-operator -n trivy-system oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName --version $env:helmChartVersion --history-max 5 -f ./base/external/trivy-operator/values.yaml --insecure-skip-tls-verify --kubeconfig $env:KUBECONFIG
 
-      - name: Upgrade Kyverno
-        run: |
-          $env:helmChartVersion = '${{env.kyvernoVersion}}'
-          $env:helmRepoName = 'kyverno'
-          $env:helmChartName = 'kyverno'
+      # - name: Upgrade Kyverno
+      #   run: |
+      #     $env:helmChartVersion = '${{env.kyvernoVersion}}'
+      #     $env:helmRepoName = 'kyverno'
+      #     $env:helmChartName = 'kyverno'
 
-          helm upgrade -i kyverno -n kyverno oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName --version $env:helmChartVersion --history-max 5 -f ./base/external/kyverno/values.yaml --insecure-skip-tls-verify --kubeconfig $env:KUBECONFIG
+      #     helm upgrade -i kyverno -n kyverno oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName --version $env:helmChartVersion --history-max 5 -f ./base/external/kyverno/values.yaml --insecure-skip-tls-verify --kubeconfig $env:KUBECONFIG
 
       - name: Upgrade Kyverno Policy Reporter
         run: |

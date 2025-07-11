@@ -78,8 +78,8 @@ controller:
     enabled: true
     minReplicas: 3
     maxReplicas: 3
-    targetCPUUtilizationPercentage: 50
-    targetMemoryUtilizationPercentage: 70
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
 
   service:
     type: NodePort
