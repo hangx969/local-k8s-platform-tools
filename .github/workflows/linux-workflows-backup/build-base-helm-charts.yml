@@ -35,7 +35,7 @@ env:
   externalSecretsVersion: '0.18.2'
   harborVersion: '1.17.1'
   nginxVersion: '4.13.0'
-  kyvernoVersion: '3.2.7'
+  kyvernoVersion: '3.4.4'
   nfsSubdirExternalProvisionerVersion: '4.0.18'
   oauth2proxyVersion: '7.12.19'
   policyReportVersion: '2.24.2'

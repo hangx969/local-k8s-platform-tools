@@ -21,7 +21,7 @@ env:
   # Note that the helm chart version of cert-manager and kubed are with 'v' prefix by default
   harborVersion: '1.17.1'
   configSyncerVersion: 'v0.13.2'
-  kyvernoVersion: '3.2.7'
+  kyvernoVersion: '3.4.4'
   vpaVersion: '4.7.1'
 
 jobs:
