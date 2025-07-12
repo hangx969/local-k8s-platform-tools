@@ -61,15 +61,15 @@ config:
   # will be forwarded to the webhook configurations.
   # The Kyverno namespace is excluded if `excludeKyvernoNamespace` is `true` (default)
   webhooks:
-    # Exclude namespaces
-    - namespaceSelector:
-        matchExpressions:
-        - key: kubernetes.io/metadata.name
-          operator: NotIn
-          values:
-            - kube-system
-            - kyverno
-            - gatekeeper-system
+  # Exclude namespaces
+    namespaceSelector:
+      matchExpressions:
+      - key: kubernetes.io/metadata.name
+        operator: NotIn
+        values:
+          - kube-system
+          - kyverno
+          - gatekeeper-system
 
 
 # Features configuration
@@ -90,7 +90,7 @@ features:
 # Admission controller configuration
 admissionController:
   # -- (int) Desired number of pods
-  replicas: 3
+  replicas: 1
   container:
     resources:
       # -- Pod resource limits
@@ -98,7 +98,7 @@ admissionController:
         memory: 384Mi
       # -- Pod resource requests
       requests:
-        cpu: 300m
+        cpu: 100m
         memory: 128Mi
   serviceMonitor:
     # -- Create a `ServiceMonitor` to collect Prometheus metrics.
