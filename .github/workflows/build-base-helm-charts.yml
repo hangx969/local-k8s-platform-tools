@@ -144,13 +144,14 @@ jobs:
 
           helm diff upgrade trivy-operator -n trivy-system oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName --version $env:helmChartVersion -f ./base/external/trivy-operator/values.yaml --insecure-skip-tls-verify --allow-unreleased --kubeconfig $env:KUBECONFIG
 
-      - name: Diff Kyverno
-        run: |
-          $env:helmChartVersion = '${{env.kyvernoVersion}}'
-          $env:helmRepoName = 'kyverno'
-          $env:helmChartName = 'kyverno'
+      # kyverno helm charts do not supporting updating itself, comment it.
+      # - name: Diff Kyverno
+      #   run: |
+      #     $env:helmChartVersion = '${{env.kyvernoVersion}}'
+      #     $env:helmRepoName = 'kyverno'
+      #     $env:helmChartName = 'kyverno'
 
-          helm diff upgrade kyverno -n kyverno oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName --version $env:helmChartVersion -f ./base/external/kyverno/values.yaml --insecure-skip-tls-verify --allow-unreleased --kubeconfig $env:KUBECONFIG
+      #     helm diff upgrade kyverno -n kyverno oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName --version $env:helmChartVersion -f ./base/external/kyverno/values.yaml --insecure-skip-tls-verify --allow-unreleased --kubeconfig $env:KUBECONFIG
 
       - name: Diff Kyverno Policy Reporter
         run: |
