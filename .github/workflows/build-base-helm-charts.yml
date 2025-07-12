@@ -30,7 +30,7 @@ env:
   capsuleVersion: '0.7.4'
   certManagerVersion: 'v1.18.2'
   externalDNSVersion: '1.17.0'
-  externalSecretsVersion: '0.17.0'
+  externalSecretsVersion: '0.18.2'
   harborVersion: '1.17.1'
   nginxVersion: '4.13.0'
   kyvernoVersion: '3.2.7'
