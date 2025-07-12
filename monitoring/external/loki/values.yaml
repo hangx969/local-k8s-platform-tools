@@ -168,3 +168,34 @@ extraObjects:
 sidecar:
   rules:
     enabled: false
+
+# 在您的 values.yaml 文件末尾添加这些配置
+write:
+  replicas: 0
+
+read:
+  replicas: 0
+
+backend:
+  replicas: 0
+
+indexGateway:
+  replicas: 0
+
+compactor:
+  replicas: 0
+
+distributor:
+  replicas: 0
+
+ingester:
+  replicas: 0
+
+querier:
+  replicas: 0
+
+queryFrontend:
+  replicas: 0
+
+queryScheduler:
+  replicas: 0
