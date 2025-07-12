@@ -91,3 +91,8 @@ metrics:
     enabled: true
     # Define the namespace where to deploy the ServiceMonitor resource
     namespace: monitoring
+
+tolerations:
+  - key: "node-role.kubernetes.io/control-plane"
+    operator: "Equal"
+    effect: "NoSchedule"
