@@ -68,7 +68,7 @@ config:
           operator: NotIn
           values:
             - kube-system
-            - kynerno
+            - kyverno
             - gatekeeper-system
 
 
