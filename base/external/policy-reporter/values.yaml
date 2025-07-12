@@ -23,7 +23,7 @@ ui:
     enabled: true
     ingressClassName: nginx-default
     annotations:
-？    hosts:
+    hosts:
       - host: kyverno.hanxux.local
         paths:
           - path: /
