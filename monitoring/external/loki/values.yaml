@@ -57,9 +57,10 @@ monitoring:
       # Note that helm will not install CRDs if this flag is enabled during an upgrade.
       # In that case install the CRDs manually from https://github.com/grafana/agent/tree/main/production/operator/crds
       installOperator: false
-  # disable loki canary because it is causing more load to loki than everything else combined
-  lokiCanary:
-    enabled: false
+
+# disable loki canary because it is causing more load to loki than everything else combined
+lokiCanary:
+  enabled: false
 
 singleBinary:
   replicas: 1
