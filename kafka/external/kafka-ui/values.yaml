@@ -20,9 +20,9 @@ ingress:
   enabled: true
 
   # Annotations for the Ingress
-  annotations:
-    nginx.ingress.kubernetes.io/auth-url: "https://oauth2proxy.hanxux.local/oauth2/auth"
-    nginx.ingress.kubernetes.io/auth-signin: "https://oauth2proxy.hanxux.local/oauth2/start?rd=https%3A%2F%2Fkafka-ui.hanxux.local"
+  annotations: {}
+    # nginx.ingress.kubernetes.io/auth-url: "https://oauth2proxy.hanxux.local/oauth2/auth"
+    # nginx.ingress.kubernetes.io/auth-signin: "https://oauth2proxy.hanxux.local/oauth2/start?rd=https%3A%2F%2Fkafka-ui.hanxux.local"
 
   # ingressClassName for the Ingress
   ingressClassName: "nginx-default"

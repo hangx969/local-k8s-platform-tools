@@ -42,7 +42,7 @@ loki:
     max_outstanding_requests_per_tenant: 10000
   # --  Optional compactor configuration
   compactor:
-    retention_enabled: true
+    retention_enabled: false
   # -- Check https://grafana.com/docs/loki/latest/configuration/#schema_config for more info on how to configure schemas
   useTestSchema: true
 

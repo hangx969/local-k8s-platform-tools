@@ -21,9 +21,9 @@ commonparameters:
       host: "apicurio.hanxux.local"
       path: "/"
       tls: true
-      annotations:
-        nginx.ingress.kubernetes.io/auth-signin: https://oauth2proxy.hanxux.local/oauth2/start?rd=https%3A%2F%2Fapicurio.hanxux.local
-        nginx.ingress.kubernetes.io/auth-url: https://oauth2proxy.hanxux.local/oauth2/auth
+      annotations: {}
+        # nginx.ingress.kubernetes.io/auth-signin: https://oauth2proxy.hanxux.local/oauth2/start?rd=https%3A%2F%2Fapicurio.hanxux.local
+        # nginx.ingress.kubernetes.io/auth-url: https://oauth2proxy.hanxux.local/oauth2/auth
       labels: {}
     mtls:
       host: "apicurio-mtls.hanxux.local"
