@@ -19,7 +19,7 @@ env:
 
   # Define helm chart versions
   capsuleVersion: '0.7.4'
-  certManagerVersion: 'v1.17.2'
+  certManagerVersion: 'v1.18.2'
   externalDNSVersion: '1.15.2'
   externalSecretsVersion: '0.17.0'
   harborVersion: '1.16.0'
