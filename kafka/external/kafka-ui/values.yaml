@@ -41,7 +41,7 @@ ingress:
     # Enable TLS termination for the Ingress
     enabled: true
     # the name of a pre-created Secret containing a TLS private key and certificate
-    secretName: "cert-kafka-ui"
+    secretName: "kafka-ui-tls-cert-secret"
 
 resources:
   limits:

@@ -172,7 +172,7 @@ grafana:
     paths:
       - /
     tls:
-      - secretName: cert-grafana
+      - secretName: grafana-tls-cert-secret
         hosts:
         - grafana.hanxux.local
   sidecar:
