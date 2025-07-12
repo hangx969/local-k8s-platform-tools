@@ -61,15 +61,13 @@ config:
   # will be forwarded to the webhook configurations.
   # The Kyverno namespace is excluded if `excludeKyvernoNamespace` is `true` (default)
   webhooks:
-  # Exclude namespaces
+    # Exclude namespaces
     namespaceSelector:
       matchExpressions:
       - key: kubernetes.io/metadata.name
         operator: NotIn
         values:
           - kube-system
-          - kyverno
-          - gatekeeper-system
 
 
 # Features configuration
