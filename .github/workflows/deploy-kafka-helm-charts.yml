@@ -18,7 +18,7 @@ env:
   harborProjectName: 'platform-tools-local'
 
   # Define helm chart versions
-  strimziVersion: '0.42.0'
+  strimziVersion: '0.46.1'
   kafkaUiVersion: '0.7.6'
   apicurioVersion: '2.6.6.Final'
 
