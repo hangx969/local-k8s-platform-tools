@@ -18,7 +18,7 @@ env:
   harborProjectName: 'platform-tools-local'
 
   # Define helm chart versions
-  capsuleVersion: '0.7.4'
+  capsuleVersion: '0.10.1'
   certManagerVersion: 'v1.18.2'
   externalDNSVersion: '1.17.0'
   externalSecretsVersion: '0.18.2'
