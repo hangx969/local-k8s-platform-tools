@@ -127,9 +127,6 @@ redis:
 
 trivy:
   enabled: true
-  image:
-    repository: goharbor/trivy-adapter-photon
-    tag: v2.13.0
   replicas: 1
   resources:
     requests:
