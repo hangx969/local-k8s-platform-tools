@@ -70,7 +70,7 @@ jobs:
           $env:helmRepoName = 'strimzi'
           $env:helmChartName = 'strimzi-kafka-operator'
 
-          helm diff upgrade strimzi-kafka-operator -n strimzi-system oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName --version $env:helmChartVersion -f ./kafka/external/strimzi-kafka-operator/values.yaml --insecure-skip-tls-verify --allow-unreleased --kubeconfig $env:KUBECONFIG
+          helm diff upgrade strimzi-kafka-operator -n kafka oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName --version $env:helmChartVersion -f ./kafka/external/strimzi-kafka-operator/values.yaml --insecure-skip-tls-verify --allow-unreleased --kubeconfig $env:KUBECONFIG
 
       - name: Diff Kafka UI
         run: |
