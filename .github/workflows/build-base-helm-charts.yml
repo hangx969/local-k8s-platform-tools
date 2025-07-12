@@ -43,7 +43,7 @@ env:
   vpaVersion: '4.7.1'
   goldilocksVersion: '9.0.1'
   pactVersion: '1.1.0'
-  jenkinsVersion: '5.8.61'
+  jenkinsVersion: '5.8.68'
 
 jobs:
   helm-lint-and-diff:

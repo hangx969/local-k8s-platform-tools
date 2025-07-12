@@ -60,7 +60,7 @@
 | fairwinds-stable                | https://charts.fairwinds.com/stable                          | goldilocks                      | 9.0.1         | https://github.com/FairwindsOps/goldilocks/releases          | https://artifacthub.io/packages/helm/fairwinds-stable/goldilocks |
 | pact-broker                     | https://pact-foundation.github.io/pact-broker-chart/         | pact-broker                     | 1.1.0         | https://github.com/pact-foundation/pact-broker-chart/releases | N/A                                                          |
 | jaegertracing                   | https://jaegertracing.github.io/helm-charts                  | jaeger                          | 3.4.1         | https://github.com/jaegertracing/helm-charts/releases        | https://artifacthub.io/packages/helm/jaegertracing/jaeger    |
-| jenkins                         | https://charts.jenkins.io                                    | jenkins                         | 5.8.61        | https://github.com/jenkinsci/helm-charts/tree/main/charts/jenkins | https://artifacthub.io/packages/helm/jenkinsci/jenkins       |
+| jenkins                         | https://charts.jenkins.io                                    | jenkins                         | 5.8.68        | https://github.com/jenkinsci/helm-charts/tree/main/charts/jenkins | https://artifacthub.io/packages/helm/jenkinsci/jenkins       |
 
 ## 部署前提条件
 
