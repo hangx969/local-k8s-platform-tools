@@ -32,6 +32,10 @@ securityContext:
   allowPrivilegeEscalation: false
   readOnlyRootFilesystem: true
 
+tolerations:
+  - key: CriticalAddonsOnly
+    operator: Exists
+    effect: NoSchedule
 serviceAccount:
   create: true
 
@@ -53,60 +57,26 @@ affinity:
 
 # Webhooks configurations
 webhooks:
-  namespaceOwnerReference:
-    failurePolicy: Fail
-  cordoning:
-    failurePolicy: Fail
-    namespaceSelector:
-      matchExpressions:
-        - key: capsule.clastix.io/tenant
-          operator: Exists
-  ingresses:
-    failurePolicy: Fail
-    namespaceSelector:
-      matchExpressions:
-        - key: capsule.clastix.io/tenant
-          operator: Exists
-  namespaces:
-    failurePolicy: Fail
-  networkpolicies:
-    failurePolicy: Fail
-    namespaceSelector:
-      matchExpressions:
-        - key: capsule.clastix.io/tenant
-          operator: Exists
-  pods:
-    failurePolicy: Fail
-    namespaceSelector:
-      matchExpressions:
-        - key: capsule.clastix.io/tenant
-          operator: Exists
-  persistentvolumeclaims:
-    failurePolicy: Fail
-    namespaceSelector:
-      matchExpressions:
-        - key: capsule.clastix.io/tenant
-          operator: Exists
-  tenants:
-    failurePolicy: Fail
-  tenantResourceObjects:
-    failurePolicy: Fail
-  services:
-    failurePolicy: Fail
-    namespaceSelector:
-      matchExpressions:
-        - key: capsule.clastix.io/tenant
-          operator: Exists
-  nodes:
-    failurePolicy: Fail
-  defaults:
-    ingress:
+  mutatingWebhooksTimeoutSeconds: 30
+  validatingWebhooksTimeoutSeconds: 30
+  hooks:
+    namespaceOwnerReference:
+      failurePolicy: Fail
+    cordoning:
       failurePolicy: Fail
       namespaceSelector:
         matchExpressions:
           - key: capsule.clastix.io/tenant
             operator: Exists
-    pvc:
+    ingresses:
+      failurePolicy: Fail
+      namespaceSelector:
+        matchExpressions:
+          - key: capsule.clastix.io/tenant
+            operator: Exists
+    namespaces:
+      failurePolicy: Fail
+    networkpolicies:
       failurePolicy: Fail
       namespaceSelector:
         matchExpressions:
@@ -118,14 +88,48 @@ webhooks:
         matchExpressions:
           - key: capsule.clastix.io/tenant
             operator: Exists
+    persistentvolumeclaims:
+      failurePolicy: Fail
+      namespaceSelector:
+        matchExpressions:
+          - key: capsule.clastix.io/tenant
+            operator: Exists
+    tenants:
+      failurePolicy: Fail
+    tenantResourceObjects:
+      failurePolicy: Fail
+    services:
+      failurePolicy: Fail
+      namespaceSelector:
+        matchExpressions:
+          - key: capsule.clastix.io/tenant
+            operator: Exists
+    nodes:
+      failurePolicy: Fail
+    defaults:
+      ingress:
+        failurePolicy: Fail
+        namespaceSelector:
+          matchExpressions:
+            - key: capsule.clastix.io/tenant
+              operator: Exists
+      pvc:
+        failurePolicy: Fail
+        namespaceSelector:
+          matchExpressions:
+            - key: capsule.clastix.io/tenant
+              operator: Exists
+      pods:
+        failurePolicy: Fail
+        namespaceSelector:
+          matchExpressions:
+            - key: capsule.clastix.io/tenant
+              operator: Exists
 
-mutatingWebhooksTimeoutSeconds: 30
-validatingWebhooksTimeoutSeconds: 30
-
-serviceMonitor:
-  enabled: true
-
-tolerations:
-  - key: CriticalAddonsOnly
-    operator: Exists
-    effect: NoSchedule
+# Monitoring Settings
+monitoring:
+  serviceMonitor:
+    # -- Enable ServiceMonitor
+    enabled: true
+    # -- Install the ServiceMonitor into a different Namespace, as the monitoring stack one (default: the release one)
+    namespace: 'monitoring'

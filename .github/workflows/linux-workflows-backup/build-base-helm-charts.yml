@@ -29,7 +29,7 @@ env:
 
   # Define helm chart versions
   # Note that the helm chart version of cert-manager and kubed are with 'v' prefix by default
-  capsuleVersion: '0.10.1'
+  capsuleVersion: '0.10.0'
   certManagerVersion: 'v1.18.2'
   externalDNSVersion: '1.17.0'
   externalSecretsVersion: '0.18.2'
@@ -39,7 +39,7 @@ env:
   nfsSubdirExternalProvisionerVersion: '4.0.18'
   oauth2proxyVersion: '7.12.19'
   policyReportVersion: '3.3.1'
-  reloaderVersion: '1.0.115'
+  reloaderVersion: '2.1.5'
   trivyOperatorVersion: '0.29.3'
   configSyncerVersion: 'v0.13.2'
   vpaVersion: '4.7.1'
