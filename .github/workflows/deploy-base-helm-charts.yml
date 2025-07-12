@@ -23,7 +23,7 @@ env:
   externalDNSVersion: '1.15.2'
   externalSecretsVersion: '0.17.0'
   harborVersion: '1.16.0'
-  nginxVersion: '4.12.2'
+  nginxVersion: '4.13.0'
   kyvernoVersion: '3.2.7'
   nfsSubdirExternalProvisionerVersion: '4.0.18'
   oauth2proxyVersion: '7.12.13'
