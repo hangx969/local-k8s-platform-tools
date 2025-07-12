@@ -75,8 +75,8 @@ jobs:
           Write-Host "Extract CRDs"
           tar xvf "$env:helmChartName-$env:helmChartVersion.tgz" capsule/crds
 
-          Write-Host "Diff CRDs"
-          kubectl diff -f capsule/crds/ -R --kubeconfig $env:KUBECONFIG
+          # Write-Host "Diff CRDs"
+          # kubectl diff -f capsule/crds/ -R --kubeconfig $env:KUBECONFIG
 
           Write-Host "Install CRDs"
           kubectl apply --server-side -f capsule/crds/ -R --kubeconfig $env:KUBECONFIG

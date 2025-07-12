@@ -62,6 +62,11 @@ monitoring:
 lokiCanary:
   enabled: false
 
+chunksCache:
+  enabled: false
+resultsCache:
+  enabled: false
+
 singleBinary:
   replicas: 1
   autoscaling:
