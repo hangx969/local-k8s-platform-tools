@@ -1,12 +1,38 @@
+
+## Install Prometheus Operator CRDs
+##
+crds:
+  enabled: true
+  ## The CRD upgrade job mitigates the limitation of helm not being able to upgrade CRDs.
+  ## The job will apply the CRDs to the cluster before the operator is deployed, using helm hooks.
+  ## It deploy a corresponding clusterrole, clusterrolebinding and serviceaccount to apply the CRDs.
+  ## This feature is in preview, off by default and may change in the future.
+  upgradeJob:
+    enabled: true
+    forceConflicts: true
+    image:
+      busybox:
+        registry: docker.io
+        repository: busybox
+        tag: "latest"
+        sha: ""
+        pullPolicy: IfNotPresent
+      kubectl:
+        registry: registry.k8s.io
+        repository: kubectl
+        tag: ""  # defaults to the Kubernetes version
+        sha: ""
+        pullPolicy: IfNotPresent
+
 defaultRules:
-  create: true
-  rules:
-    etcd: false
   ## Prefix for runbook URLs. Use this to override the first part of the runbookURLs that is common to all rules.
   runbookUrl: "https://runbooks.prometheus-operator.dev/runbooks"
   node:
     fsSelector: 'fstype!=""'
 
+## Configuration for alertmanager
+## ref: https://prometheus.io/docs/alerting/alertmanager/
+##
 alertmanager:
   enabled: true
   config:
