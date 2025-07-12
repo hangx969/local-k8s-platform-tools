@@ -29,7 +29,7 @@ env:
   # Define helm chart versions
   # The syntax of the version is keeping the same as the github release file name
   lokiVersion: '6.31.0'
-  promtailVersion: '6.15.5'
+  promtailVersion: '6.17.0'
   kubePrometheusStackVersion: '75.10.0'
   tempoVersion: '1.16.0'
   grafanaAgentVersion: '0.42.0'

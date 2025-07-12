@@ -48,25 +48,20 @@ monitoring:
   lokiCanary:
     enabled: false
 
-write:
-  persistence:
-    size: 1Gi
-    storageClass: sc-nfs
-
-read:
-  persistence:
-    enableStatefulSetAutoDeletePVC: false
-    size: 1Gi
-    storageClass: sc-nfs
-
-backend:
-  persistence:
-    enableStatefulSetAutoDeletePVC: false
-    size: 1Gi
-    storageClass: sc-nfs
-
 singleBinary:
   replicas: 1
+  autoscaling:
+    # -- Enable autoscaling
+    enabled: true
+    # -- Minimum autoscaling replicas for the single binary
+    minReplicas: 1
+    # -- Maximum autoscaling replicas for the single binary
+    maxReplicas: 3
+    # -- Target CPU utilisation percentage for the single binary
+    targetCPUUtilizationPercentage: 70
+    # -- Target memory utilisation percentage for the single binary
+    targetMemoryUtilizationPercentage: 70
+
   extraVolumeMounts:
   - name: loki-rules
     mountPath: /var/loki/rules/fake
