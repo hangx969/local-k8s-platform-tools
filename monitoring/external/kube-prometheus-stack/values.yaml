@@ -208,7 +208,7 @@ grafana:
         memory: 180Mi
       limits:
         cpu: 900m
-        memory: 250Mi
+        memory: 500Mi
   additionalDataSources:
     - name: Tempo
       type: tempo
@@ -243,8 +243,8 @@ kube-state-metrics:
       cpu: 10m
       memory: 80Mi
     limits:
-      cpu: 20m
-      memory: 128Mi
+      cpu: 200m
+      memory: 500Mi
 
 prometheus-node-exporter:
   resources:

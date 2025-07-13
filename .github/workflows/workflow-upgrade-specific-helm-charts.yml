@@ -22,7 +22,7 @@ env:
   harborVersion: '1.17.1'
   configSyncerVersion: 'v0.13.2'
   kyvernoVersion: '3.4.4'
-  vpaVersion: '4.7.1'
+  vpaVersion: '4.7.2'
 
 jobs:
   helm-upgrade:

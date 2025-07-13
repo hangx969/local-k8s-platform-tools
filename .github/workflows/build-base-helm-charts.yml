@@ -40,7 +40,7 @@ env:
   reloaderVersion: '2.1.5'
   trivyOperatorVersion: '0.29.3'
   configSyncerVersion: 'v0.13.2'
-  vpaVersion: '4.7.1'
+  vpaVersion: '4.7.2'
   goldilocksVersion: '9.0.1'
   pactVersion: '1.1.0'
   jenkinsVersion: '5.8.68'
