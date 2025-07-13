@@ -73,13 +73,21 @@ controller:
     - key: "node-role.kubernetes.io/control-plane"
       operator: "Equal"
       effect: "NoSchedule"
-
+  replicaCount: 3
   autoscaling:
-    enabled: true
+    enabled: false
     minReplicas: 3
     maxReplicas: 3
     targetCPUUtilizationPercentage: 80
     targetMemoryUtilizationPercentage: 80
+
+  resources:
+    limits:
+      cpu: 300m
+      memory: 300Mi
+    requests:
+      cpu: 100m
+      memory: 90Mi
 
   service:
     type: NodePort
