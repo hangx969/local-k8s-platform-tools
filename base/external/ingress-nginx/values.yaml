@@ -1,5 +1,6 @@
 controller:
   name: controller
+  kind: Daemonset
   image:
     image: ingress-nginx/controller
     tag: "v1.12.1"
@@ -53,7 +54,15 @@ controller:
 
   watchIngressWithoutClass: true
   ingressClassByName: true
+
+  # Pods configured with hostNetwork: true do not use the internal DNS resolver (i.e. kube-dns or CoreDNS)
+  # unless their dnsPolicy spec field is set to ClusterFirstWithHostNet.
+  # Consider using this setting if NGINX is expected to resolve internal names for any reason.
+  # https://kubernetes.github.io/ingress-nginx/deploy/baremetal/#via-the-host-network
+  # https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy
   hostNetwork: true
+  dnsPolicy: ClusterFirstWithHostNet
+
   hostPort:
     enabled: true
     ports:
@@ -73,13 +82,13 @@ controller:
     - key: "node-role.kubernetes.io/control-plane"
       operator: "Equal"
       effect: "NoSchedule"
-  replicaCount: 3
-  autoscaling:
-    enabled: false
-    minReplicas: 3
-    maxReplicas: 3
-    targetCPUUtilizationPercentage: 80
-    targetMemoryUtilizationPercentage: 80
+  # replicaCount: 3
+  # autoscaling:
+  #   enabled: false
+  #   minReplicas: 3
+  #   maxReplicas: 3
+  #   targetCPUUtilizationPercentage: 80
+  #   targetMemoryUtilizationPercentage: 80
 
   resources:
     limits:
