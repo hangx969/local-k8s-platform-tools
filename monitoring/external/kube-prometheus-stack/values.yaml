@@ -150,9 +150,9 @@ alertmanager:
   ingress:
     enabled: true
     ingressClassName: nginx-default
-    annotations: {}
-      # nginx.ingress.kubernetes.io/auth-url: "https://oauth2proxy.hanxux.local/oauth2/auth"
-      # nginx.ingress.kubernetes.io/auth-signin: "https://oauth2proxy.hanxux.local/oauth2/start?rd=https%3A%2F%2Falertmanager.hanxux.local"
+    annotations:
+      nginx.ingress.kubernetes.io/auth-url: "https://oauth2proxy.hanxux.local/oauth2/auth"
+      nginx.ingress.kubernetes.io/auth-signin: "https://oauth2proxy.hanxux.local/oauth2/start?rd=https%3A%2F%2Falertmanager.hanxux.local"
     hosts:
       - alertmanager.hanxux.local
     ## Paths to use for ingress rules - one path should match the alertmanagerSpec.routePrefix
@@ -189,9 +189,9 @@ grafana:
   ingress:
     enabled: true
     ingressClassName: nginx-default
-    annotations: {}
-      # nginx.ingress.kubernetes.io/auth-url: "https://oauth2proxy.hanxux.local/oauth2/auth"
-      # nginx.ingress.kubernetes.io/auth-signin: "https://oauth2proxy.hanxux.local/oauth2/start?rd=https%3A%2F%2Fgrafana.hanxux.local"
+    annotations:
+      nginx.ingress.kubernetes.io/auth-url: "https://oauth2proxy.hanxux.local/oauth2/auth"
+      nginx.ingress.kubernetes.io/auth-signin: "https://oauth2proxy.hanxux.local/oauth2/start?rd=https%3A%2F%2Fgrafana.hanxux.local"
     hosts:
       - grafana.hanxux.local
     pathType: Prefix
