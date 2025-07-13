@@ -22,7 +22,7 @@ env:
   lokiVersion: '6.31.0'
   promtailVersion: '6.17.0'
   kubePrometheusStackVersion: '75.10.0'
-  tempoVersion: '1.16.0'
+  tempoVersion: '1.23.2'
   grafanaAgentVersion: '0.42.0'
   jaegerVersion: '3.4.1'
 

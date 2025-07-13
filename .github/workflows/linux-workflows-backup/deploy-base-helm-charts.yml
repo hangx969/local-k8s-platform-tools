@@ -23,7 +23,7 @@ env:
   certManagerVersion: 'v1.18.2'
   externalDNSVersion: '1.17.0'
   externalSecretsVersion: '0.18.2'
-  harborVersion: '1.16.0'
+  harborVersion: '1.17.1'
   nginxVersion: '4.13.0'
   kyvernoVersion: '3.4.4'
   nfsSubdirExternalProvisionerVersion: '4.0.18'
