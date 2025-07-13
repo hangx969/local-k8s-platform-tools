@@ -71,19 +71,19 @@ controller:
   # Explicitly set the DNS configuration for the controller pods.
   # If not, the ingress pod's /etc/resolv.conf will only include COreDNS IP, no host IP, then the custom host DNS will not be used.
   # E.g. cannot resolve oauth2-proxy.hanxux.local
-  dnsConfig:
-    nameservers:
-    - "10.96.0.10"      # CoreDNS
-    - "192.168.40.2"    # host DNS
-    searches:
-    - "ingress-nginx.svc.cluster.local"
-    - "svc.cluster.local"
-    - "cluster.local"
-    options:
-    - name: ndots
-      value: "5"
-    - name: timeout
-      value: "2"
+  # dnsConfig:
+  #   nameservers:
+  #   - "10.96.0.10"      # CoreDNS
+  #   - "192.168.40.2"    # host DNS
+  #   searches:
+  #   - "ingress-nginx.svc.cluster.local"
+  #   - "svc.cluster.local"
+  #   - "cluster.local"
+  #   options:
+  #   - name: ndots
+  #     value: "5"
+  #   - name: timeout
+  #     value: "2"
 
   ingressClassResource:
     name: nginx-default
