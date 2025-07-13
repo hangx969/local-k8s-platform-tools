@@ -2971,9 +2971,8 @@
       "7d",
       "30d"
     ]
-  },
-  "timezone": "",
-  "title": "Strimzi Kafka",
-  "version": 4,
-  "weekStart": ""
+  },      "timezone": "",
+      "title": "Strimzi Kafka - Custom",
+      "version": 4,
+      "weekStart": ""
 }
