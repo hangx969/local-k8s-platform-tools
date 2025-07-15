@@ -126,7 +126,7 @@ redis:
   type: internal
 
 trivy:
-  enabled: true
+  enabled: false
   replicas: 1
   resources:
     requests:
