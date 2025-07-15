@@ -19,10 +19,12 @@ trivy:
   storageClassEnabled: true
 
   # -- storageClassName is the name of the storage class to be used for trivy server PVC. If empty, tries to find default storage class
-  storageClassName: ""
+  storageClassName: "sc-nfs"
 
   # -- storageSize is the size of the trivy server PVC
   storageSize: "1Gi"
+
+  skipJavaDBUpdate: true
 
   ignoreUnfixed: true
   # -- ignoreFile can be used to tell Trivy to ignore vulnerabilities by ID (one per line)
