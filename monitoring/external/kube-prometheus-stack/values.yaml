@@ -184,7 +184,7 @@ grafana:
       cpu: 50m
       memory: 100Mi
   image:
-    repository: grafana/grafana-enterprise
+    repository: grafana/grafana
   adminPassword: '' # should be overwritten in workflow
   ingress:
     enabled: true
