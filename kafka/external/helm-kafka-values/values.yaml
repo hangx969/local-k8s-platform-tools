@@ -1,0 +1,560 @@
+controller:
+  replicaCount: 1
+  autoscaling:
+    vpa:
+      ## @param controller.autoscaling.vpa.enabled Enable VPA
+      ##
+      enabled: false
+      ## @param controller.autoscaling.vpa.annotations Annotations for VPA resource
+      ##
+      annotations: {}
+      ## @param controller.autoscaling.vpa.controlledResources VPA List of resources that the vertical pod autoscaler can control. Defaults to cpu and memory
+      ##
+      controlledResources: []
+      ## @param controller.autoscaling.vpa.maxAllowed VPA Max allowed resources for the pod
+      ## cpu: 200m
+      ## memory: 100Mi
+      maxAllowed: {}
+      ## @param controller.autoscaling.vpa.minAllowed VPA Min allowed resources for the pod
+      ## cpu: 200m
+      ## memory: 100Mi
+      minAllowed: {}
+      updatePolicy:
+        ## @param controller.autoscaling.vpa.updatePolicy.updateMode Autoscaling update policy Specifies whether recommended updates are applied when a Pod is started and whether recommended updates are applied during the life of a Pod
+        ## Possible values are "Off", "Initial", "Recreate", and "Auto".
+        ##
+        updateMode: Auto
+    hpa:
+      ## @param controller.autoscaling.hpa.enabled Enable HPA for Kafka Controller
+      ##
+      enabled: false
+      ## @param controller.autoscaling.hpa.annotations Annotations for HPA resource
+      ##
+      annotations: {}
+      ## @param controller.autoscaling.hpa.minReplicas Minimum number of Kafka Controller replicas
+      ##
+      minReplicas: ""
+      ## @param controller.autoscaling.hpa.maxReplicas Maximum number of Kafka Controller replicas
+      ##
+      maxReplicas: ""
+      ## @param controller.autoscaling.hpa.targetCPU Target CPU utilization percentage
+      ##
+      targetCPU: ""
+      ## @param controller.autoscaling.hpa.targetMemory Target Memory utilization percentage
+      ##
+      targetMemory: ""
+
+  ## Enable persistence using Persistent Volume Claims
+  ## ref: https://kubernetes.io/docs/concepts/storage/persistent-volumes/
+  ##
+  persistence:
+    enabled: true
+    storageClass: "sc-nfs"
+    size: 1Gi
+
+metrics:
+  ## Prometheus JMX exporter: exposes the majority of Kafka metrics
+  ##
+  jmx:
+    ## @param metrics.jmx.enabled Whether or not to expose JMX metrics to Prometheus
+    ##
+    enabled: false
+    ## @param metrics.jmx.kafkaJmxPort JMX port where the exporter will collect metrics, exposed in the Kafka container.
+    ##
+    kafkaJmxPort: 5555
+    ## Bitnami JMX exporter image
+    ## ref: https://hub.docker.com/r/bitnami/jmx-exporter/tags/
+    ## @param metrics.jmx.image.registry [default: REGISTRY_NAME] JMX exporter image registry
+    ## @param metrics.jmx.image.repository [default: REPOSITORY_NAME/jmx-exporter] JMX exporter image repository
+    ## @skip metrics.jmx.image.tag JMX exporter image tag (immutable tags are recommended)
+    ## @param metrics.jmx.image.digest JMX exporter image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag
+    ## @param metrics.jmx.image.pullPolicy JMX exporter image pull policy
+    ## @param metrics.jmx.image.pullSecrets Specify docker-registry secret names as an array
+    ##
+    image:
+      registry: docker.io
+      repository: bitnami/jmx-exporter
+      tag: 1.3.0-debian-12-r4
+      digest: ""
+      ## Specify a imagePullPolicy
+      ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
+      ##
+      pullPolicy: IfNotPresent
+      ## Optionally specify an array of imagePullSecrets (secrets must be manually created in the namespace)
+      ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+      ## e.g:
+      ## pullSecrets:
+      ##   - myRegistryKeySecretName
+      ##
+      pullSecrets: []
+    ## Prometheus JMX exporter containers' Security Context
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+    ## @param metrics.jmx.containerSecurityContext.enabled Enable Prometheus JMX exporter containers' Security Context
+    ## @param metrics.jmx.containerSecurityContext.seLinuxOptions [object,nullable] Set SELinux options in container
+    ## @param metrics.jmx.containerSecurityContext.runAsUser Set containers' Security Context runAsUser
+    ## @param metrics.jmx.containerSecurityContext.runAsGroup Set containers' Security Context runAsGroup
+    ## @param metrics.jmx.containerSecurityContext.runAsNonRoot Set Prometheus JMX exporter containers' Security Context runAsNonRoot
+    ## @param metrics.jmx.containerSecurityContext.allowPrivilegeEscalation Set Prometheus JMX exporter containers' Security Context allowPrivilegeEscalation
+    ## @param metrics.jmx.containerSecurityContext.readOnlyRootFilesystem Set Prometheus JMX exporter containers' Security Context readOnlyRootFilesystem
+    ## @param metrics.jmx.containerSecurityContext.capabilities.drop Set Prometheus JMX exporter containers' Security Context capabilities to be dropped
+    ## e.g:
+    ##   containerSecurityContext:
+    ##     enabled: true
+    ##     capabilities:
+    ##       drop: ["NET_RAW"]
+    ##     readOnlyRootFilesystem: true
+    ##
+    containerSecurityContext:
+      enabled: true
+      seLinuxOptions: {}
+      runAsUser: 1001
+      runAsGroup: 1001
+      runAsNonRoot: true
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities:
+        drop: ["ALL"]
+    ## @param metrics.jmx.containerPorts.metrics Prometheus JMX exporter metrics container port
+    ##
+    containerPorts:
+      metrics: 5556
+    ## Prometheus JMX exporter resource requests and limits
+    ## ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
+    ## @param metrics.jmx.resourcesPreset Set container resources according to one common preset (allowed values: none, nano, micro, small, medium, large, xlarge, 2xlarge). This is ignored if metrics.jmx.resources is set (metrics.jmx.resources is recommended for production).
+    ## More information: https://github.com/bitnami/charts/blob/main/bitnami/common/templates/_resources.tpl#L15
+    ##
+    resourcesPreset: "micro"
+    ## @param metrics.jmx.resources Set container requests and limits for different resources like CPU or memory (essential for production workloads)
+    ## Example:
+    ## resources:
+    ##   requests:
+    ##     cpu: 2
+    ##     memory: 512Mi
+    ##   limits:
+    ##     cpu: 3
+    ##     memory: 1024Mi
+    ##
+    resources: {}
+    ## Configure extra options for liveness probe
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
+    ## @param metrics.jmx.livenessProbe.enabled Enable livenessProbe
+    ## @param metrics.jmx.livenessProbe.initialDelaySeconds Initial delay seconds for livenessProbe
+    ## @param metrics.jmx.livenessProbe.periodSeconds Period seconds for livenessProbe
+    ## @param metrics.jmx.livenessProbe.timeoutSeconds Timeout seconds for livenessProbe
+    ## @param metrics.jmx.livenessProbe.failureThreshold Failure threshold for livenessProbe
+    ## @param metrics.jmx.livenessProbe.successThreshold Success threshold for livenessProbe
+    ##
+    livenessProbe:
+      enabled: true
+      initialDelaySeconds: 60
+      periodSeconds: 10
+      timeoutSeconds: 10
+      successThreshold: 1
+      failureThreshold: 3
+    ## Configure extra options for readiness probe
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
+    ## @param metrics.jmx.readinessProbe.enabled Enable readinessProbe
+    ## @param metrics.jmx.readinessProbe.initialDelaySeconds Initial delay seconds for readinessProbe
+    ## @param metrics.jmx.readinessProbe.periodSeconds Period seconds for readinessProbe
+    ## @param metrics.jmx.readinessProbe.timeoutSeconds Timeout seconds for readinessProbe
+    ## @param metrics.jmx.readinessProbe.failureThreshold Failure threshold for readinessProbe
+    ## @param metrics.jmx.readinessProbe.successThreshold Success threshold for readinessProbe
+    ##
+    readinessProbe:
+      enabled: true
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      timeoutSeconds: 10
+      successThreshold: 1
+      failureThreshold: 3
+    ## Prometheus JMX exporter service configuration
+    ##
+    service:
+      ## @param metrics.jmx.service.ports.metrics Prometheus JMX exporter metrics service port
+      ##
+      ports:
+        metrics: 5556
+      ## @param metrics.jmx.service.clusterIP Static clusterIP or None for headless services
+      ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#choosing-your-own-ip-address
+      ##
+      clusterIP: ""
+      ## @param metrics.jmx.service.sessionAffinity Control where client requests go, to the same pod or round-robin
+      ## Values: ClientIP or None
+      ## ref: https://kubernetes.io/docs/concepts/services-networking/service/
+      ##
+      sessionAffinity: None
+      ## @param metrics.jmx.service.annotations [object] Annotations for the Prometheus JMX exporter service
+      ##
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "{{ .Values.metrics.jmx.service.ports.metrics }}"
+        prometheus.io/path: "/metrics"
+      ## @param metrics.jmx.service.ipFamilies IP families for the jmx metrics service
+      ##
+      ipFamilies: []
+      ## @param metrics.jmx.service.ipFamilyPolicy IP family policy for the jmx metrics service
+      ##
+      ipFamilyPolicy: ""
+    ## @param metrics.jmx.whitelistObjectNames Allows setting which JMX objects you want to expose to via JMX stats to JMX exporter
+    ## Only whitelisted values will be exposed via JMX exporter. They must also be exposed via Rules. To expose all metrics
+    ## (warning its crazy excessive and they aren't formatted in a prometheus style) (1) `whitelistObjectNames: []`
+    ## (2) commented out above `overrideConfig`.
+    ##
+    whitelistObjectNames:
+      - kafka.controller:*
+      - kafka.server:*
+      - java.lang:*
+      - kafka.network:*
+      - kafka.log:*
+    ## @param metrics.jmx.config [string] Configuration file for JMX exporter
+    ## Specify content for jmx-kafka-prometheus.yml. Evaluated as a template
+    ##
+    ## Credits to the incubator/kafka chart for the JMX configuration.
+    ## https://github.com/helm/charts/tree/master/incubator/kafka
+    ##
+    config: |-
+      jmxUrl: service:jmx:rmi:///jndi/rmi://127.0.0.1:{{ .Values.metrics.jmx.kafkaJmxPort }}/jmxrmi
+      lowercaseOutputName: true
+      lowercaseOutputLabelNames: true
+      ssl: false
+      {{- if .Values.metrics.jmx.whitelistObjectNames }}
+      whitelistObjectNames: ["{{ join "\",\"" .Values.metrics.jmx.whitelistObjectNames }}"]
+      {{- end }}
+    ## @param metrics.jmx.existingConfigmap Name of existing ConfigMap with JMX exporter configuration
+    ## NOTE: This will override metrics.jmx.config
+    ##
+    existingConfigmap: ""
+    ## @param metrics.jmx.extraRules  Add extra rules to JMX exporter configuration
+    ## e.g:
+    ## extraRules: |-
+    ##  - pattern: kafka.server<type=socket-server-metrics, listener=(.+), networkProcessor=(.+)><>(connection-count)
+    ##    name: kafka_server_socket_server_metrics_$3
+    ##    labels:
+    ##      listener: $1
+    ##
+    extraRules: ""
+  ## Prometheus Operator ServiceMonitor configuration
+  ##
+  serviceMonitor:
+    ## @param metrics.serviceMonitor.enabled if `true`, creates a Prometheus Operator ServiceMonitor (requires `metrics.jmx.enabled` to be `true`)
+    ##
+    enabled: false
+    ## @param metrics.serviceMonitor.namespace Namespace in which Prometheus is running
+    ##
+    namespace: ""
+    ## @param metrics.serviceMonitor.path Path where JMX exporter serves metrics
+    ##
+    path: /metrics
+    ## @param metrics.serviceMonitor.interval Interval at which metrics should be scraped
+    ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#endpoint
+    ##
+    interval: ""
+    ## @param metrics.serviceMonitor.scrapeTimeout Timeout after which the scrape is ended
+    ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#endpoint
+    ##
+    scrapeTimeout: ""
+    ## @param metrics.serviceMonitor.labels Additional labels that can be used so ServiceMonitor will be discovered by Prometheus
+    ##
+    labels: {}
+    ## @param metrics.serviceMonitor.selector Prometheus instance selector labels
+    ## ref: https://github.com/bitnami/charts/tree/main/bitnami/prometheus-operator#prometheus-configuration
+    ##
+    selector: {}
+    ## @param metrics.serviceMonitor.relabelings RelabelConfigs to apply to samples before scraping
+    ##
+    relabelings: []
+    ## @param metrics.serviceMonitor.metricRelabelings MetricRelabelConfigs to apply to samples before ingestion
+    ##
+    metricRelabelings: []
+    ## @param metrics.serviceMonitor.honorLabels Specify honorLabels parameter to add the scrape endpoint
+    ##
+    honorLabels: false
+    ## @param metrics.serviceMonitor.jobLabel The name of the label on the target service to use as the job name in prometheus.
+    ##
+    jobLabel: ""
+  prometheusRule:
+    ## @param metrics.prometheusRule.enabled if `true`, creates a Prometheus Operator PrometheusRule (requires `metrics.jmx.enabled` to be `true`)
+    ##
+    enabled: false
+    ## @param metrics.prometheusRule.namespace Namespace in which Prometheus is running
+    ##
+    namespace: ""
+    ## @param metrics.prometheusRule.labels Additional labels that can be used so PrometheusRule will be discovered by Prometheus
+    ##
+    labels: {}
+    ## @param metrics.prometheusRule.groups Prometheus Rule Groups for Kafka
+    ##
+    groups: []
+
+## @section Kafka provisioning parameters
+##
+
+## Kafka provisioning
+##
+provisioning:
+  ## @param provisioning.enabled Enable Kafka provisioning Job
+  ##
+  enabled: false
+  ## @param provisioning.waitForKafka Whether an init container should be created to wait until Kafka is ready before provisioning
+  ##
+  waitForKafka: true
+  ## @param provisioning.useHelmHooks Flag to indicate usage of helm hooks
+  ##
+  useHelmHooks: true
+  ## @param provisioning.automountServiceAccountToken Mount Service Account token in pod
+  ##
+  automountServiceAccountToken: false
+  ## @param provisioning.numPartitions Default number of partitions for topics when unspecified
+  ##
+  numPartitions: 1
+  ## @param provisioning.replicationFactor Default replication factor for topics when unspecified
+  ##
+  replicationFactor: 1
+  ## @param provisioning.topics Kafka topics to provision
+  ## - name: topic-name
+  ##   partitions: 1
+  ##   replicationFactor: 1
+  ##   ## https://kafka.apache.org/documentation/#topicconfigs
+  ##   config:
+  ##     max.message.bytes: 64000
+  ##     flush.messages: 1
+  ##
+  topics: []
+  ## @param provisioning.nodeSelector Node labels for pod assignment
+  ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
+  ##
+  nodeSelector: {}
+  ## @param provisioning.tolerations Tolerations for pod assignment
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: []
+  ## @param provisioning.extraProvisioningCommands Extra commands to run to provision cluster resources
+  ## - echo "Allow user to consume from any topic"
+  ## - >-
+  ##   /opt/bitnami/kafka/bin/kafka-acls.sh
+  ##   --bootstrap-server $KAFKA_SERVICE
+  ##   --command-config /shared/client.properties
+  ##   --add
+  ##   --allow-principal User:user
+  ##   --consumer --topic *
+  ## - "/opt/bitnami/kafka/bin/kafka-acls.sh
+  ##      --bootstrap-server $KAFKA_SERVICE
+  ##      --command-config /shared/client.properties
+  ##      --list"
+  ##
+  extraProvisioningCommands: []
+  ## @param provisioning.parallel Number of provisioning commands to run at the same time
+  ##
+  parallel: 1
+  ## @param provisioning.preScript Extra bash script to run before topic provisioning. /shared/client.properties is path to properties file with most needed configurations
+  ##
+  preScript: ""
+  ## @param provisioning.postScript Extra bash script to run after topic provisioning. /shared/client.properties is path to properties file with most needed configurations
+  ##
+  postScript: ""
+  ## Auth Configuration for kafka provisioning Job
+  ##
+  auth:
+    ## TLS configuration for kafka provisioning Job
+    ##
+    tls:
+      ## @param provisioning.auth.tls.type Format to use for TLS certificates. Allowed types: `JKS` and `PEM`.
+      ## Note: ignored if auth.tls.client.protocol different from one of these values: "SSL" "SASL_SSL"
+      ##
+      type: jks
+      ## @param provisioning.auth.tls.certificatesSecret Existing secret containing the TLS certificates for the Kafka provisioning Job.
+      ## When using 'jks' format for certificates, the secret should contain a truststore and a keystore.
+      ## When using 'pem' format for certificates, the secret should contain one of the following:
+      ## 1. A public CA certificate, a public certificate and one private key.
+      ## 2. A truststore and a keystore in PEM format
+      ## If caCert is set, option 1 will be taken, otherwise option 2.
+      ##
+      certificatesSecret: ""
+      ## @param provisioning.auth.tls.cert The secret key from the certificatesSecret if 'cert' key different from the default (tls.crt)
+      ##
+      cert: tls.crt
+      ## @param provisioning.auth.tls.key The secret key from the certificatesSecret if 'key' key different from the default (tls.key)
+      ##
+      key: tls.key
+      ## @param provisioning.auth.tls.caCert The secret key from the certificatesSecret if 'caCert' key different from the default (ca.crt)
+      ##
+      caCert: ca.crt
+      ## @param provisioning.auth.tls.keystore The secret key from the certificatesSecret if 'keystore' key different from the default (keystore.jks)
+      ##
+      keystore: keystore.jks
+      ## @param provisioning.auth.tls.truststore The secret key from the certificatesSecret if 'truststore' key different from the default (truststore.jks)
+      ##
+      truststore: truststore.jks
+      ## @param provisioning.auth.tls.passwordsSecret Name of the secret containing passwords to access the JKS files or PEM key when they are password-protected.
+      ## It should contain two keys called "keystore-password" and "truststore-password", or "key-password" if using a password-protected PEM key.
+      ##
+      passwordsSecret: ""
+      ## @param provisioning.auth.tls.keyPasswordSecretKey The secret key from the passwordsSecret if 'keyPasswordSecretKey' key different from the default (key-password)
+      ## Note: must not be used if `passwordsSecret` is not defined.
+      ##
+      keyPasswordSecretKey: key-password
+      ## @param provisioning.auth.tls.keystorePasswordSecretKey The secret key from the passwordsSecret if 'keystorePasswordSecretKey' key different from the default (keystore-password)
+      ## Note: must not be used if `passwordsSecret` is not defined.
+      ##
+      keystorePasswordSecretKey: keystore-password
+      ## @param provisioning.auth.tls.truststorePasswordSecretKey The secret key from the passwordsSecret if 'truststorePasswordSecretKey' key different from the default (truststore-password)
+      ## Note: must not be used if `passwordsSecret` is not defined.
+      ##
+      truststorePasswordSecretKey: truststore-password
+      ## @param provisioning.auth.tls.keyPassword Password to access the password-protected PEM key if necessary. Ignored if 'passwordsSecret' is provided.
+      ##
+      keyPassword: ""
+      ## @param provisioning.auth.tls.keystorePassword Password to access the JKS keystore. Ignored if 'passwordsSecret' is provided.
+      ##
+      keystorePassword: ""
+      ## @param provisioning.auth.tls.truststorePassword Password to access the JKS truststore. Ignored if 'passwordsSecret' is provided.
+      ##
+      truststorePassword: ""
+  ## @param provisioning.command Override provisioning container command
+  ##
+  command: []
+  ## @param provisioning.args Override provisioning container arguments
+  ##
+  args: []
+  ## @param provisioning.extraEnvVars Extra environment variables to add to the provisioning pod
+  ## e.g:
+  ## extraEnvVars:
+  ##   - name: KAFKA_CFG_BACKGROUND_THREADS
+  ##     value: "10"
+  ##
+  extraEnvVars: []
+  ## @param provisioning.extraEnvVarsCM ConfigMap with extra environment variables
+  ##
+  extraEnvVarsCM: ""
+  ## @param provisioning.extraEnvVarsSecret Secret with extra environment variables
+  ##
+  extraEnvVarsSecret: ""
+  ## @param provisioning.podAnnotations Extra annotations for Kafka provisioning pods
+  ##
+  podAnnotations: {}
+  ## @param provisioning.podLabels Extra labels for Kafka provisioning pods
+  ## Ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  ##
+  podLabels: {}
+  ## Kafka provisioning pods ServiceAccount
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+  ##
+  serviceAccount:
+    ## @param provisioning.serviceAccount.create Enable creation of ServiceAccount for Kafka provisioning pods
+    ##
+    create: true
+    ## @param provisioning.serviceAccount.name The name of the service account to use. If not set and `create` is `true`, a name is generated
+    ## If not set and create is true, a name is generated using the provisioning.serviceAccount.name template
+    ##
+    name: ""
+    ## @param provisioning.serviceAccount.automountServiceAccountToken Allows auto mount of ServiceAccountToken on the serviceAccount created
+    ## Can be set to false if pods using this serviceAccount do not need to use K8s API
+    ##
+    automountServiceAccountToken: false
+  ## Kafka provisioning resource requests and limits
+  ## ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
+  ## @param provisioning.resourcesPreset Set container resources according to one common preset (allowed values: none, nano, micro, small, medium, large, xlarge, 2xlarge). This is ignored if provisioning.resources is set (provisioning.resources is recommended for production).
+  ## More information: https://github.com/bitnami/charts/blob/main/bitnami/common/templates/_resources.tpl#L15
+  ##
+  resourcesPreset: "micro"
+  ## @param provisioning.resources Set container requests and limits for different resources like CPU or memory (essential for production workloads)
+  ## Example:
+  ## resources:
+  ##   requests:
+  ##     cpu: 2
+  ##     memory: 512Mi
+  ##   limits:
+  ##     cpu: 3
+  ##     memory: 1024Mi
+  ##
+  resources: {}
+  ## Kafka provisioning pods' Security Context
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
+  ## @param provisioning.podSecurityContext.enabled Enable security context for the pods
+  ## @param provisioning.podSecurityContext.fsGroupChangePolicy Set filesystem group change policy
+  ## @param provisioning.podSecurityContext.sysctls Set kernel settings using the sysctl interface
+  ## @param provisioning.podSecurityContext.supplementalGroups Set filesystem extra groups
+  ## @param provisioning.podSecurityContext.fsGroup Set Kafka provisioning pod's Security Context fsGroup
+  ## @param provisioning.podSecurityContext.seccompProfile.type Set Kafka provisioning pod's Security Context seccomp profile
+  ##
+  podSecurityContext:
+    enabled: true
+    fsGroupChangePolicy: Always
+    sysctls: []
+    supplementalGroups: []
+    fsGroup: 1001
+    seccompProfile:
+      type: "RuntimeDefault"
+  ## Kafka provisioning containers' Security Context
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+  ## @param provisioning.containerSecurityContext.enabled Enable Kafka provisioning containers' Security Context
+  ## @param provisioning.containerSecurityContext.seLinuxOptions [object,nullable] Set SELinux options in container
+  ## @param provisioning.containerSecurityContext.runAsUser Set containers' Security Context runAsUser
+  ## @param provisioning.containerSecurityContext.runAsGroup Set containers' Security Context runAsGroup
+  ## @param provisioning.containerSecurityContext.runAsNonRoot Set Kafka provisioning containers' Security Context runAsNonRoot
+  ## @param provisioning.containerSecurityContext.allowPrivilegeEscalation Set Kafka provisioning containers' Security Context allowPrivilegeEscalation
+  ## @param provisioning.containerSecurityContext.readOnlyRootFilesystem Set Kafka provisioning containers' Security Context readOnlyRootFilesystem
+  ## @param provisioning.containerSecurityContext.capabilities.drop Set Kafka provisioning containers' Security Context capabilities to be dropped
+  ## e.g:
+  ##   containerSecurityContext:
+  ##     enabled: true
+  ##     capabilities:
+  ##       drop: ["NET_RAW"]
+  ##     readOnlyRootFilesystem: true
+  ##
+  containerSecurityContext:
+    enabled: true
+    seLinuxOptions: {}
+    runAsUser: 1001
+    runAsGroup: 1001
+    runAsNonRoot: true
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: true
+    capabilities:
+      drop: ["ALL"]
+  ## @param provisioning.schedulerName Name of the k8s scheduler (other than default) for kafka provisioning
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  schedulerName: ""
+  ## @param provisioning.enableServiceLinks Whether information about services should be injected into pod's environment variable
+  ## The environment variables injected by service links are not used, but can lead to slow kafka boot times or slow running of the scripts when there are many services in the current namespace.
+  ## If you experience slow pod startups or slow running of the scripts you probably want to set this to `false`.
+  ##
+  enableServiceLinks: true
+  ## @param provisioning.extraVolumes Optionally specify extra list of additional volumes for the Kafka provisioning pod(s)
+  ## e.g:
+  ## extraVolumes:
+  ##   - name: kafka-jaas
+  ##     secret:
+  ##       secretName: kafka-jaas
+  ##
+  extraVolumes: []
+  ## @param provisioning.extraVolumeMounts Optionally specify extra list of additional volumeMounts for the Kafka provisioning container(s)
+  ## extraVolumeMounts:
+  ##   - name: kafka-jaas
+  ##     mountPath: /bitnami/kafka/config/kafka_jaas.conf
+  ##     subPath: kafka_jaas.conf
+  ##
+  extraVolumeMounts: []
+  ## @param provisioning.sidecars Add additional sidecar containers to the Kafka provisioning pod(s)
+  ## e.g:
+  ## sidecars:
+  ##   - name: your-image-name
+  ##     image: your-image
+  ##     imagePullPolicy: Always
+  ##     ports:
+  ##       - name: portname
+  ##         containerPort: 1234
+  ##
+  sidecars: []
+  ## @param provisioning.initContainers Add additional Add init containers to the Kafka provisioning pod(s)
+  ## e.g:
+  ## initContainers:
+  ##   - name: your-image-name
+  ##     image: your-image
+  ##     imagePullPolicy: Always
+  ##     ports:
+  ##       - name: portname
+  ##         containerPort: 1234
+  ##
+  initContainers: []

@@ -1,0 +1,32 @@
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: es-cluster
+  namespace: logging
+spec:
+  version: 8.16.1
+  nodeSets: # 支持多种类型的节点，这里先用1个节点作为测试用
+  - name: default
+    count: 1
+    # 用initContainer设置了虚拟内存空间，这里就保持unset
+    # https://www.elastic.co/docs/deploy-manage/deploy/cloud-on-k8s/virtual-memory
+    #config:
+    #node.store.allow_mmap: true # 开启内存映射，提高查询速度
+    volumeClaimTemplates:
+    - metadata:
+        name: elasticsearch-data
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+        storageClassName: sc-nfs
+    podTemplate:
+      spec:
+        initContainers:
+        - name: sysctl
+          securityContext:
+            privileged: true
+            runAsUser: 0
+          command: ['sh', '-c', 'sysctl -w vm.max_map_count=262144'] # #  提升虚拟地址空间的默认值

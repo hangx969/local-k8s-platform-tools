@@ -1,0 +1,17 @@
+apiVersion: kibana.k8s.elastic.co/v1
+kind: Kibana
+metadata:
+  name: kibana
+  namespace: logging
+spec:
+  version: 8.16.1
+  count: 1
+  elasticsearchRef:
+    name: es-cluster
+  http:
+    service:
+      spec:
+        type: NodePort # default is ClusterIP
+    tls:
+      selfSignedCertificate:
+        disabled: true

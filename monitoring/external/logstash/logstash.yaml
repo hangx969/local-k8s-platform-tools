@@ -1,0 +1,38 @@
+apiVersion: logstash.k8s.elastic.co/v1alpha1
+kind: Logstash
+metadata:
+  name: logstash
+  namespace: logging
+spec:
+  version: 8.16.1
+  count: 1
+  elasticsearchRefs:
+  - name: es-cluster
+    clusterName: es-cluster
+  podTemplate:
+    spec:
+      volumes:
+      - name: logstash-data
+        emptyDir: {}
+  pipelines:
+    - pipeline.id: main
+      config.string: |
+        input {
+          kafka {
+            enable_auto_commit => true
+            auto_commit_interval_ms => "1000"
+            bootstrap_servers => "my-cluster-kafka-bootstrap.kafka:9092"
+            topics => ["k8spodlogs"]
+            codec => json
+          }
+        }
+        output {
+          elasticsearch {
+            hosts => [ "https://es-cluster-es-http:9200" ]
+            index => "k8spodlogs-%{+YYYY.MM.dd}"
+            ssl_enabled => true
+            user => "elastic"
+            password => ""
+            ssl_certificate_authorities => "${ES_CLUSTER_ES_SSL_CERTIFICATE_AUTHORITY}"
+          }
+        }
