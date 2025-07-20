@@ -24,6 +24,7 @@ spec:
             bootstrap_servers => "my-cluster-kafka-bootstrap.kafka:9092"
             topics => ["k8spodlogs"]
             codec => json
+            group_id => "logstash"
           }
         }
         output {

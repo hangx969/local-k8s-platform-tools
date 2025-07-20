@@ -14,18 +14,10 @@ spec:
         port: 9092
         type: internal
         tls: false
-      - name: tls
-        port: 9093
-        type: internal
-        tls: true
-        authentication:
-          type: tls
       - name: external
         port: 9094
         type: loadbalancer
-        tls: true
-        authentication:
-          type: tls
+        tls: false
         configuration:
           bootstrap:
             annotations:
@@ -61,7 +53,7 @@ spec:
       num.partitions: 6
       log.segment.bytes: 104857600
       log.roll.ms: 86400000
-      auto.create.topics.enable: false
+      auto.create.topics.enable: true
       socket.send.buffer.bytes: 102400
       socket.receive.buffer.bytes: 102400
       socket.request.max.bytes: 104857600
