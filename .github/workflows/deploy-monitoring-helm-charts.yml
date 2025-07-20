@@ -25,6 +25,7 @@ env:
   tempoVersion: '1.23.2'
   grafanaAgentVersion: '0.42.0'
   jaegerVersion: '3.4.1'
+  eckVersion: '3.0.0'
 
 jobs:
   helm-upgrade:
@@ -113,6 +114,14 @@ jobs:
             {"op": "replace", "path": "/spec/template/spec/containers/0/readinessProbe/failureThreshold", "value": 100},
             {"op": "replace", "path": "/spec/template/spec/containers/0/livenessProbe/failureThreshold", "value": 100}
           ]'
+
+      - name: Upgrade eck-operator
+        run: |
+          $env:helmChartVersion = '${{env.eckVersion}}'
+          $env:helmRepoName = 'elastic'
+          $env:helmChartName = 'eck-operator'
+
+          helm upgrade -i eck-operator -n eck-system oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName -f ./monitoring/external/eck-operator/values.yaml --version $env:helmChartVersion --history-max 5 --insecure-skip-tls-verify --kubeconfig $env:KUBECONFIG
 
       ###===========helm Upgrade Custom Helm Charts===============###
       - name: Upgrade prometheus-rules helm chart

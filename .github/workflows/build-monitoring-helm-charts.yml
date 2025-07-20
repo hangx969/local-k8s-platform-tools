@@ -33,6 +33,7 @@ env:
   tempoVersion: '1.23.2'
   grafanaAgentVersion: '0.42.0'
   jaegerVersion: '3.4.1'
+  eckVersion: '3.0.0'
 
 jobs:
   helm-lint-and-diff:
@@ -156,3 +157,11 @@ jobs:
           $env:helmChartName = 'jaeger'
 
           helm diff upgrade jaeger -n monitoring oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName -f ./monitoring/external/jaeger/values.yaml --version $env:helmChartVersion --insecure-skip-tls-verify --allow-unreleased --kubeconfig $env:KUBECONFIG
+
+      - name: Diff eck-opeartor
+        run: |
+          $env:helmChartVersion = '${{env.eckVersion}}'
+          $env:helmRepoName = 'elastic'
+          $env:helmChartName = 'eck-operator'
+
+          helm diff upgrade eck-operator -n eck-system oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName -f ./monitoring/external/eck-operator/values.yaml --version $env:helmChartVersion --insecure-skip-tls-verify --allow-unreleased --kubeconfig $env:KUBECONFIG

@@ -31,6 +31,7 @@ This project is used to install the following open-source tools in a Kubernetes 
 | pact-broker                    | A service for managing Pact contracts.                                   | [pact-broker](https://github.com/hangx969/learning-notes/blob/main/Docker-Kubernetes/helm/helm部署pact-broker.md) |
 | jaeger                         | A distributed tracing system for monitoring and debugging microservices architectures. | [jaeger](https://github.com/hangx969/learning-notes/blob/af933226a50422c14a3e0eedda421d0e2e3271ad/Docker-Kubernetes/helm/helm部署jaeger.md) |
 | jenkins | A CICD pipeline manager | [jenkins](https://github.com/hangx969/learning-notes/blob/a56e46501f66873382a0f64149e5e7678054ef0e/Docker-Kubernetes/helm/helm%E9%83%A8%E7%BD%B2jenkins.md) |
+| eck-opeartor | CRDs to easily manage and deploy Elastic stack | [ECK-operator]([learning-notes/Docker-Kubernetes/Monitoring-Logging/Operator部署ECK日志收集平台.md at main · hangx969/learning-notes](https://github.com/hangx969/learning-notes/blob/main/Docker-Kubernetes/Monitoring-Logging/Operator部署ECK日志收集平台.md)) |
 
 ## Helm Chart Versions
 
@@ -61,6 +62,7 @@ This project is used to install the following open-source tools in a Kubernetes 
 | pact-broker                     | https://pact-foundation.github.io/pact-broker-chart/         | pact-broker                     | 3.3.1         | https://github.com/pact-foundation/pact-broker-chart/releases | N/A                                                          |
 | jaegertracing                   | https://jaegertracing.github.io/helm-charts                  | jaeger                          | 3.4.1         | https://github.com/jaegertracing/helm-charts/releases        | https://artifacthub.io/packages/helm/jaegertracing/jaeger    |
 | jenkins                         | https://charts.jenkins.io                                    | jenkins                         | 5.8.68        | https://github.com/jenkinsci/helm-charts/tree/main/charts/jenkins | https://artifacthub.io/packages/helm/jenkinsci/jenkins       |
+| elastic | https://helm.elastic.co | eck-operator | 3.0.0 | [elastic/cloud-on-k8s: Elastic Cloud on Kubernetes](https://github.com/elastic/cloud-on-k8s) | [eck-operator 3.0.0 · elastic/elastic](https://artifacthub.io/packages/helm/elastic/eck-operator) |
 
 ## Prerequisites
 
