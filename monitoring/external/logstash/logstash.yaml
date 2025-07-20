@@ -32,7 +32,7 @@ spec:
             index => "k8spodlogs-%{+YYYY.MM.dd}"
             ssl_enabled => true
             user => "elastic"
-            password => ""
+            password => "7JxHfm0659LLMPF6519aO5nu"
             ssl_certificate_authorities => "${ES_CLUSTER_ES_SSL_CERTIFICATE_AUTHORITY}"
           }
         }

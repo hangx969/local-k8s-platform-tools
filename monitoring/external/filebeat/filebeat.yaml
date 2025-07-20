@@ -1,0 +1,147 @@
+apiVersion: beat.k8s.elastic.co/v1beta1
+kind: Beat
+metadata:
+  name: filebeat
+  namespace: logging
+spec:
+  type: filebeat
+  version: 8.16.1
+  # image:
+  config:
+    output.kafka:
+      hosts: ["my-cluster-kafka-bootstrap.kafka:9092"]
+      topic: '%{[fields.log_topic]}'
+      #topic: 'k8spodlogs'
+    # 配置自动发现
+    filebeat.autodiscover.providers:
+    - node: ${NODE_NAME}
+      type: kubernetes
+      templates:
+      - config:
+        - paths:
+          - /var/log/messages
+          tail_files: true
+          type: log
+          fields:
+            log_topic: k8spodlogs
+            log_type: system
+      - config:
+        - paths:
+          - /var/log/containers/*${data.kubernetes.container.id}.log
+          tail_files: true
+          type: container
+          fields:
+            log_topic: k8spodlogs
+          processors:
+          - add_cloud_metadata: {}
+          - add_host_metadata: {}
+          - drop_event:
+              when:
+                or: # and
+                - not:
+                    equals:
+                      kubernetes.namespace_labels.filebeat: "true"
+    # 全局设置，忽略filebeat容器自身的日志
+    processors:
+    - add_cloud_metadata: {}
+    - add_host_metadata: {}
+    - drop_event:
+        when:
+          or:
+          - equals:
+              kubernetes.container.name: "filebeat"
+  daemonSet:
+    podTemplate:
+      spec:
+        serviceAccountName: filebeat
+        automountServiceAccountToken: true
+        terminationGracePeriodSeconds: 30
+        dnsPolicy: ClusterFirstWithHostNet
+        hostNetwork: true # Allows to provide richer host metadata
+        containers:
+        - name: filebeat
+          securityContext:
+            runAsUser: 0
+            # If using Red Hat OpenShift uncomment this:
+            #privileged: true
+          volumeMounts:
+          - name: varlogcontainers
+            mountPath: /var/log/containers
+          - name: varlogpods
+            mountPath: /var/log/pods
+          - name: varlibdockercontainers
+            mountPath: /var/lib/docker/containers
+          - name: messages
+            mountPath: /var/log/messages
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+        volumes:
+        - name: varlogcontainers
+          hostPath:
+            path: /var/log/containers
+        - name: varlogpods
+          hostPath:
+            path: /var/log/pods
+        - name: varlibdockercontainers
+          hostPath:
+            path: /var/lib/docker/containers
+        - name: messages
+          hostPath:
+            path: /var/log/messages
+        tolerations:
+          - key: "node-role.kubernetes.io/control-plane"
+            operator: "Equal"
+            effect: "NoSchedule"
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: filebeat
+  namespace: logging
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: elastic-beat-autodiscover-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: elastic-beat-autodiscover
+subjects:
+- kind: ServiceAccount
+  name: filebeat
+  namespace: logging
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: elastic-beat-autodiscover
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - nodes
+  - namespaces
+  - events
+  - pods
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups: ["apps"]
+  resources:
+  - replicasets
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups: ["batch"]
+  resources:
+  - jobs
+  verbs:
+  - get
+  - list
+  - watch

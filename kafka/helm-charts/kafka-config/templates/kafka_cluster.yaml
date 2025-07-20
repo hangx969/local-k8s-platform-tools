@@ -10,6 +10,10 @@ spec:
   kafka:
     version: {{ .Values.commonparameters.kafka.version }}
     listeners:
+      - name: plain
+        port: 9092
+        type: internal
+        tls: false
       - name: tls
         port: 9093
         type: internal
@@ -40,8 +44,8 @@ spec:
                 #external-dns.alpha.kubernetes.io/ttl: "600"
               advertisedHost: kafka-broker-{{ $i }}.{{ $root.Values.environment }}.{{ $root.Values.product }}#.{{ $root.Values.dns.domain }}
             {{- end }}
-    authorization:
-      type: simple
+    # authorization:
+    #   type: simple
     resources: {{- .Values.commonparameters.kafka.kafka_resources | toYaml | trim | nindent 6 }}
     jvmOptions:
       -Xms: 2500m
