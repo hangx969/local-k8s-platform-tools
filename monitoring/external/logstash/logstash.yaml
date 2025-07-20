@@ -21,7 +21,7 @@ spec:
           kafka {
             enable_auto_commit => true
             auto_commit_interval_ms => "1000"
-            bootstrap_servers => "my-cluster-kafka-bootstrap.kafka:9092"
+            bootstrap_servers => "my-cluster-kafka-bootstrap.kafka.svc:9092"
             topics => ["k8spodlogs"]
             codec => json
             group_id => "logstash"
