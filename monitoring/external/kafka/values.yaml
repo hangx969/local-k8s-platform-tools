@@ -6,6 +6,16 @@ kraft:
 controller:
   replicaCount: 0
 
+# 配置 Broker（重要：Zookeeper 模式必需）
+broker:
+  replicaCount: 1
+  persistence:
+    enabled: true
+    storageClass: "sc-nfs"
+    accessModes:
+      - ReadWriteOnce
+    size: 3Gi
+
 # 启用 Zookeeper 模式
 zookeeper:
   enabled: true
