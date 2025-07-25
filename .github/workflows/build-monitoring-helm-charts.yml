@@ -182,4 +182,14 @@ jobs:
           $env:helmRepoName = 'bitnami'
           $env:helmChartName = 'kafka'
 
-          helm diff upgrade kafka -n logging oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName -f ./monitoring/external/kafka/values.yaml --version $env:helmChartVersion --insecure-skip-tls-verify --allow-unreleased --kubeconfig $env:KUBECONFIG
+          $CLUSTER_ID = kubectl get secret --namespace "logging" kafka-kraft -o jsonpath="{.data.cluster-id}" --kubeconfig $env:KUBECONFIG | ForEach-Object { [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($_)) }
+          helm diff upgrade kafka `
+            -n logging `
+            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName `
+            -f ./monitoring/external/kafka/values.yaml `
+            --version $env:helmChartVersion `
+            --insecure-skip-tls-verify `
+            --allow-unreleased `
+            --kubeconfig $env:KUBECONFIG `
+            --set clusterId=$CLUSTER_ID
+            

@@ -6,3 +6,18 @@ controller:
     enabled: true
     storageClass: "sc-nfs"
     size: 3Gi
+
+clusterId: "abcdefg"
+
+sasl:
+  interbroker:
+    password: "12345678"
+  controller:
+    password: "12345678"
+  client:
+    users:
+      - user1
+    passwords: "12345678"
+
+
+
