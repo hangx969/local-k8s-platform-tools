@@ -1,5 +1,3 @@
-clusterId: "abcdefg"
-
 controller:
   replicaCount: 0
 
@@ -12,15 +10,6 @@ broker:
       - ReadWriteOnce
     size: 3Gi
 
-sasl:
-  interbroker:
-    password: "12345678"
-  controller:
-    password: "12345678"
-  client:
-    users:
-      - user1
-    passwords: "12345678"
 
 zookeeper:
   enabled: true
