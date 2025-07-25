@@ -1,13 +1,20 @@
-controller:
+clusterId: "abcdefg"
+
+broker:
   replicaCount: 1
-  ## Enable persistence using Persistent Volume Claims
-  ## ref: https://kubernetes.io/docs/concepts/storage/persistent-volumes/
+  autoscaling:
+    vpa:
+      enabled: true
+      maxAllowed: {}
+      minAllowed: {}
+      updatePolicy:
+        updateMode: "Off"
   persistence:
     enabled: true
     storageClass: "sc-nfs"
+    accessModes:
+      - ReadWriteOnce
     size: 3Gi
-
-clusterId: "abcdefg"
 
 sasl:
   interbroker:
