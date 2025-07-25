@@ -19,5 +19,12 @@ sasl:
       - user1
     passwords: "12345678"
 
-
-
+zookeeper:
+  enabled: true
+  replicaCount: 1
+  persistence:
+    enabled: true
+    storageClass: "sc-nfs"
+    accessModes:
+      - ReadWriteOnce
+    size: 300Mi

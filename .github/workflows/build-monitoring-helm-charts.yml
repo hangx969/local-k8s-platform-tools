@@ -34,8 +34,7 @@ env:
   grafanaAgentVersion: '0.42.0'
   jaegerVersion: '3.4.1'
   eckVersion: '3.0.0'
-  zookeeperVersion: '13.8.5'
-  kafkaVersion: '32.3.6'
+  kafkaVersion: '30.1.8'
 
 jobs:
   helm-lint-and-diff:
@@ -168,14 +167,6 @@ jobs:
 
           helm diff upgrade eck-operator -n eck-system oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName -f ./monitoring/external/eck-operator/values.yaml --version $env:helmChartVersion --insecure-skip-tls-verify --allow-unreleased --kubeconfig $env:KUBECONFIG
 
-      - name: Diff Zookeeper
-        run: |
-          $env:helmChartVersion = '${{env.zookeeperVersion}}'
-          $env:helmRepoName = 'bitnami'
-          $env:helmChartName = 'zookeeper'
-
-          helm diff upgrade zookeeper -n logging oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName -f ./monitoring/external/zookeeper/values.yaml --version $env:helmChartVersion --insecure-skip-tls-verify --allow-unreleased --kubeconfig $env:KUBECONFIG
-
       - name: Diff Kafka Helm
         run: |
           $env:helmChartVersion = '${{env.kafkaVersion}}'
@@ -192,4 +183,3 @@ jobs:
             --allow-unreleased `
             --kubeconfig $env:KUBECONFIG `
             --set clusterId=$CLUSTER_ID
-            
