@@ -9,7 +9,7 @@ spec:
   # image:
   config:
     output.kafka:
-      hosts: ["my-cluster-kafka-bootstrap.kafka:9092"]
+      hosts: ["kafka:9092"]
       topic: '%{[fields.log_topic]}'
       #topic: 'k8spodlogs'
     # 配置自动发现
@@ -145,4 +145,3 @@ rules:
   - get
   - list
   - watch
-
