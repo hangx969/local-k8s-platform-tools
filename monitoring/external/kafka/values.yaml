@@ -2,9 +2,9 @@
 kraft:
   enabled: false
 
-# # 配置控制器副本数为 0（使用 Zookeeper 模式时）
-# controller:
-#   replicaCount: 0
+# 配置控制器副本数为 0（使用 Zookeeper 模式时）
+controller:
+  replicaCount: 0
 
 # 启用 Zookeeper 模式
 zookeeper:
