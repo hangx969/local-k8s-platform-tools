@@ -2,13 +2,6 @@ clusterId: "abcdefg"
 
 broker:
   replicaCount: 1
-  autoscaling:
-    vpa:
-      enabled: true
-      maxAllowed: {}
-      minAllowed: {}
-      updatePolicy:
-        updateMode: "Off"
   persistence:
     enabled: true
     storageClass: "sc-nfs"
