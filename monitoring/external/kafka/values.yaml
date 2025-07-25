@@ -1,0 +1,8 @@
+controller:
+  replicaCount: 1
+  ## Enable persistence using Persistent Volume Claims
+  ## ref: https://kubernetes.io/docs/concepts/storage/persistent-volumes/
+  persistence:
+    enabled: true
+    storageClass: "sc-nfs"
+    size: 3Gi

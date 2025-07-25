@@ -43,24 +43,24 @@ jobs:
           helm registry login '${{ env.harborURL }}' --username ${{ secrets.HARBOR_USERNAME }} --password ${{ secrets.HARBOR_PASSWORD }} --insecure
 
       ###===========helm Upgrade External Helm Charts===============###
-      - name: Upgrade strimzi-kafka-operator
-        run: |
-          $env:helmChartVersion = '${{env.strimziVersion}}'
-          $env:helmRepoName = 'strimzi'
-          $env:helmChartName = 'strimzi-kafka-operator'
+      # - name: Upgrade strimzi-kafka-operator
+      #   run: |
+      #     $env:helmChartVersion = '${{env.strimziVersion}}'
+      #     $env:helmRepoName = 'strimzi'
+      #     $env:helmChartName = 'strimzi-kafka-operator'
 
-          helm pull oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName --version $env:helmChartVersion --insecure-skip-tls-verify
+      #     helm pull oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName --version $env:helmChartVersion --insecure-skip-tls-verify
 
-          Write-Host "Extract CRDs"
-          tar xvf "$env:helmChartName-$env:helmChartVersion.tgz" strimzi-kafka-operator/crds/
+      #     Write-Host "Extract CRDs"
+      #     tar xvf "$env:helmChartName-$env:helmChartVersion.tgz" strimzi-kafka-operator/crds/
 
-          # echo "Diff CRDs"
-          # kubectl diff -f strimzi-kafka-operator/crds/ -R --kubeconfig $KUBECONFIG
+      #     # echo "Diff CRDs"
+      #     # kubectl diff -f strimzi-kafka-operator/crds/ -R --kubeconfig $KUBECONFIG
 
-          Write-Host "Install CRDs"
-          kubectl apply --server-side -f strimzi-kafka-operator/crds/ -R --kubeconfig $env:KUBECONFIG
+      #     Write-Host "Install CRDs"
+      #     kubectl apply --server-side -f strimzi-kafka-operator/crds/ -R --kubeconfig $env:KUBECONFIG
 
-          helm upgrade -i strimzi-kafka-operator -n kafka oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName -f ./kafka/external/strimzi-kafka-operator/values.yaml --version $env:helmChartVersion --history-max 5 --insecure-skip-tls-verify --kubeconfig $env:KUBECONFIG
+      #     helm upgrade -i strimzi-kafka-operator -n kafka oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName -f ./kafka/external/strimzi-kafka-operator/values.yaml --version $env:helmChartVersion --history-max 5 --insecure-skip-tls-verify --kubeconfig $env:KUBECONFIG
 
       - name: Upgrade kafka-ui
         run: |
@@ -71,11 +71,10 @@ jobs:
           helm upgrade -i kafka-ui -n kafka oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName --history-max 5 -f ./kafka/external/kafka-ui/values.yaml --version $env:helmChartVersion --insecure-skip-tls-verify --kubeconfig $env:KUBECONFIG
 
       ###===========helm Upgrade Internal Helm Charts===============###
-      - name: Upgrade kafka-config
-        run: |
-          $env:chartDir = './kafka/helm-charts/kafka-config'
-
-          helm upgrade -i kafka-config -n kafka $env:chartDir --history-max 5 --values $env:chartDir/values.yaml --kubeconfig $env:KUBECONFIG
+      # - name: Upgrade kafka-config
+      #   run: |
+      #     $env:chartDir = './kafka/helm-charts/kafka-config'
+      #     helm upgrade -i kafka-config -n kafka $env:chartDir --history-max 5 --values $env:chartDir/values.yaml --kubeconfig $env:KUBECONFIG
 
       # - name: Upgrade apicurio
       #   run: |

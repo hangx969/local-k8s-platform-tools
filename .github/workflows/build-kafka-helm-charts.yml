@@ -51,26 +51,26 @@ jobs:
           helm registry login '${{ env.harborURL }}' --username ${{ secrets.HARBOR_USERNAME }} --password ${{ secrets.HARBOR_PASSWORD }} --insecure
 
       ###===========helm lint============###
-      - name: Helm Lint Apicurio
-        run: |
-          helm lint ./kafka/helm-charts/apicurio --values ./kafka/helm-charts/apicurio/values.yaml
+      # - name: Helm Lint Apicurio
+      #   run: |
+      #     helm lint ./kafka/helm-charts/apicurio --values ./kafka/helm-charts/apicurio/values.yaml
 
-      - name: Helm Lint Kafka Config
-        run: |
-          helm lint ./kafka/helm-charts/kafka-config --values ./kafka/helm-charts/kafka-config/values.yaml
+      # - name: Helm Lint Kafka Config
+      #   run: |
+      #     helm lint ./kafka/helm-charts/kafka-config --values ./kafka/helm-charts/kafka-config/values.yaml
 
       - name: Helm Lint Kafka UI Config
         run: |
           helm lint ./kafka/helm-charts/kafka-ui-config --values ./kafka/helm-charts/kafka-ui-config/values.yaml
 
       ###===========helm diff===============###
-      - name: Diff Strimzi Kafka Operator
-        run: |
-          $env:helmChartVersion = '${{env.strimziVersion}}'
-          $env:helmRepoName = 'strimzi'
-          $env:helmChartName = 'strimzi-kafka-operator'
+      # - name: Diff Strimzi Kafka Operator
+      #   run: |
+      #     $env:helmChartVersion = '${{env.strimziVersion}}'
+      #     $env:helmRepoName = 'strimzi'
+      #     $env:helmChartName = 'strimzi-kafka-operator'
 
-          helm diff upgrade strimzi-kafka-operator -n kafka oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName --version $env:helmChartVersion -f ./kafka/external/strimzi-kafka-operator/values.yaml --insecure-skip-tls-verify --allow-unreleased --kubeconfig $env:KUBECONFIG
+      #     helm diff upgrade strimzi-kafka-operator -n kafka oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName --version $env:helmChartVersion -f ./kafka/external/strimzi-kafka-operator/values.yaml --insecure-skip-tls-verify --allow-unreleased --kubeconfig $env:KUBECONFIG
 
       - name: Diff Kafka UI
         run: |

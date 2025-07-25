@@ -1,0 +1,32 @@
+resources:
+  requests:
+    memory: 128Mi
+    cpu: 80m
+
+metrics:
+  enabled: true
+
+  ## Zookeeper Prometheus Exporter container port
+  ##
+  containerPort: 9141
+
+  ## Service configuration
+  ##
+  service:
+    ## Zookeeper Prometheus Exporter service type
+    ##
+    type: ClusterIP
+    ## Zookeeper Prometheus Exporter service port
+    ##
+    port: 9141
+    ## Annotations for the Zookeeper Prometheus Exporter metrics service
+    ##
+    annotations:
+      prometheus.io/scrape: 'true'
+      prometheus.io/port: '{{ .Values.metrics.service.port }}'
+      prometheus.io/path: '/metrics'
+
+  ## Prometheus Operator ServiceMonitor configuration
+  ##
+  serviceMonitor:
+    enabled: true
