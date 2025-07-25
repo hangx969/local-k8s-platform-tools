@@ -1,5 +1,8 @@
 clusterId: "abcdefg"
 
+controller:
+  replicaCount: 0
+
 broker:
   replicaCount: 1
   persistence:
