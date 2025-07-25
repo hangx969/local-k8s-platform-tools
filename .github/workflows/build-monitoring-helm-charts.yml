@@ -167,17 +167,17 @@ jobs:
 
           helm diff upgrade eck-operator -n eck-system oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName -f ./monitoring/external/eck-operator/values.yaml --version $env:helmChartVersion --insecure-skip-tls-verify --allow-unreleased --kubeconfig $env:KUBECONFIG
 
-      - name: Diff Kafka Helm
-        run: |
-          $env:helmChartVersion = '${{env.kafkaVersion}}'
-          $env:helmRepoName = 'bitnami'
-          $env:helmChartName = 'kafka'
+      # - name: Diff Kafka Helm
+      #   run: |
+      #     $env:helmChartVersion = '${{env.kafkaVersion}}'
+      #     $env:helmRepoName = 'bitnami'
+      #     $env:helmChartName = 'kafka'
 
-          helm diff upgrade kafka `
-            -n logging `
-            oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName `
-            -f ./monitoring/external/kafka/values.yaml `
-            --version $env:helmChartVersion `
-            --insecure-skip-tls-verify `
-            --allow-unreleased `
-            --kubeconfig $env:KUBECONFIG `
+      #     helm diff upgrade kafka `
+      #       -n logging `
+      #       oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName `
+      #       -f ./monitoring/external/kafka/values.yaml `
+      #       --version $env:helmChartVersion `
+      #       --insecure-skip-tls-verify `
+      #       --allow-unreleased `
+      #       --kubeconfig $env:KUBECONFIG `
