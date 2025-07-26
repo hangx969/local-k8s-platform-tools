@@ -21,10 +21,15 @@ spec:
           kafka {
             enable_auto_commit => true
             auto_commit_interval_ms => "1000"
-            bootstrap_servers => "kafka:9092"
+            bootstrap_servers => "kafka.logging.svc.cluster.local:9092"
             topics => ["k8spodlogs"]
             codec => json
             group_id => "logstash"
+            connections_max_idle_ms => 540000
+            session_timeout_ms => 30000
+            request_timeout_ms => 40000
+            retry_backoff_ms => 100
+            security_protocol => "PLAINTEXT"
           }
         }
         output {
