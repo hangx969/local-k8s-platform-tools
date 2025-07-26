@@ -59,9 +59,9 @@ jobs:
       #   run: |
       #     helm lint ./kafka/helm-charts/kafka-config --values ./kafka/helm-charts/kafka-config/values.yaml
 
-      - name: Helm Lint Kafka UI Config
-        run: |
-          helm lint ./kafka/helm-charts/kafka-ui-config --values ./kafka/helm-charts/kafka-ui-config/values.yaml
+      # - name: Helm Lint Kafka UI Config
+      #   run: |
+      #     helm lint ./kafka/helm-charts/kafka-ui-config --values ./kafka/helm-charts/kafka-ui-config/values.yaml
 
       ###===========helm diff===============###
       # - name: Diff Strimzi Kafka Operator

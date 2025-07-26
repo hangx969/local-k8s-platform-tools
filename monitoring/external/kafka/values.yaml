@@ -1,12 +1,9 @@
-# 明确禁用 KRaft 模式
 kraft:
   enabled: false
 
-# 配置控制器副本数为 0（使用 Zookeeper 模式时）
 controller:
   replicaCount: 0
 
-# 配置 Broker（重要：Zookeeper 模式必需）
 broker:
   replicaCount: 1
   persistence:
@@ -16,7 +13,6 @@ broker:
       - ReadWriteOnce
     size: 3Gi
 
-# 启用 Zookeeper 模式
 zookeeper:
   enabled: true
   replicaCount: 1

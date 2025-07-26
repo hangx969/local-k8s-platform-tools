@@ -52,11 +52,11 @@ env:
   - name: LOGGING_LEVEL_PROVECTUS
     value: info
   - name: KAFKA_CLUSTERS_0_NAME
-    value: my-cluster
+    value: bitnami-kafka-logging
   # - name: KAFKA_CLUSTERS_0_PROPERTIES_SECURITY_PROTOCOL
   #   value: SSL
   - name: KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS
-    value: my-cluster-kafka-bootstrap.kafka.svc:9092
+    value: kafka.logging.svc.cluster.local:9092
   #- name: KAFKA_CLUSTERS_0_SCHEMAREGISTRY
     # value: http://apicurio-schema-registry.apicurio-schema-registry.svc:8080/apis/ccompat/v6
 #   - name: KAFKA_CLUSTERS_0_PROPERTIES_SSL_TRUSTSTORE_TYPE
