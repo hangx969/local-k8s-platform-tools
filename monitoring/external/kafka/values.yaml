@@ -8,7 +8,7 @@ controller:
 
 # 配置 Broker（重要：Zookeeper 模式必需）
 broker:
-  replicaCount: 1
+  replicaCount: 3
   persistence:
     enabled: true
     storageClass: "sc-nfs"
@@ -25,7 +25,24 @@ auth:
 
 listeners:
   client:
+    containerPort: 9092
     protocol: PLAINTEXT
+    name: CLIENT
+
+  controller:
+    name: CONTROLLER
+    containerPort: 9093
+    protocol: PLAINTEXT
+
+  interbroker:
+    containerPort: 9094
+    protocol: PLAINTEXT
+    name: INTERNAL
+
+  external:
+    containerPort: 9095
+    protocol: PLAINTEXT
+    name: EXTERNAL
 
 # 启用 Zookeeper 模式
 zookeeper:
