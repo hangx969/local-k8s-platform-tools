@@ -3,4 +3,4 @@ kind: Namespace
 metadata:
   name: monitoring
   labels:
-    kubernetes.namespace_labels.filebeat: "true"
+    filebeat: "true"
