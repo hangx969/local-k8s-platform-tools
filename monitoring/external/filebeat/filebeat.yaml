@@ -9,7 +9,7 @@ spec:
   # image:
   config:
     output.kafka:
-      hosts: ["kafka:9092"]
+      hosts: ["kafka.logging.svc.cluster.local:9092"]
       topic: '%{[fields.log_topic]}'
       #topic: 'k8spodlogs'
     # 配置自动发现
