@@ -17,6 +17,7 @@ spec:
     - node: ${NODE_NAME}
       type: kubernetes
       templates:
+      # 这一段配置是针对系统日志保存在messages里面的系统，但是rockylinux日志是以二进制形式保存在/run/log/journal里面，这段配置暂时读取不到系统日志。
       - config:
         - paths:
           - /var/log/messages
@@ -25,6 +26,7 @@ spec:
           fields:
             log_topic: k8spodlogs
             log_type: system
+      # 这段配置是针对打了标签的ns里面的pod日志的。
       - config:
         - paths:
           - /var/log/containers/*${data.kubernetes.container.id}.log

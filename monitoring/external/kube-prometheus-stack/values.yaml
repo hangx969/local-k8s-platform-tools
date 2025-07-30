@@ -230,6 +230,16 @@ grafana:
       url: http://loki.monitoring.svc:3100
       access: proxy
 
+  persistence:
+    enabled: true
+    type: sts
+    storageClassName: "sc-nfs"
+    accessModes:
+      - ReadWriteOnce
+    size: 2Gi
+    finalizers:
+      - kubernetes.io/pvc-protection
+
 kubeControllerManager:
   enabled: false
 kubeEtcd:
