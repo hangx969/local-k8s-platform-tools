@@ -254,7 +254,7 @@ kubeControllerManager:
         app: kube-prometheus-stack-controller-manager
     jobLabel: k8s-app
     endpoints:
-      scheme: https
+    - scheme: https
       tlsConfig:
         caFile: /etc/prometheus/secrets/controller-manager-ssl/ca.crt
         certFile: /etc/prometheus/secrets/controller-manager-ssl/apiserver-kubelet-client.crt
