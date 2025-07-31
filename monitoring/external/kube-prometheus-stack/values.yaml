@@ -252,13 +252,13 @@ kubeControllerManager:
     selector:
       matchLabels:
         app: kube-prometheus-stack-controller-manager
-    jobLabel: k8s-app 
+    jobLabel: k8s-app
     endpoints:
       scheme: https
       tlsConfig:
-        caFile: /etc/kubernetes/pki/ca.crt
-        certFile: /etc/kubernetes/pki/apiserver-kubelet-client.crt
-        keyFile: /etc/kubernetes/pki/apiserver-kubelet-client.key
+        caFile: /etc/prometheus/secrets/controller-manager-ssl/ca.crt
+        certFile: /etc/prometheus/secrets/controller-manager-ssl/apiserver-kubelet-client.crt
+        keyFile: /etc/prometheus/secrets/controller-manager-ssl/apiserver-kubelet-client.key
         insecureSkipVerify: true # 关闭证书校验
     relabelings:
     - sourceLabels: [__meta_kubernetes_pod_node_name]
