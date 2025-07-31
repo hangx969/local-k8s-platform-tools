@@ -252,7 +252,12 @@ kubeControllerManager:
     selector:
       matchLabels:
         app: kube-prometheus-stack-controller-manager
-    insecureSkipVerify: true
+    scheme: https
+    tlsConfig:
+      caFile: /etc/kubernetes/pki/ca.crt
+      certFile: /etc/kubernetes/pki/apiserver-kubelet-client.crt
+      keyFile: /etc/kubernetes/pki/apiserver-kubelet-client.key
+      insecureSkipVerify: true # 关闭证书校验
     relabelings:
     - sourceLabels: [__meta_kubernetes_pod_node_name]
       separator: ;
@@ -371,3 +376,4 @@ prometheus:
     ##
     secrets:
     - etcd-ssl # 挂载etcd的证书，用于获取etcd metrics数据
+    - controller-manager-ssl # 挂载controller-manager的证书，用于获取metrics数据
