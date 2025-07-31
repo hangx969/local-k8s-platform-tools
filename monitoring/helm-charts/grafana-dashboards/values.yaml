@@ -33,3 +33,5 @@ dashboards:
     dashboard_name: pg2-logs
   - file_path: "dashboards/c3-monitoring-copy.json"
     dashboard_name: c3-monitoring
+  - file_path: "dashboards/etcd.json"
+    dashboard_name: etcd-monitoring
