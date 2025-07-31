@@ -300,8 +300,6 @@ kubeEtcd:
 
 kubeProxy:
   enabled: true
-  endpoints:
-  - 192.168.40.180
   service:
     enabled: true
     port: 10249
