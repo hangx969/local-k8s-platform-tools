@@ -245,6 +245,21 @@ kubeControllerManager:
   enabled: true
   endpoints:
   - 192.168.40.180
+  service:
+    selector:
+      component: kube-controller-manager
+  serviceMonitor:
+    selector:
+      matchLabels:
+        app: kube-prometheus-stack-controller-manager
+    insecureSkipVerify: true
+    relabelings:
+    - sourceLabels: [__meta_kubernetes_pod_node_name]
+      separator: ;
+      regex: ^(.*)$
+      targetLabel: nodename
+      replacement: $1
+      action: replace
 
 kubeEtcd:
   enabled: false
