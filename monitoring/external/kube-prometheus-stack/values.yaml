@@ -178,8 +178,8 @@ grafana:
   enabled: true
   resources:
     limits:
-      cpu: 500m
-      memory: 800Mi
+      cpu: 600m
+      memory: 1Gi
     requests:
       cpu: 50m
       memory: 100Mi
@@ -240,8 +240,12 @@ grafana:
     finalizers:
       - kubernetes.io/pvc-protection
 
+## Component scraping the kube controller manager
 kubeControllerManager:
-  enabled: false
+  enabled: true
+  endpoints:
+  - 192.168.40.180
+
 kubeEtcd:
   enabled: false
 kubeScheduler:
