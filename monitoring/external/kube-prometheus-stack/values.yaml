@@ -246,27 +246,19 @@ kubeControllerManager:
   endpoints:
   - 192.168.40.180
   service:
+    enabled: true
+    port: 10257
+    targetPort: 10257
     selector:
       component: kube-controller-manager
   serviceMonitor:
-    selector:
-      matchLabels:
-        app: kube-prometheus-stack-controller-manager
-    jobLabel: k8s-app
-    endpoints:
-    - scheme: https
-      tlsConfig:
-        caFile: /etc/prometheus/secrets/controller-manager-ssl/ca.crt
-        certFile: /etc/prometheus/secrets/controller-manager-ssl/apiserver-kubelet-client.crt
-        keyFile: /etc/prometheus/secrets/controller-manager-ssl/apiserver-kubelet-client.key
-        insecureSkipVerify: true # 关闭证书校验
-    relabelings:
-    - sourceLabels: [__meta_kubernetes_pod_node_name]
-      separator: ;
-      regex: ^(.*)$
-      targetLabel: nodename
-      replacement: $1
-      action: replace
+    enabled: true
+    https: true
+    insecureSkipVerify: true
+    serverName: localhost
+    interval: 30s
+    metricRelabelings: []
+    relabelings: []
 
 kubeEtcd:
   enabled: false
