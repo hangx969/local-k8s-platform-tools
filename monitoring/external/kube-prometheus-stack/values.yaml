@@ -260,9 +260,26 @@ kubeControllerManager:
     metricRelabelings: []
     relabelings: []
 
-kubeEtcd:
-  enabled: false
 kubeScheduler:
+  enabled: true
+  endpoints:
+  - 192.168.40.180
+  service:
+    enabled: true
+    port: 10259
+    targetPort: 10259
+    selector:
+      component: kube-scheduler
+  serviceMonitor:
+    enabled: true
+    https: true
+    insecureSkipVerify: true
+    serverName: localhost
+    interval: 30s
+    metricRelabelings: []
+    relabelings: []
+
+kubeEtcd:
   enabled: false
 
 kube-state-metrics:
