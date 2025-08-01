@@ -257,7 +257,6 @@ kubeControllerManager:
     insecureSkipVerify: true
     serverName: localhost
     interval: 30s
-    jobLabel: k8s-app
     metricRelabelings: []
     relabelings: []
 
@@ -277,7 +276,6 @@ kubeScheduler:
     insecureSkipVerify: true
     serverName: localhost
     interval: 30s
-    jobLabel: k8s-app
     metricRelabelings: []
     relabelings: []
 
@@ -297,7 +295,6 @@ kubeEtcd:
     insecureSkipVerify: true
     serverName: localhost
     interval: 30s
-    jobLabel: k8s-app
     metricRelabelings: []
     relabelings: []
 
@@ -313,7 +310,6 @@ kubeProxy:
     enabled: true
     https: false
     interval: 30s
-    jobLabel: k8s-app
     metricRelabelings: []
     relabelings: []
 
