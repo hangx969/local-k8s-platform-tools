@@ -98,23 +98,23 @@ jobs:
 
           helm upgrade -i tempo -n monitoring oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName -f ./monitoring/external/tempo/values.yaml --version $env:helmChartVersion --history-max 5 --insecure-skip-tls-verify --kubeconfig $env:KUBECONFIG
 
-      - name: Upgrade jaeger
-        run: |
-          $env:helmChartVersion = '${{env.jaegerVersion}}'
-          $env:helmRepoName = 'jaegertracing'
-          $env:helmChartName = 'jaeger'
+      # - name: Upgrade jaeger
+      #   run: |
+      #     $env:helmChartVersion = '${{env.jaegerVersion}}'
+      #     $env:helmRepoName = 'jaegertracing'
+      #     $env:helmChartName = 'jaeger'
 
-          # Create Badger PVC
-          kubectl apply -f ./monitoring/external/jaeger/storage/pvc-jaeger.yaml -n monitoring
+      #     # Create Badger PVC
+      #     kubectl apply -f ./monitoring/external/jaeger/storage/pvc-jaeger.yaml -n monitoring
 
-          # Install Jaeger
-          helm upgrade -i jaeger -n monitoring oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName -f ./monitoring/external/jaeger/values.yaml --version $env:helmChartVersion --history-max 5 --insecure-skip-tls-verify --kubeconfig $env:KUBECONFIG
+      #     # Install Jaeger
+      #     helm upgrade -i jaeger -n monitoring oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName -f ./monitoring/external/jaeger/values.yaml --version $env:helmChartVersion --history-max 5 --insecure-skip-tls-verify --kubeconfig $env:KUBECONFIG
 
-          # allow slow badger startup
-          kubectl patch deployment/jaeger -n monitoring --type='json' -p='[
-            {"op": "replace", "path": "/spec/template/spec/containers/0/readinessProbe/failureThreshold", "value": 100},
-            {"op": "replace", "path": "/spec/template/spec/containers/0/livenessProbe/failureThreshold", "value": 100}
-          ]'
+      #     # allow slow badger startup
+      #     kubectl patch deployment/jaeger -n monitoring --type='json' -p='[
+      #       {"op": "replace", "path": "/spec/template/spec/containers/0/readinessProbe/failureThreshold", "value": 100},
+      #       {"op": "replace", "path": "/spec/template/spec/containers/0/livenessProbe/failureThreshold", "value": 100}
+      #     ]'
 
       - name: Upgrade eck-operator
         run: |
