@@ -1,0 +1,388 @@
+# Select which component to install
+component:
+  master: true
+  datanode: true
+  metanode: true
+  objectnode: true
+  client: false
+  csi: true
+  monitor: false
+  ingress: false
+  blobstore_clustermgr: false
+  blobstore_blobnode: false
+  blobstore_proxy: false
+  blobstore_scheduler: false
+  blobstore_access: false
+
+# Allow to override kubernetes version
+kubernetes:
+  version: ""
+
+image:
+  server: cubefs/cfs-server:v3.5.0
+  client: cubefs/cfs-client:v3.5.0
+  blobstore: cubefs/blobstore:v3.5.0
+
+  # CSI related images
+  csi_driver: cubefs/cfs-csi-driver:v3.5.0
+  csi_provisioner: registry.k8s.io/sig-storage/csi-provisioner:v2.2.2
+  csi_attacher: registry.k8s.io/sig-storage/csi-attacher:v3.4.0
+  csi_resizer: registry.k8s.io/sig-storage/csi-resizer:v1.3.0
+  driver_registrar: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.5.0
+
+  grafana: grafana/grafana:6.4.4
+  prometheus: prom/prometheus:v2.13.1
+  consul: consul:1.6.1
+  pull_policy: "IfNotPresent"
+
+log:
+  # Do not redirect the standard output into a file, recommend to
+  # set to true, but cfs-server version > 3.2.0 was required
+  do_not_redirect_std: false
+
+# store data,log and other data, these directory will be
+#  mounted from host to container using hostPath
+path:
+  data: /var/lib/cubefs
+  log: /var/log/cubefs
+  monitor: /var/lib/cubefs_prometheus
+
+master:
+  # The replicas of master component, at least 3, recommend to be an odd number
+  replicas: 3
+  # Cluster name
+  cluster: my-cluster
+  # NodeSelector
+  nodeSelector:
+    "component.cubefs.io/master": "enabled"
+  tolerations:
+    - key: "node-role.kubernetes.io/control-plane"
+      operator: "Equal"
+      effect: "NoSchedule"
+  host: master.cubefs.com
+  log_level: error
+  retain_logs: 2000
+  # Master service http port
+  port: 17010
+  # Master golang pprof port
+  prof: 17020
+  exporter_port: 9500
+  # Reserved memory in bytes for each metanode, if available memory less than this value, the metanode will be unwritable
+  metanode_reserved_mem: "67108864"
+  legacy_data_media_type: 1
+  resources:
+    enabled: true
+    requests:
+      memory: "256Mi"
+      cpu: "200m"
+    limits:
+      memory: "2Gi"
+      cpu: "2000m"
+
+metanode:
+  # NodeSelector for metanode daemonset
+  nodeSelector:
+    "component.cubefs.io/metanode": "enabled"
+  tolerations:
+    - key: "node-role.kubernetes.io/control-plane"
+      operator: "Equal"
+      effect: "NoSchedule"
+  log_level: error
+  # Total memory metanode can use, recommended to be configured
+  # as 80% of physical machine memory
+  total_mem: "7516192768"
+  port: 17210
+  prof: 17220
+  raft_heartbeat: 17230
+  raft_replica: 17240
+  exporter_port: 9510
+  resources:
+    enabled: true
+    requests:
+      memory: "256Mi"
+      cpu: "200m"
+    limits:
+      memory: "2Gi"
+      cpu: "2000m"
+  # Similar to datanode.config_override, all the config
+  # listed here will be merge into metanode config file.
+  config_override: |
+    {
+    }
+
+datanode:
+  # NodeSelector for datanode daemonset
+  nodeSelector:
+    "component.cubefs.io/datanode": "enabled"
+  tolerations:
+    - key: "node-role.kubernetes.io/control-plane"
+      operator: "Equal"
+      effect: "NoSchedule"
+  log_level: error
+  port: 17310
+  prof: 17320
+  raft_heartbeat: 17330
+  raft_replica: 17340
+  exporter_port: 9520
+  # Disks will be used by datanode to storage data
+  # Format: disk_mount_point:reserved_space
+  # disk_mount_point: the mount point of disk in machine
+  # reserved_space: similar to metanode reserved space, if disk available
+  # space less than this number, then the disk will be unwritable
+  disks:
+    # 格式: 挂载点:保留的空间
+    # 保留的空间: 单位字节，当磁盘剩余空间小于该值时将不会再在该磁盘上写入数据
+    - /data0:536870912
+  media_type: 1
+  resources:
+    enabled: true
+    requests:
+      memory: "256Mi"
+      cpu: "200m"
+    limits:
+      memory: "2Gi"
+      cpu: "2000m"
+  # Format: "${Node_IP}":${JSON_CONFIG}
+  # There's a demo server config 1.1.1.1 left for example,
+  # All the config written here will be merged to the final
+  # '/cfs/conf/datanode.json' file.
+  # Example:  {
+  #  "1.1.1.1": {
+  #   "logDir": "/data/cfs/log",
+  #   "disks": [
+  #    "/disk/nvme0n1:59000000000",
+  #    "/disk/nvme1n1:59000000000",
+  #    "/disk/nvme2n1:59000000000"
+  #   ]
+  #  }
+  # }
+  config_override: |
+    {
+    }
+
+objectnode:
+  # The replicas of object component, object node is stateless,
+  # it can be any number depending on your traffic magnitude.
+  replicas: 3
+  log_level: error
+  port: 1601
+  prof: 7011
+  exporter_port: 9500
+  nodeSelector:
+    "component.cubefs.io/objectnode": "enabled"
+  tolerations:
+    - key: "node-role.kubernetes.io/control-plane"
+      operator: "Equal"
+      effect: "NoSchedule"
+  region: "spark"
+  # Domains listed here will be used in resolution of pan-domain names to parse bucket name
+  domains: "objectcfs.cubefs.io,objectnode.cubefs.io"
+  host: objectnode.cubefs.com
+  resources:
+    enabled: true
+    requests:
+      memory: "256Mi"
+      cpu: "500m"
+    limits:
+      memory: "1024Mi"
+      cpu: "1000m"
+
+client:
+  replicas: 1
+  vol_name: "test"
+  owner: "cubefs"
+  log_level: error
+  exporter_port: 9530
+  prof: 17410
+  resources:
+    enabled: false
+    requests:
+      memory: "256Mi"
+      cpu: "500m"
+    limits:
+      memory: "1024Mi"
+      cpu: "1000m"
+
+csi:
+  driverName: csi.cubefs.com
+  logLevel: error
+  # If you changed the default kubelet home path, this
+  # value needs to be modified accordingly
+  kubeletPath: /var/lib/kubelet
+  controller:
+    tolerations:
+      - key: "node-role.kubernetes.io/control-plane"
+        operator: "Equal"
+        effect: "NoSchedule"
+    nodeSelector:
+      "component.cubefs.io/csi": "enabled"
+  node:
+    tolerations:
+      - key: "node-role.kubernetes.io/control-plane"
+        operator: "Equal"
+        effect: "NoSchedule"
+    nodeSelector:
+      "component.cubefs.io/csi": "enabled"
+    resources:
+      enabled: true
+      requests:
+        memory: "128Mi"
+        cpu: "100m"
+      limits:
+        memory: "1Gi"
+        cpu: "1000m"
+  storageClass:
+    # Whether automatically set this StorageClass to default volume provisioner
+    setToDefault: true
+    # StorageClass reclaim policy, 'Delete' or 'Retain' is supported
+    reclaimPolicy: "Delete"
+    # Override the master address parameter to connect to external cluster
+    masterAddr: ""
+    otherParameters:
+    # Other parameters that will pass through to StorageClass, and then
+    # will pass through to the generated cfs-client configuration file.
+    # crossZone: "false"
+    # enableToken: "false"
+    # zoneName: ""
+    # icacheTimeout: ""
+    # lookupValid: ""
+    # attrValid: ""
+    # readRate: ""
+    # writeRate: ""
+    # enSyncWrite: ""
+    # autoInvalData: ""
+    # rdonly: "false"
+    # writecache: "false"
+    # keepcache: "false"
+    # followerRead: "false"
+    # authenticate: "false"
+    # clientKey: ""
+    # ticketHost: ""
+    # enableHTTPS: "false"
+    # token: ""
+    # accessKey: ""
+    # secretKey: ""
+    # disableDcache: "false"
+    # subdir: ""
+    # fsyncOnClose: "true"
+    # maxcpus: ""
+    # enableXattr: "false"
+    # alignSize: "4096"
+    # maxExtentNumPerAlignArea: "12"
+    # forceAlignMerge: "true"
+
+consul:
+  port: 8500
+  replicas: 1
+  external_address: ""
+
+grafana:
+  port: 3000
+  replicas: 1
+  # Ingress host name
+  host: monitor.cubefs.com
+  admin_password: # !!string 123456
+  resources:
+    enabled: false
+    requests:
+      memory: "256Mi"
+      cpu: "500m"
+    limits:
+      memory: "1024Mi"
+      cpu: "1000m"
+
+prometheus:
+  port: 9090
+  replicas: 1
+  resources:
+    enabled: false
+    requests:
+      memory: "256Mi"
+      cpu: "500m"
+    limits:
+      memory: "1024Mi"
+      cpu: "1000m"
+
+blobstore_clustermgr:
+  replicas: 3
+  port: 9998
+  nodeSelector:
+    "component.cubefs.io/clustermgr": "enabled"
+  tolerations: [ ]
+  bind_addr: ":9998"
+  cluster_id: "1"
+  idc: '["z0"]'
+  chunk_size: "16777216"
+  log_level: "info"
+  enable_auth: "false"
+  auth_secret: "test-secret"
+  region: "test-region"
+  code_policies: '[{"mode_name":"EC3P3","min_size":0,"max_size":5368709120,"size_ratio":1,"enable":true}]'
+  raft_port: 10110
+  alloc_size: "1048576"
+  raft_snapshot_num: "64"
+  raft_flush_num: "10000"
+  raft_flush_interval: "10"
+  raft_trunc_num: "10"
+  disk_refresh_interval: "10"
+  disk_rack_aware: "false"
+  disk_host_aware: "false"
+  db_path: "/var/lib/blobstore-clustermgr-db"
+  wal_path: "/var/lib/blobstore-clustermgr-wal"
+  log_path: "/var/log/blobstore-clustermgr"
+
+blobstore_blobnode:
+  port: 8899
+  bind_addr: ":8899"
+  nodeSelector:
+    "component.cubefs.io/blobnode": "enabled"
+  tolerations: [ ]
+  cluster_id: "1"
+  idc: "z0"
+  rack: "testrack"
+  log_level: "info"
+  disk_reserved: "1"
+  compact_reserved: "1"
+  log_path: "/var/log/blobstore-blobnode"
+  disks:
+    - /var/log/blobstore-blobnode-disk1:/cfs/data/disk1
+
+blobstore_proxy:
+  port: 9600
+  bind_addr: ":9600"
+  nodeSelector:
+    "component.cubefs.io/proxy": "enabled"
+  tolerations: [ ]
+  cluster_id: "1"
+  idc: "z0"
+  log_level: "info"
+  alloc_vols_num: 2
+  hb_interval: 3
+  kafka_addrs: "kafka-service:9092"
+  cache_path: "/var/lib/blobstore-proxy-cache"
+  log_path: "/var/log/blobstore-proxy"
+
+blobstore_scheduler:
+  replicas: 2
+  port: 9800
+  bind_addr: ":9800"
+  nodeSelector:
+    "component.cubefs.io/scheduler": "enabled"
+  tolerations: [ ]
+  cluster_id: "1"
+  idc: "z0"
+  log_level: "info"
+  kafka_addrs: "kafka-service:9092"
+  log_path: "/var/log/blobstore-scheduler"
+
+blobstore_access:
+  port: 9500
+  bind_addr: ":9500"
+  nodeSelector:
+    "component.cubefs.io/access": "enabled"
+  tolerations: [ ]
+  cluster_id: "1"
+  idc: "z0"
+  region: "test-region"
+  log_level: "info"
+  log_path: "/var/log/blobstore-access"
