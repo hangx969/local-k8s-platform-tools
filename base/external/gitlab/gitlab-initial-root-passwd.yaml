@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: gitlab-initial-root-password   # Secret 名称（必须与 Helm 配置中的 `secret` 字段一致）
+  namespace: gitlab                    # 必须与 GitLab 部署的命名空间一致
+type: Opaque
+stringData:
+  password: "admin123456"   # 替换为你的自定义密码（明文，Kubernetes 会自动加密）
