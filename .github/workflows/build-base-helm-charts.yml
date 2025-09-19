@@ -187,7 +187,7 @@ jobs:
           $env:helmRepoName = 'nfs-subdir-external-provisioner'
           $env:helmChartName = 'nfs-subdir-external-provisioner'
 
-          helm diff upgrade nfs-subdir-external-provisioner -n default oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName --version $env:helmChartVersion -f ./base/external/nfs-subdir-external-provisioner/values.yaml --insecure-skip-tls-verify --allow-unreleased --kubeconfig $env:KUBECONFIG
+          helm diff upgrade nfs-subdir-external-provisioner -n nfs-system oci://${{ env.harborURL }}/${{ env.harborProjectName }}/$env:helmRepoName/$env:helmChartName --version $env:helmChartVersion -f ./base/external/nfs-subdir-external-provisioner/values.yaml --insecure-skip-tls-verify --allow-unreleased --kubeconfig $env:KUBECONFIG
 
       - name: Diff Harbor
         run: |
