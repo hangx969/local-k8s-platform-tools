@@ -78,7 +78,6 @@ agent:
 
   serviceAccount: jenkins
 
-
 persistence:
   enabled: true
   storageClass: "sc-nfs"
