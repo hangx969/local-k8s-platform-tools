@@ -5,4 +5,4 @@ metadata:
   namespace: gitlab                    # 必须与 GitLab 部署的命名空间一致
 type: Opaque
 stringData:
-  password: "admin123456"   # 替换为你的自定义密码（明文，Kubernetes 会自动加密）
+  password: "admin12345"   # 替换为你的自定义密码（明文，Kubernetes 会自动加密）
