@@ -1,0 +1,109 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: vue-project
+  namespace: demo
+  labels:
+    app: vue-project
+spec:
+  selector:
+    app: vue-project
+  type: ClusterIP
+  ports:
+  - name: web
+    port: 80
+    protocol: TCP
+    targetPort: 80
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vue-project
+  namespace: demo
+spec:
+  rules:
+  - host: vue-project.test.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: vue-project
+            port:
+              number: 80
+        path: /
+        pathType: ImplementationSpecific
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vue-project
+  namespace: demo
+  labels: # deployment label和流水线中的set -l指定的一致
+    app: vue-project
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vue-project
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: vue-project
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - vue-project
+              topologyKey: kubernetes.io/hostname
+            weight: 100
+      imagePullSecrets:
+      - name: harborkey # harbor仓库秘钥，需要和之前创建的secret名称保持一致
+      containers:
+      - name: vue-project # container名称，需要和流水线中set命令指定的容器名称保持一致
+        image: nginx # 一开始先用nginx占位，后续流水线构建完成后替换为实际镜像
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: TZ
+          value: Asia/Shanghai
+        - name: LANG
+          value: C.UTF-8
+        ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+        livenessProbe:
+          failureThreshold: 2
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: 80
+          timeoutSeconds: 2
+        readinessProbe:
+          failureThreshold: 2
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: 80
+          timeoutSeconds: 2
+        resources:
+          limits:
+            cpu: 994m
+            memory: 1170Mi
+          requests:
+            cpu: 10m
+            memory: 55Mi
